@@ -1,0 +1,22 @@
+{
+	"FileVersion" : 3,
+
+	"FriendlyName" : "PsIronSource",
+	"Version" : 1,
+	"VersionName" : "1.0",
+	"CreatedBy" : "Pushkin Studio",
+	"CreatedByURL" : "https://github.com/PushkinStudio",
+	"EngineVersion" : "4.18.0",
+	"Description" : "",
+	"Category" : "Analytics",
+	"MarketplaceURL" : "",
+
+	"Modules" :
+	[
+		{
+			"Name" : "PsIronSource",
+			"Type" : "Runtime",
+			"LoadingPhase": "PreDefault"
+		}
+	]
+}
