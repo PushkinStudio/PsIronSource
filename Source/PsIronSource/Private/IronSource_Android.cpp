@@ -2,12 +2,6 @@
 
 #include "IronSourcePrivatePCH.h"
 
-#if WITH_IRONSOURCE && PLATFORM_ANDROID
-	#include "Android/AndroidJNI.h"
-	#include "Android/AndroidApplication.h"
-	#include <android_native_app_glue.h>
-#endif // WITH_IRONSOURCE && PLATFORM_ANDROID
-
 UIronSource_Android::UIronSource_Android(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
