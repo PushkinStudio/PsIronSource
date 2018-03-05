@@ -63,6 +63,11 @@ namespace UnrealBuildTool.Rules
                         )
                     );
                 }
+                else if (Target.Platform == UnrealTargetPlatform.Android)
+                {
+                    string PluginPath = Utils.MakePathRelativeTo(ModuleDirectory, Target.RelativeEnginePath);
+                    AdditionalPropertiesForReceipt.Add(new ReceiptProperty("AndroidPlugin", Path.Combine(PluginPath, "IronSource_APL.xml")));
+                }
             }
         }
     }
