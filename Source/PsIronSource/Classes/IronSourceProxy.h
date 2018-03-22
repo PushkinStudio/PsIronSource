@@ -20,7 +20,7 @@ class PSIRONSOURCE_API UIronSourceProxy : public UObject
 	UFUNCTION(BlueprintCallable, Category = "IronSource")
 	bool IsInitialized() const;
 
-	/** Whether there's rewarded video available */
+	/** Determine if a locally cached rewarded video exists on the mediation level */
 	UFUNCTION(BlueprintCallable, Category = "IronSource")
 	virtual bool HasRewardedVideo() const;
 
@@ -32,7 +32,7 @@ class PSIRONSOURCE_API UIronSourceProxy : public UObject
 	UFUNCTION(BlueprintCallable, Category = "IronSource")
 	virtual FString GetPlacementRewardAmount(const FString& PlacementName) const;
 
-	/** Whether rewarded video capped for placement */
+	/** Verify if a certain placement has reached its ad limit */
 	UFUNCTION(BlueprintCallable, Category = "IronSource")
 	virtual bool IsRewardedVideoCappedForPlacement(const FString& PlacementName) const;
 
