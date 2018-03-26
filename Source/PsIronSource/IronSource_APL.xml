@@ -118,10 +118,87 @@
 
 	<gameActivityClassAdditions>
 		<insert>
+			RewardedVideoListener mRewardedVideoListener = new RewardedVideoListener()
+			{
+				private native void onRewardedVideoAdOpenedThunkCpp();
+				private native void onRewardedVideoAdClosedThunkCpp();
+				private native void onRewardedVideoAvailabilityChangedThunkCpp(boolean available);
+				private native void onRewardedVideoAdStartedThunkCpp();
+				private native void onRewardedVideoAdEndedThunkCpp();
+				private native void onRewardedVideoAdRewardedThunkCpp();
+				private native void onRewardedVideoAdShowFailedThunkCpp(int errorCode, String errorMessage);
+				private native void onRewardedVideoAdClickedThunkCpp();
+
+				// Invoked when the RewardedVideo ad view has opened.
+				// Your Activity will lose focus. Please avoid performing heavy 
+				// tasks till the video ad will be closed.
+				@Override
+				public void onRewardedVideoAdOpened()
+				{
+					onRewardedVideoAdOpenedThunkCpp();
+				}
+
+				// Invoked when the RewardedVideo ad view is about to be closed.
+				// Your activity will now regain its focus.
+				@Override
+				public void onRewardedVideoAdClosed()
+				{
+					onRewardedVideoAdClosedThunkCpp();
+				}
+
+				// Invoked when there is a change in the ad availability status.
+				// @param - available - value will change to true when rewarded videos are available. 
+				// You can then show the video by calling showRewardedVideo().
+				// Value will change to false when no videos are available.
+				@Override
+				public void onRewardedVideoAvailabilityChanged(boolean available)
+				{
+					onRewardedVideoAvailabilityChangedThunkCpp(available);
+				}
+
+				// Invoked when the video ad starts playing.
+				@Override
+				public void onRewardedVideoAdStarted()
+				{
+					onRewardedVideoAdStartedThunkCpp();
+				}
+
+				// Invoked when the video ad finishes playing.
+				@Override
+				public void onRewardedVideoAdEnded()
+				{
+					onRewardedVideoAdEndedThunkCpp();
+				}
+
+				// Invoked when the user completed the video and should be rewarded. 
+				// If using server-to-server callbacks you may ignore this events and wait for 
+				// the callback from the Supersonic server.
+				// @param - placement - the Placement the user completed a video from.
+				@Override
+				public void onRewardedVideoAdRewarded(Placement placement)
+				{
+					onRewardedVideoAdRewardedThunkCpp();
+				}
+
+				// Invoked when RewardedVideo call to show a rewarded video has failed
+				@Override
+			    public void onRewardedVideoAdShowFailed(IronSourceError ironSourceError)
+			    {
+					onRewardedVideoAdShowFailedThunkCpp(ironSourceError.getErrorCode(), ironSourceError.getErrorMessage());
+				}
+
+				@Override
+				public void onRewardedVideoAdClicked(Placement placement)
+				{
+					onRewardedVideoAdClickedThunkCpp();
+			    }
+			};
+
 			public void AndroidThunkJava_IronSource_init(String APIKey, String UserId)
 			{
 				Log.debug("AndroidThunkJava_IronSource_init");
 				IronSource.setUserId(UserId);
+				IronSource.setRewardedVideoListener(mRewardedVideoListener);
 				IronSource.init(this, APIKey);
 				IntegrationHelper.validateIntegration(this);
 			}

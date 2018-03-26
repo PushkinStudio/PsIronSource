@@ -23,6 +23,8 @@ jmethodID UIronSource_Android::AndroidThunkJava_IronSource_getPlacementRewardAmo
 jmethodID UIronSource_Android::AndroidThunkJava_IronSource_isRewardedVideoCappedForPlacement;
 jmethodID UIronSource_Android::AndroidThunkJava_IronSource_showRewardedVideo;
 
+UIronSourceProxy* ISProxy;
+
 void UIronSource_Android::InitIronSource(const FString& UserId)
 {
 	LOGD("%s: Initialize IronSource with Android SDK", TCHAR_TO_ANSI(*VA_FUNC_LINE));
@@ -37,6 +39,8 @@ void UIronSource_Android::InitIronSource(const FString& UserId)
 
 	if (JNIEnv* Env = FAndroidApplication::GetJavaEnv(true))
     {
+        ISProxy = this;
+
         UIronSource_Android::AndroidThunkJava_IronSource_init = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_IronSource_init", "(Ljava/lang/String;Ljava/lang/String;)V", false);
 
         jstring JUserId = Env->NewStringUTF(TCHAR_TO_UTF8(*UserId));
@@ -136,6 +140,100 @@ void UIronSource_Android::ShowRewardedVideo(const FString& PlacementName) const
     else
     {
     	LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*VA_FUNC_LINE));
+    }
+}
+
+JNI_METHOD void Java_com_ironsource_mediationsdk_sdk_RewardedVideoListener_onRewardedVideoAdOpenedThunkCpp(JNIEnv* jenv, jobject thiz)
+{
+    if (ISProxy != nullptr)
+    {
+        ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoOpened);
+    }
+    else
+    {
+        LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*VA_FUNC_LINE));
+    }
+}
+
+JNI_METHOD void Java_com_ironsource_mediationsdk_sdk_RewardedVideoListener_onRewardedVideoAdClosedThunkCpp(JNIEnv* jenv, jobject thiz)
+{
+    if (ISProxy != nullptr)
+    {
+        ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoClosed);
+    }
+    else
+    {
+        LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*VA_FUNC_LINE));
+    }
+}
+
+// Invoked when there is a change in the ad availability status
+JNI_METHOD void Java_com_ironsource_mediationsdk_sdk_RewardedVideoListener_onRewardedVideoAvailabilityChangedThunkCpp(JNIEnv* jenv, jobject thiz, jboolean available)
+{
+
+}
+
+// Invoked when the RewardedVideo ad view has opened
+JNI_METHOD void Java_com_ironsource_mediationsdk_sdk_RewardedVideoListener_onRewardedVideoAdStartedThunkCpp(JNIEnv* jenv, jobject thiz)
+{
+    if (ISProxy != nullptr)
+    {
+        ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoStarted);
+    }
+    else
+    {
+        LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*VA_FUNC_LINE));
+    }
+}
+
+// Invoked when the RewardedVideo ad view is about to be closed
+JNI_METHOD void Java_com_ironsource_mediationsdk_sdk_RewardedVideoListener_onRewardedVideoAdEndedThunkCpp(JNIEnv* jenv, jobject thiz)
+{
+    if (ISProxy != nullptr)
+    {
+        ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoEnded);
+    }
+    else
+    {
+        LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*VA_FUNC_LINE));
+    }
+}
+
+// Invoked when the user completed the video and should be rewarded
+JNI_METHOD void Java_com_ironsource_mediationsdk_sdk_RewardedVideoListener_onRewardedVideoAdRewardedThunkCpp(JNIEnv* jenv, jobject thiz)
+{
+    if (ISProxy != nullptr)
+    {
+        ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::ReceivedReward);
+    }
+    else
+    {
+        LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*VA_FUNC_LINE));
+    }
+}
+
+// Invoked when RewardedVideo call to show a rewarded video has failed
+JNI_METHOD void Java_com_ironsource_mediationsdk_sdk_RewardedVideoListener_onRewardedVideoAdShowFailedThunkCpp(JNIEnv* jenv, jobject thiz, jint errorCode, jstring errorMessage)
+{
+    if (ISProxy != nullptr)
+    {
+        ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoShowFailed);
+    }
+    else
+    {
+        LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*VA_FUNC_LINE));
+    }
+}
+
+JNI_METHOD void Java_com_ironsource_mediationsdk_sdk_RewardedVideoListener_onRewardedVideoAdClickedThunkCpp(JNIEnv* jenv, jobject thiz)
+{
+    if (ISProxy != nullptr)
+    {
+        ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoTapped);
+    }
+    else
+    {
+        LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*VA_FUNC_LINE));
     }
 }
 

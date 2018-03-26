@@ -20,6 +20,8 @@
 - (void)rewardedVideoDidEnd;
 - (void)didClickRewardedVideo:(ISPlacementInfo *)placementInfo;
 
+@property (nonatomic) FPSIronSourceVideoDelegate *PluginDelegate;
+
 @end
 
 #endif // WITH_IRONSOURCE && PLATFORM_IOS
@@ -44,5 +46,4 @@ private:
 	ISDelegate* Delegate;
 
 #endif // WITH_IRONSOURCE && PLATFORM_IOS
-
 };
