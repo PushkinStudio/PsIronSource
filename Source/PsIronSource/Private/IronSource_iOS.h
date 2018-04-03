@@ -9,7 +9,7 @@
 
 #import "IronSource/IronSource.h"
 
-@interface ISDelegate : NSObject <ISRewardedVideoDelegate>
+@interface PSISDelegate : NSObject <ISRewardedVideoDelegate>
 
 - (void)rewardedVideoHasChangedAvailability:(BOOL)available;
 - (void)didReceiveRewardForPlacement:(ISPlacementInfo *)placementInfo;
@@ -21,6 +21,12 @@
 - (void)didClickRewardedVideo:(ISPlacementInfo *)placementInfo;
 
 @property (nonatomic) FPSIronSourceVideoDelegate *PluginDelegate;
+
+@end
+
+@interface PSISLogDelegate : NSObject <ISLogDelegate>
+
+- (void)sendLog:(NSString *)log level:(LogLevel)level tag:(LogTag)tag;
 
 @end
 
@@ -43,7 +49,8 @@ class UIronSource_iOS : public UIronSourceProxy
 	// End UIronSourceProxy interface
 
 private:
-	ISDelegate* Delegate;
+	PSISDelegate* Delegate;
+	PSISLogDelegate* LogDelegate;
 
 #endif // WITH_IRONSOURCE && PLATFORM_IOS
 };

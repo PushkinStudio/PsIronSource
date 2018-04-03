@@ -1,6 +1,7 @@
 // Copyright 2017 Pushkin Studio. All Rights Reserved.
 
 #include "IronSourcePrivatePCH.h"
+#include "Async.h"
 
 #if WITH_IRONSOURCE && PLATFORM_IOS
 #import "IronSource/IronSource.h"
@@ -14,7 +15,7 @@ UIronSource_iOS::UIronSource_iOS(const FObjectInitializer& ObjectInitializer)
 
 #if WITH_IRONSOURCE && PLATFORM_IOS
 
-@implementation ISDelegate
+@implementation PSISDelegate
 // This method lets you know whether or not there is a video
 // ready to be presented. It is only after this method is invoked
 // with 'hasAvailableAds' set to 'YES' that you can should 'showRV'.
@@ -28,10 +29,12 @@ UIronSource_iOS::UIronSource_iOS(const FObjectInitializer& ObjectInitializer)
 {
     NSLog(@"%s", __PRETTY_FUNCTION__);
 
-    if (self.PluginDelegate != nullptr)
-    {
-    	self.PluginDelegate->Broadcast(EIronSourceEventType::ReceivedReward);
-    }
+    AsyncTask(ENamedThreads::GameThread, [self]() {
+		if (self.PluginDelegate != nullptr)
+	    {
+	    	self.PluginDelegate->Broadcast(EIronSourceEventType::ReceivedReward);
+	    }
+	});
 }
 
 // This method gets invoked when there is a problem playing the video.
@@ -39,12 +42,14 @@ UIronSource_iOS::UIronSource_iOS(const FObjectInitializer& ObjectInitializer)
 // our knowledge center for help.
 - (void)rewardedVideoDidFailToShowWithError:(NSError *)error
 {
-    NSLog(@"%s", __PRETTY_FUNCTION__);
+    NSLog(@"%s %@", __PRETTY_FUNCTION__, error.localizedDescription);
 
-    if (self.PluginDelegate != nullptr)
-    {
-    	self.PluginDelegate->Broadcast(EIronSourceEventType::VideoShowFailed);
-    }
+    AsyncTask(ENamedThreads::GameThread, [self]() {
+		if (self.PluginDelegate != nullptr)
+	    {
+	    	self.PluginDelegate->Broadcast(EIronSourceEventType::VideoShowFailed);
+	    }
+	});
 }
 
 // This method gets invoked when we take control, but before
@@ -53,10 +58,12 @@ UIronSource_iOS::UIronSource_iOS(const FObjectInitializer& ObjectInitializer)
 {
     NSLog(@"%s", __PRETTY_FUNCTION__);
 
-    if (self.PluginDelegate != nullptr)
-    {
-    	self.PluginDelegate->Broadcast(EIronSourceEventType::VideoOpened);
-    }
+    AsyncTask(ENamedThreads::GameThread, [self]() {
+		if (self.PluginDelegate != nullptr)
+	    {
+	    	self.PluginDelegate->Broadcast(EIronSourceEventType::VideoOpened);
+	    }
+	});
 }
 
 // This method gets invoked when we return controlback to your hands.
@@ -66,10 +73,12 @@ UIronSource_iOS::UIronSource_iOS(const FObjectInitializer& ObjectInitializer)
 {
     NSLog(@"%s", __PRETTY_FUNCTION__);
 
-    if (self.PluginDelegate != nullptr)
-    {
-    	self.PluginDelegate->Broadcast(EIronSourceEventType::VideoClosed);
-    }
+    AsyncTask(ENamedThreads::GameThread, [self]() {
+		if (self.PluginDelegate != nullptr)
+	    {
+	    	self.PluginDelegate->Broadcast(EIronSourceEventType::VideoClosed);
+	    }
+	});
 }
 
 // This method gets invoked when the video has started playing.
@@ -77,10 +86,12 @@ UIronSource_iOS::UIronSource_iOS(const FObjectInitializer& ObjectInitializer)
 {
     NSLog(@"%s", __PRETTY_FUNCTION__);
 
-    if (self.PluginDelegate != nullptr)
-    {
-    	self.PluginDelegate->Broadcast(EIronSourceEventType::VideoStarted);
-    }
+    AsyncTask(ENamedThreads::GameThread, [self]() {
+		if (self.PluginDelegate != nullptr)
+	    {
+	    	self.PluginDelegate->Broadcast(EIronSourceEventType::VideoStarted);
+	    }
+	});
 }
 
 // This method gets invoked when the video has stopped playing.
@@ -88,10 +99,12 @@ UIronSource_iOS::UIronSource_iOS(const FObjectInitializer& ObjectInitializer)
 {
     NSLog(@"%s", __PRETTY_FUNCTION__);
 
-    if (self.PluginDelegate != nullptr)
-    {
-    	self.PluginDelegate->Broadcast(EIronSourceEventType::VideoEnded);
-    }
+    AsyncTask(ENamedThreads::GameThread, [self]() {
+		if (self.PluginDelegate != nullptr)
+	    {
+	    	self.PluginDelegate->Broadcast(EIronSourceEventType::VideoEnded);
+	    }
+	});
 }
 
 // Called after a video has been clicked.
@@ -99,11 +112,22 @@ UIronSource_iOS::UIronSource_iOS(const FObjectInitializer& ObjectInitializer)
 {
 	NSLog(@"%s", __PRETTY_FUNCTION__);
 
-	if (self.PluginDelegate != nullptr)
-    {
-    	self.PluginDelegate->Broadcast(EIronSourceEventType::VideoTapped);
-    }
+	AsyncTask(ENamedThreads::GameThread, [self]() {
+		if (self.PluginDelegate != nullptr)
+	    {
+	    	self.PluginDelegate->Broadcast(EIronSourceEventType::VideoTapped);
+	    }
+	});
 }
+@end
+
+@implementation PSISLogDelegate
+
+- (void)sendLog:(NSString *)log level:(LogLevel)level tag:(LogTag)tag
+{
+	NSLog(@"%@", log);
+}
+
 @end
 
 void UIronSource_iOS::InitIronSource(const FString& UserId)
@@ -120,9 +144,12 @@ void UIronSource_iOS::InitIronSource(const FString& UserId)
 	NSString* AppKeyNativeString = GetDefault<UIronSourceSettings>()->IronSourceIOSAppKey.GetNSString();
 
 	dispatch_async(dispatch_get_main_queue(), ^{
-		Delegate = [[ISDelegate alloc] init];
+		Delegate = [[PSISDelegate alloc] init];
 		Delegate.PluginDelegate = &VideoStateDelegate;
 
+		LogDelegate = [[PSISLogDelegate alloc] init];
+
+		[IronSource setLogDelegate:LogDelegate];
 		[IronSource setRewardedVideoDelegate:Delegate];
 		[IronSource setUserId:UserIdNativeString];
 		[IronSource initWithAppKey:AppKeyNativeString];
@@ -134,11 +161,13 @@ void UIronSource_iOS::InitIronSource(const FString& UserId)
 
 bool UIronSource_iOS::HasRewardedVideo() const
 {
+	UE_LOG(LogIronSource, Warning, TEXT("%s"), *VA_FUNC_LINE);
 	return [IronSource hasRewardedVideo];
 }
 
 FString UIronSource_iOS::GetPlacementRewardName(const FString& PlacementName) const
 {
+	UE_LOG(LogIronSource, Warning, TEXT("%s"), *VA_FUNC_LINE);
 	NSString* PlacementNameNativeString = PlacementName.GetNSString();
 	ISPlacementInfo* Info = [IronSource rewardedVideoPlacementInfo:PlacementNameNativeString];
 	if (Info != nil)
@@ -151,6 +180,7 @@ FString UIronSource_iOS::GetPlacementRewardName(const FString& PlacementName) co
 
 FString UIronSource_iOS::GetPlacementRewardAmount(const FString& PlacementName) const
 {
+	UE_LOG(LogIronSource, Warning, TEXT("%s"), *VA_FUNC_LINE);
 	NSString* PlacementNameNativeString = PlacementName.GetNSString();
 	ISPlacementInfo* Info = [IronSource rewardedVideoPlacementInfo:PlacementNameNativeString];
 	if (Info != nil)
@@ -163,12 +193,14 @@ FString UIronSource_iOS::GetPlacementRewardAmount(const FString& PlacementName) 
 
 bool UIronSource_iOS::IsRewardedVideoCappedForPlacement(const FString& PlacementName) const
 {
+	UE_LOG(LogIronSource, Warning, TEXT("%s"), *VA_FUNC_LINE);
 	NSString* PlacementNameNativeString = PlacementName.GetNSString();
 	return [IronSource isRewardedVideoCappedForPlacement:PlacementNameNativeString];
 }
 
 void UIronSource_iOS::ShowRewardedVideo(const FString& PlacementName) const
 {
+	UE_LOG(LogIronSource, Warning, TEXT("%s"), *VA_FUNC_LINE);
 	NSString* PlacementNameNativeString = PlacementName.GetNSString();
 
 	dispatch_async(dispatch_get_main_queue(), ^{
