@@ -118,17 +118,17 @@
 
 	<gameActivityClassAdditions>
 		<insert>
+			private native void onRewardedVideoAdOpenedThunkCpp();
+			private native void onRewardedVideoAdClosedThunkCpp();
+			private native void onRewardedVideoAvailabilityChangedThunkCpp(boolean available);
+			private native void onRewardedVideoAdStartedThunkCpp();
+			private native void onRewardedVideoAdEndedThunkCpp();
+			private native void onRewardedVideoAdRewardedThunkCpp();
+			private native void onRewardedVideoAdShowFailedThunkCpp(int errorCode, String errorMessage);
+			private native void onRewardedVideoAdClickedThunkCpp();
+
 			RewardedVideoListener mRewardedVideoListener = new RewardedVideoListener()
 			{
-				private native void onRewardedVideoAdOpenedThunkCpp();
-				private native void onRewardedVideoAdClosedThunkCpp();
-				private native void onRewardedVideoAvailabilityChangedThunkCpp(boolean available);
-				private native void onRewardedVideoAdStartedThunkCpp();
-				private native void onRewardedVideoAdEndedThunkCpp();
-				private native void onRewardedVideoAdRewardedThunkCpp();
-				private native void onRewardedVideoAdShowFailedThunkCpp(int errorCode, String errorMessage);
-				private native void onRewardedVideoAdClickedThunkCpp();
-
 				// Invoked when the RewardedVideo ad view has opened.
 				// Your Activity will lose focus. Please avoid performing heavy 
 				// tasks till the video ad will be closed.
