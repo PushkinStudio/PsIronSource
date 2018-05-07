@@ -17,6 +17,11 @@ void UIronSourceProxy::InitIronSource(const FString& UserId)
 	UE_LOG(LogIronSource, Warning, TEXT("%s: Null proxy used"), *VA_FUNC_LINE);
 }
 
+void UIronSourceProxy::ForceUpdateIronSourceUser(const FString& UserId)
+{
+	UE_LOG(LogIronSource, Warning, TEXT("%s: Null proxy used"), *VA_FUNC_LINE);
+}
+
 bool UIronSourceProxy::IsInitialized() const
 {
 	return bIronSourceInitialized;

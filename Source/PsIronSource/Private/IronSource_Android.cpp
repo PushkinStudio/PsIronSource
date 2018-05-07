@@ -18,6 +18,7 @@ UIronSource_Android::UIronSource_Android(const FObjectInitializer& ObjectInitial
 #define  LOG_TAG    "[CPP] PSIronSource"
 
 jmethodID UIronSource_Android::AndroidThunkJava_IronSource_init;
+jmethodID UIronSource_Android::AndroidThunkJava_IronSource_ForceUpdateUser;
 jmethodID UIronSource_Android::AndroidThunkJava_IronSource_hasRewardedVideo;
 jmethodID UIronSource_Android::AndroidThunkJava_IronSource_getPlacementRewardName;
 jmethodID UIronSource_Android::AndroidThunkJava_IronSource_getPlacementRewardAmount;
@@ -54,6 +55,30 @@ void UIronSource_Android::InitIronSource(const FString& UserId)
     {
     	LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*VA_FUNC_LINE));
     }
+}
+
+void UIronSource_Android::ForceUpdateIronSourceUser(const FString& UserId)
+{
+	LOGD("%s: Update IronSource UserId", TCHAR_TO_ANSI(*VA_FUNC_LINE));
+	
+	if (!bIronSourceInitialized)
+	{
+		LOGD("%s: Trying to update ironsource userid when it's not yet initialized!", TCHAR_TO_ANSI(*VA_FUNC_LINE));
+		return;
+	}
+
+	if (JNIEnv* Env = FAndroidApplication::GetJavaEnv(true))
+	{
+		UIronSource_Android::AndroidThunkJava_IronSource_ForceUpdateUser = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_IronSource_ForceUpdateUser", "(Ljava/lang/String;)V", false);
+		
+		jstring JUserId = Env->NewStringUTF(TCHAR_TO_UTF8(*UserId));
+		FJavaWrapper::CallVoidMethod(Env, FJavaWrapper::GameActivityThis, UIronSource_Android::AndroidThunkJava_IronSource_ForceUpdateUser, JUserId);
+		Env->DeleteLocalRef(JUserId);
+	}
+	else
+	{
+		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*VA_FUNC_LINE));
+	}
 }
 
 bool UIronSource_Android::HasRewardedVideo() const

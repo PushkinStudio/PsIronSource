@@ -151,12 +151,29 @@ void UIronSource_iOS::InitIronSource(const FString& UserId)
 
 		[IronSource setLogDelegate:LogDelegate];
 		[IronSource setRewardedVideoDelegate:Delegate];
-		[IronSource setUserId:UserIdNativeString];
+		[IronSource setDynamicUserId:UserIdNativeString];
 		[IronSource initWithAppKey:AppKeyNativeString];
 		[ISIntegrationHelper validateIntegration];
 	});
 
 	bIronSourceInitialized = true;
+}
+
+void UIronSource_iOS::ForceUpdateIronSourceUser(const FString& UserId)
+{
+	UE_LOG(LogIronSource, Warning, TEXT("%s: set new userid for Ironscouce"), *VA_FUNC_LINE);
+	
+	if (!bIronSourceInitialized)
+	{
+		UE_LOG(LogIronSource, Error, TEXT("%s: Trying to update IronSource userid when it's not yet initialized!"), *VA_FUNC_LINE);
+		return;
+	}
+	
+	NSString* UserIdNativeString = UserId.GetNSString();
+	
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[IronSource setDynamicUserId:UserIdNativeString];
+	});
 }
 
 bool UIronSource_iOS::HasRewardedVideo() const

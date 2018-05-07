@@ -9,7 +9,7 @@ namespace UnrealBuildTool.Rules
         public PsIronSource(ReadOnlyTargetRules Target) : base(Target)
         {
             const bool bEnableIronSource = true;
-            Definitions.Add("WITH_IRONSOURCE=" + (bEnableIronSource ? "1" : "0"));
+            PublicDefinitions.Add("WITH_IRONSOURCE=" + (bEnableIronSource ? "1" : "0"));
 
             PrivateIncludePaths.AddRange(
                 new string[] {
@@ -66,7 +66,7 @@ namespace UnrealBuildTool.Rules
                 else if (Target.Platform == UnrealTargetPlatform.Android)
                 {
                     string PluginPath = Utils.MakePathRelativeTo(ModuleDirectory, Target.RelativeEnginePath);
-                    AdditionalPropertiesForReceipt.Add(new ReceiptProperty("AndroidPlugin", Path.Combine(PluginPath, "IronSource_APL.xml")));
+                    AdditionalPropertiesForReceipt.Add("AndroidPlugin", Path.Combine(PluginPath, "IronSource_APL.xml"));
                 }
             }
         }

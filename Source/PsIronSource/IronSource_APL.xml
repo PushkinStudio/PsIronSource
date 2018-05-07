@@ -197,9 +197,16 @@
 			public void AndroidThunkJava_IronSource_init(String APIKey, String UserId)
 			{
 				Log.debug("AndroidThunkJava_IronSource_init");
-				IronSource.setUserId(UserId);
+				IronSource.setDynamicUserId(UserId);
 				IronSource.setRewardedVideoListener(mRewardedVideoListener);
 				IronSource.init(this, APIKey);
+				IntegrationHelper.validateIntegration(this);
+			}
+			
+			public void AndroidThunkJava_IronSource_ForceUpdateUser(String UserId)
+			{
+				Log.debug("AndroidThunkJava_IronSource_ForceUpdateUser");
+				IronSource.setDynamicUserId(UserId);
 				IntegrationHelper.validateIntegration(this);
 			}
 

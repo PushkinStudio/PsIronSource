@@ -17,6 +17,7 @@ class UIronSource_Android : public UIronSourceProxy
 #if WITH_IRONSOURCE && PLATFORM_ANDROID
 	// Begin UIronSourceProxy interface
 	virtual void InitIronSource(const FString& UserId) override;
+	virtual void ForceUpdateIronSourceUser(const FString& UserId) override;
 	virtual bool HasRewardedVideo() const override;
 	virtual FString GetPlacementRewardName(const FString& PlacementName) const override;
 	virtual FString GetPlacementRewardAmount(const FString& PlacementName) const override;
@@ -26,6 +27,7 @@ class UIronSource_Android : public UIronSourceProxy
 
 public:
 	static jmethodID AndroidThunkJava_IronSource_init;
+	static jmethodID AndroidThunkJava_IronSource_ForceUpdateUser;
 	static jmethodID AndroidThunkJava_IronSource_hasRewardedVideo;
 	static jmethodID AndroidThunkJava_IronSource_getPlacementRewardName;
 	static jmethodID AndroidThunkJava_IronSource_getPlacementRewardAmount;

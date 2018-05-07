@@ -30,6 +30,10 @@ public:
 	/** Initialize */
 	UFUNCTION(BlueprintCallable, Category = "IronSource")
 	virtual void InitIronSource(const FString& UserId);
+	
+	/** Update userid after change account */
+	UFUNCTION(BlueprintCallable, Category = "IronSource")
+	virtual void ForceUpdateIronSourceUser(const FString& UserId);
 
 	/** Whether SDK is initialized */
 	UFUNCTION(BlueprintCallable, Category = "IronSource")

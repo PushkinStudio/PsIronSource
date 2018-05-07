@@ -41,6 +41,7 @@ class UIronSource_iOS : public UIronSourceProxy
 
 	// Begin UIronSourceProxy interface
 	virtual void InitIronSource(const FString& UserId) override;
+	virtual void ForceUpdateIronSourceUser(const FString& UserId) override;
 	virtual bool HasRewardedVideo() const override;
 	virtual FString GetPlacementRewardName(const FString& PlacementName) const override;
 	virtual FString GetPlacementRewardAmount(const FString& PlacementName) const override;
