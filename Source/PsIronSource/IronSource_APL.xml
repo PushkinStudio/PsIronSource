@@ -92,10 +92,10 @@
 	</proguardAdditions>
 	
  	<resourceCopies>	
- 		<copyFile src="$S(PluginDir)/../../ThirdParty/Android/mediationsdk-6.7.7.jar" dst="$S(BuildDir)/libs/mediationsdk-6.7.7.jar" />
- 		<copyFile src="$S(PluginDir)/../../ThirdParty/Android/facebookadapter-4.1.1.jar" dst="$S(BuildDir)/libs/facebookadapter-4.1.1.jar" />
- 		<copyFile src="$S(PluginDir)/../../ThirdParty/Android/tapjoyadapter-4.1.0.jar" dst="$S(BuildDir)/libs/tapjoyadapter-4.1.0.jar" />
- 		<copyFile src="$S(PluginDir)/../../ThirdParty/Android/unityadsadapter-4.1.0.jar" dst="$S(BuildDir)/libs/unityadsadapter-4.1.0.jar" />
+ 		<copyFile src="$S(PluginDir)/../../ThirdParty/Android/mediationsdk-6.7.10.jar" dst="$S(BuildDir)/libs/mediationsdk-6.7.10.jar" />
+ 		<copyFile src="$S(PluginDir)/../../ThirdParty/Android/facebookadapter-4.2.0.jar" dst="$S(BuildDir)/libs/facebookadapter-4.2.0.jar" />
+ 		<copyFile src="$S(PluginDir)/../../ThirdParty/Android/tapjoyadapter-4.1.2.jar" dst="$S(BuildDir)/libs/tapjoyadapter-4.1.2.jar" />
+ 		<copyFile src="$S(PluginDir)/../../ThirdParty/Android/unityadsadapter-4.1.2.jar" dst="$S(BuildDir)/libs/unityadsadapter-4.1.2.jar" />
 	</resourceCopies>
 
 	<gameActivityImportAdditions>
