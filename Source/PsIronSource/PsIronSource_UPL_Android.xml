@@ -72,7 +72,7 @@
 	<addElement tag="application" name="AppLovinInterstitialActivity" />
 
     <setElement result="AppLovinWebViewActivity" value="activity" />
-	<addAttribute tag="$AppLovinWebViewActivity" name="android:name" value="com.applovin.adview.AppLovinWebViewActivity" />
+	<addAttribute tag="$AppLovinWebViewActivity" name="android:name" value="com.applovin.sdk.AppLovinWebViewActivity" />
 	<addAttribute tag="$AppLovinWebViewActivity" name="android:configChanges" value="keyboardHidden|orientation|screenSize" />
 	<addElement tag="application" name="AppLovinWebViewActivity" />
 
@@ -151,7 +151,7 @@
 
   <proguardAdditions>
 		<insert>
-	
+
 		-keepclassmembers class com.ironsource.sdk.controller.IronSourceWebView$JSInterface {
 		    public *;
 		}
@@ -168,10 +168,16 @@
 		-dontwarn com.moat.**
 		-keep class com.moat.** { public protected private *; }
 
+		# Custom
+		-dontwarn com.applovin.impl.**
+		-dontwarn com.chartboost.sdk.**
+		-dontwarn com.adcolony.sdk.**
+		-dontwarn com.google.android.exoplayer2.**
+		-dontwarn com.my.target.**
 
 		# AppLovin
 		-keepattributes Signature,InnerClasses,Exceptions,Annotation
-		-keep public class com.applovin.sdk.AppLovinSdk{ *; }
+		-keep public class com.applovin.sdk.AppLovinSdk { *; }
 		-keep public class com.applovin.sdk.AppLovin* { public protected *; }
 		-keep public class com.applovin.nativeAds.AppLovin* { public protected *; }
 		-keep public class com.applovin.adview.* { public protected *; }
@@ -181,8 +187,7 @@
 		-keep public class com.applovin.impl.**.*Impl { public protected *; }
 		-keepclassmembers class com.applovin.sdk.AppLovinSdkSettings { private java.util.Map localSettings; }
 		-keep class com.applovin.mediation.adapters.** { *; }
-		-keep class com.applovin.mediation.adapter.**{ *; }
-
+		-keep class com.applovin.mediation.adapter.** { *; }
 
 		# Vungle
 		-keep class com.vungle.warren.** { *; }
