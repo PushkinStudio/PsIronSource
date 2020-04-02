@@ -1,4 +1,4 @@
-// Copyright 2017 Pushkin Studio. All Rights Reserved.
+// Copyright 2015-2020 Mail.Ru Group. All Rights Reserved.
 
 #include "IPsIronSource.h"
 
@@ -13,9 +13,9 @@
 #endif // PLATFORM_ANDROID
 #endif // WITH_IRONSOURCE
 
+#include "ISettingsModule.h"
 #include "Misc/ConfigCacheIni.h"
 #include "UObject/Package.h"
-#include "ISettingsModule.h"
 
 #define LOCTEXT_NAMESPACE "IronSource"
 

@@ -1,4 +1,4 @@
-// Copyright 2017 Pushkin Studio. All Rights Reserved.
+// Copyright 2015-2020 Mail.Ru Group. All Rights Reserved.
 
 #include "PsIronSource_iOS.h"
 
@@ -130,11 +130,11 @@ UPsIronSource_iOS::UPsIronSource_iOS(const FObjectInitializer& ObjectInitializer
 
 void UPsIronSource_iOS::InitIronSource(const FString& UserId)
 {
-	UE_LOG(LogPsIronSource, Warning, TEXT("%s: Initialize IronSource with iOS SDK"), *PSIS_FUNC_LINE);
+	UE_LOG(LogPsIronSource, Warning, TEXT("%s: Initialize IronSource with iOS SDK"), *PS_FUNC_LINE);
 
 	if (bIronSourceInitialized)
 	{
-		UE_LOG(LogPsIronSource, Error, TEXT("%s: Trying to initialize IronSource when it's already been initialized!"), *PSIS_FUNC_LINE);
+		UE_LOG(LogPsIronSource, Error, TEXT("%s: Trying to initialize IronSource when it's already been initialized!"), *PS_FUNC_LINE);
 		return;
 	}
 
@@ -159,11 +159,11 @@ void UPsIronSource_iOS::InitIronSource(const FString& UserId)
 
 void UPsIronSource_iOS::ForceUpdateIronSourceUser(const FString& UserId)
 {
-	UE_LOG(LogPsIronSource, Warning, TEXT("%s: set new userid for Ironscouce"), *PSIS_FUNC_LINE);
+	UE_LOG(LogPsIronSource, Warning, TEXT("%s: set new userid for Ironscouce"), *PS_FUNC_LINE);
 
 	if (!bIronSourceInitialized)
 	{
-		UE_LOG(LogPsIronSource, Error, TEXT("%s: Trying to update IronSource userid when it's not yet initialized!"), *PSIS_FUNC_LINE);
+		UE_LOG(LogPsIronSource, Error, TEXT("%s: Trying to update IronSource userid when it's not yet initialized!"), *PS_FUNC_LINE);
 		return;
 	}
 
@@ -176,13 +176,13 @@ void UPsIronSource_iOS::ForceUpdateIronSourceUser(const FString& UserId)
 
 bool UPsIronSource_iOS::HasRewardedVideo() const
 {
-	UE_LOG(LogPsIronSource, Warning, TEXT("%s"), *PSIS_FUNC_LINE);
+	UE_LOG(LogPsIronSource, Warning, TEXT("%s"), *PS_FUNC_LINE);
 	return [IronSource hasRewardedVideo];
 }
 
 FString UPsIronSource_iOS::GetPlacementRewardName(const FString& PlacementName) const
 {
-	UE_LOG(LogPsIronSource, Warning, TEXT("%s"), *PSIS_FUNC_LINE);
+	UE_LOG(LogPsIronSource, Warning, TEXT("%s"), *PS_FUNC_LINE);
 	NSString* PlacementNameNativeString = PlacementName.GetNSString();
 	ISPlacementInfo* Info = [IronSource rewardedVideoPlacementInfo:PlacementNameNativeString];
 	if (Info != nil)
@@ -195,7 +195,7 @@ FString UPsIronSource_iOS::GetPlacementRewardName(const FString& PlacementName) 
 
 FString UPsIronSource_iOS::GetPlacementRewardAmount(const FString& PlacementName) const
 {
-	UE_LOG(LogPsIronSource, Warning, TEXT("%s"), *PSIS_FUNC_LINE);
+	UE_LOG(LogPsIronSource, Warning, TEXT("%s"), *PS_FUNC_LINE);
 	NSString* PlacementNameNativeString = PlacementName.GetNSString();
 	ISPlacementInfo* Info = [IronSource rewardedVideoPlacementInfo:PlacementNameNativeString];
 	if (Info != nil)
@@ -208,14 +208,14 @@ FString UPsIronSource_iOS::GetPlacementRewardAmount(const FString& PlacementName
 
 bool UPsIronSource_iOS::IsRewardedVideoCappedForPlacement(const FString& PlacementName) const
 {
-	UE_LOG(LogPsIronSource, Warning, TEXT("%s"), *PSIS_FUNC_LINE);
+	UE_LOG(LogPsIronSource, Warning, TEXT("%s"), *PS_FUNC_LINE);
 	NSString* PlacementNameNativeString = PlacementName.GetNSString();
 	return [IronSource isRewardedVideoCappedForPlacement:PlacementNameNativeString];
 }
 
 void UPsIronSource_iOS::ShowRewardedVideo(const FString& PlacementName) const
 {
-	UE_LOG(LogPsIronSource, Warning, TEXT("%s"), *PSIS_FUNC_LINE);
+	UE_LOG(LogPsIronSource, Warning, TEXT("%s"), *PS_FUNC_LINE);
 	NSString* PlacementNameNativeString = PlacementName.GetNSString();
 
 	dispatch_async(dispatch_get_main_queue(), ^{

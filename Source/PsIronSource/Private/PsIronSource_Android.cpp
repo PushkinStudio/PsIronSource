@@ -1,4 +1,4 @@
-// Copyright 2017 Pushkin Studio. All Rights Reserved.
+// Copyright 2015-2020 Mail.Ru Group. All Rights Reserved.
 
 #include "PsIronSource_Android.h"
 
@@ -31,11 +31,11 @@ UPsIronSourceProxy* ISProxy;
 
 void UPsIronSource_Android::InitIronSource(const FString& UserId)
 {
-	LOGD("%s: Initialize IronSource with Android SDK", TCHAR_TO_ANSI(*PSIS_FUNC_LINE));
+	LOGD("%s: Initialize IronSource with Android SDK", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 
 	if (bIronSourceInitialized)
 	{
-		LOGD("%s: Trying to initialize IronSource when it's already been initialized!", TCHAR_TO_ANSI(*PSIS_FUNC_LINE));
+		LOGD("%s: Trying to initialize IronSource when it's already been initialized!", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 		return;
 	}
 
@@ -55,17 +55,17 @@ void UPsIronSource_Android::InitIronSource(const FString& UserId)
 	}
 	else
 	{
-		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PSIS_FUNC_LINE));
+		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 	}
 }
 
 void UPsIronSource_Android::ForceUpdateIronSourceUser(const FString& UserId)
 {
-	LOGD("%s: Update IronSource UserId", TCHAR_TO_ANSI(*PSIS_FUNC_LINE));
+	LOGD("%s: Update IronSource UserId", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 
 	if (!bIronSourceInitialized)
 	{
-		LOGD("%s: Trying to update ironsource userid when it's not yet initialized!", TCHAR_TO_ANSI(*PSIS_FUNC_LINE));
+		LOGD("%s: Trying to update ironsource userid when it's not yet initialized!", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 		return;
 	}
 
@@ -79,13 +79,13 @@ void UPsIronSource_Android::ForceUpdateIronSourceUser(const FString& UserId)
 	}
 	else
 	{
-		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PSIS_FUNC_LINE));
+		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 	}
 }
 
 bool UPsIronSource_Android::HasRewardedVideo() const
 {
-	LOGD("%s", TCHAR_TO_ANSI(*PSIS_FUNC_LINE));
+	LOGD("%s", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 	if (JNIEnv* Env = FAndroidApplication::GetJavaEnv(true))
 	{
 		UPsIronSource_Android::AndroidThunkJava_IronSource_hasRewardedVideo = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_IronSource_hasRewardedVideo", "()Z", false);
@@ -94,14 +94,14 @@ bool UPsIronSource_Android::HasRewardedVideo() const
 	}
 	else
 	{
-		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PSIS_FUNC_LINE));
+		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 		return false;
 	}
 }
 
 FString UPsIronSource_Android::GetPlacementRewardName(const FString& PlacementName) const
 {
-	LOGD("%s", TCHAR_TO_ANSI(*PSIS_FUNC_LINE));
+	LOGD("%s", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 	if (JNIEnv* Env = FAndroidApplication::GetJavaEnv(true))
 	{
 		UPsIronSource_Android::AndroidThunkJava_IronSource_getPlacementRewardName = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_IronSource_getPlacementRewardName", "(Ljava/lang/String;)Ljava/lang/String;", false);
@@ -113,14 +113,14 @@ FString UPsIronSource_Android::GetPlacementRewardName(const FString& PlacementNa
 	}
 	else
 	{
-		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PSIS_FUNC_LINE));
+		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 		return FString();
 	}
 }
 
 FString UPsIronSource_Android::GetPlacementRewardAmount(const FString& PlacementName) const
 {
-	LOGD("%s", TCHAR_TO_ANSI(*PSIS_FUNC_LINE));
+	LOGD("%s", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 	if (JNIEnv* Env = FAndroidApplication::GetJavaEnv(true))
 	{
 		UPsIronSource_Android::AndroidThunkJava_IronSource_getPlacementRewardAmount = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_IronSource_getPlacementRewardAmount", "(Ljava/lang/String;)I", false);
@@ -131,14 +131,14 @@ FString UPsIronSource_Android::GetPlacementRewardAmount(const FString& Placement
 	}
 	else
 	{
-		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PSIS_FUNC_LINE));
+		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 		return FString();
 	}
 }
 
 bool UPsIronSource_Android::IsRewardedVideoCappedForPlacement(const FString& PlacementName) const
 {
-	LOGD("%s", TCHAR_TO_ANSI(*PSIS_FUNC_LINE));
+	LOGD("%s", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 	if (JNIEnv* Env = FAndroidApplication::GetJavaEnv(true))
 	{
 		UPsIronSource_Android::AndroidThunkJava_IronSource_isRewardedVideoCappedForPlacement = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_IronSource_isRewardedVideoCappedForPlacement", "(Ljava/lang/String;)Z", false);
@@ -149,14 +149,14 @@ bool UPsIronSource_Android::IsRewardedVideoCappedForPlacement(const FString& Pla
 	}
 	else
 	{
-		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PSIS_FUNC_LINE));
+		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 		return false;
 	}
 }
 
 void UPsIronSource_Android::ShowRewardedVideo(const FString& PlacementName) const
 {
-	LOGD("%s", TCHAR_TO_ANSI(*PSIS_FUNC_LINE));
+	LOGD("%s", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 	if (JNIEnv* Env = FAndroidApplication::GetJavaEnv(true))
 	{
 		UPsIronSource_Android::AndroidThunkJava_IronSource_showRewardedVideo = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_IronSource_showRewardedVideo", "(Ljava/lang/String;)V", false);
@@ -167,7 +167,7 @@ void UPsIronSource_Android::ShowRewardedVideo(const FString& PlacementName) cons
 	}
 	else
 	{
-		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PSIS_FUNC_LINE));
+		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 	}
 }
 
@@ -180,7 +180,7 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdOpenedThunk
 		}
 		else
 		{
-			LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PSIS_FUNC_LINE));
+			LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 		}
 	});
 }
@@ -194,7 +194,7 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdClosedThunk
 		}
 		else
 		{
-			LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PSIS_FUNC_LINE));
+			LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 		}
 	});
 }
@@ -214,7 +214,7 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdStartedThun
 		}
 		else
 		{
-			LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PSIS_FUNC_LINE));
+			LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 		}
 	});
 }
@@ -229,7 +229,7 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdEndedThunkC
 		}
 		else
 		{
-			LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PSIS_FUNC_LINE));
+			LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 		}
 	});
 }
@@ -244,7 +244,7 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdRewardedThu
 		}
 		else
 		{
-			LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PSIS_FUNC_LINE));
+			LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 		}
 	});
 }
@@ -259,7 +259,7 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdShowFailedT
 		}
 		else
 		{
-			LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PSIS_FUNC_LINE));
+			LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 		}
 	});
 }
@@ -273,7 +273,7 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdClickedThun
 		}
 		else
 		{
-			LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PSIS_FUNC_LINE));
+			LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 		}
 	});
 }
