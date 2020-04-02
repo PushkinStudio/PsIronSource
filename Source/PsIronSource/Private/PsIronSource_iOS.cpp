@@ -134,7 +134,7 @@ void UPsIronSource_iOS::InitIronSource(const FString& UserId)
 
 	if (bIronSourceInitialized)
 	{
-		UE_LOG(LogPsIronSource, Error, TEXT("%s: Trying to initialize IronSource when it's already been initialized!"), *PS_FUNC_LINE);
+		UE_LOG(LogPsIronSource, Warning, TEXT("%s: Trying to initialize IronSource when it's already been initialized!"), *PS_FUNC_LINE);
 		return;
 	}
 
@@ -149,7 +149,7 @@ void UPsIronSource_iOS::InitIronSource(const FString& UserId)
 
 	  [IronSource setLogDelegate:LogDelegate];
 	  [IronSource setRewardedVideoDelegate:Delegate];
-	  [IronSource setDynamicUserId:UserIdNativeString];
+	  [IronSource setUserId:UserIdNativeString];
 	  [IronSource initWithAppKey:AppKeyNativeString];
 	  [ISIntegrationHelper validateIntegration];
 	});
