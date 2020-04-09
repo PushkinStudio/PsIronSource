@@ -108,7 +108,8 @@ namespace UnrealBuildTool.Rules
                     PublicAdditionalFrameworks.Add(
                         new Framework(
                             "AppLovinSDK",
-                            "../../ThirdParty/iOS/AppLovinSDK.embeddedframework.zip"
+                            "../../ThirdParty/iOS/AppLovinSDK.embeddedframework.zip",
+                            "AppLovinSDKResources.bundle"
                         )
                     );
 
@@ -129,7 +130,8 @@ namespace UnrealBuildTool.Rules
                     PublicAdditionalFrameworks.Add(
                         new Framework(
                             "ISTapjoyAdapter",
-                            "../../ThirdParty/iOS/ISTapjoyAdapter.embeddedframework.zip"
+                            "../../ThirdParty/iOS/ISTapjoyAdapter.embeddedframework.zip",
+                            "TapjoyResources.bundle"
                         )
                     );
 
@@ -146,7 +148,8 @@ namespace UnrealBuildTool.Rules
                     PublicAdditionalFrameworks.Add(
                         new Framework(
                             "ISTikTokAdapter",
-                            "../../ThirdParty/iOS/ISTikTokAdapter.embeddedframework.zip"
+                            "../../ThirdParty/iOS/ISTikTokAdapter.embeddedframework.zip",
+                            "BUAdSDK.bundle"
                         )
                     );
 
