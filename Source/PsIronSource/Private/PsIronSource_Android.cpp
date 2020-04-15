@@ -3,6 +3,7 @@
 #include "PsIronSource_Android.h"
 
 #include "PsIronSourceDefines.h"
+#include "PsIronSourceSettings.h"
 
 #include "Async/Async.h"
 
@@ -26,6 +27,7 @@ jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_getPlacementRewardN
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_getPlacementRewardAmount;
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_isRewardedVideoCappedForPlacement;
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_showRewardedVideo;
+jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_setGDPRConsent;
 
 UPsIronSourceProxy* ISProxy;
 
@@ -164,6 +166,21 @@ void UPsIronSource_Android::ShowRewardedVideo(const FString& PlacementName) cons
 		jstring JPlacementName = Env->NewStringUTF(TCHAR_TO_UTF8(*PlacementName));
 		FJavaWrapper::CallVoidMethod(Env, FJavaWrapper::GameActivityThis, UPsIronSource_Android::AndroidThunkJava_IronSource_showRewardedVideo, JPlacementName);
 		Env->DeleteLocalRef(JPlacementName);
+	}
+	else
+	{
+		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+	}
+}
+
+void UPsIronSource_Android::SetGDPRConsent(bool bConsent) const
+{
+	LOGD("%s", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+	if (JNIEnv* Env = FAndroidApplication::GetJavaEnv(true))
+	{
+		UPsIronSource_Android::AndroidThunkJava_IronSource_setGDPRConsent = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_IronSource_setGDPRConsent", "(Z)V", false);
+
+		FJavaWrapper::CallVoidMethod(Env, FJavaWrapper::GameActivityThis, UPsIronSource_Android::AndroidThunkJava_IronSource_setGDPRConsent, bConsent);
 	}
 	else
 	{

@@ -516,6 +516,12 @@
 				Log.debug("AndroidThunkJava_IronSource_showRewardedVideo");
 				IronSource.showRewardedVideo(PlacementName);
 			}
+
+			public void AndroidThunkJava_IronSource_setGDPRConsent(boolean bConsent)
+			{
+				Log.debug("AndroidThunkJava_IronSource_setGDPRConsent");
+				IronSource.setConsent(bConsent);
+			}
 		</insert>
 	</gameActivityClassAdditions>
 	

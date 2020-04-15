@@ -56,3 +56,8 @@ void UPsIronSourceProxy::ShowRewardedVideo(const FString& PlacementName) const
 {
 	UE_LOG(LogPsIronSource, Warning, TEXT("%s: Null proxy used"), *PS_FUNC_LINE);
 }
+
+void UPsIronSourceProxy::SetGDPRConsent(bool bConsent) const
+{
+	UE_LOG(LogPsIronSource, Warning, TEXT("%s: Null proxy used"), *PS_FUNC_LINE);
+}
