@@ -59,6 +59,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "IronSource")
 	virtual void ShowRewardedVideo(const FString& PlacementName) const;
 
+	/** Set GDPR consent status */
+	UFUNCTION(BlueprintCallable, Category = "IronSource")
+	virtual void SetGDPRConsent(bool bConsent) const;
+
 public:
 	/** Delegate broadcasting video-related events */
 	UPROPERTY(BlueprintAssignable)

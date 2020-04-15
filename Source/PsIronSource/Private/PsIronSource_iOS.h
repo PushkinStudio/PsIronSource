@@ -47,6 +47,7 @@ class UPsIronSource_iOS : public UPsIronSourceProxy
 	virtual FString GetPlacementRewardAmount(const FString& PlacementName) const override;
 	virtual bool IsRewardedVideoCappedForPlacement(const FString& PlacementName) const override;
 	virtual void ShowRewardedVideo(const FString& PlacementName) const override;
+	virtual void SetGDPRConsent(bool bConsent) const override;
 	// End UPsIronSourceProxy interface
 
 private:

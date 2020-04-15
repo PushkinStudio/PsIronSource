@@ -3,6 +3,7 @@
 #include "PsIronSource_iOS.h"
 
 #include "PsIronSourceDefines.h"
+#include "PsIronSourceSettings.h"
 
 #include "Async/Async.h"
 
@@ -130,7 +131,7 @@ UPsIronSource_iOS::UPsIronSource_iOS(const FObjectInitializer& ObjectInitializer
 
 void UPsIronSource_iOS::InitIronSource(const FString& UserId)
 {
-	UE_LOG(LogPsIronSource, Warning, TEXT("%s: Initialize IronSource with iOS SDK"), *PS_FUNC_LINE);
+	UE_LOG(LogPsIronSource, Log, TEXT("%s: Initialize IronSource with iOS SDK"), *PS_FUNC_LINE);
 
 	if (bIronSourceInitialized)
 	{
@@ -159,7 +160,7 @@ void UPsIronSource_iOS::InitIronSource(const FString& UserId)
 
 void UPsIronSource_iOS::ForceUpdateIronSourceUser(const FString& UserId)
 {
-	UE_LOG(LogPsIronSource, Warning, TEXT("%s: set new userid for Ironscouce"), *PS_FUNC_LINE);
+	UE_LOG(LogPsIronSource, Log, TEXT("%s: set new userid for Ironscouce"), *PS_FUNC_LINE);
 
 	if (!bIronSourceInitialized)
 	{
@@ -176,13 +177,13 @@ void UPsIronSource_iOS::ForceUpdateIronSourceUser(const FString& UserId)
 
 bool UPsIronSource_iOS::HasRewardedVideo() const
 {
-	UE_LOG(LogPsIronSource, Warning, TEXT("%s"), *PS_FUNC_LINE);
+	UE_LOG(LogPsIronSource, Log, TEXT("%s"), *PS_FUNC_LINE);
 	return [IronSource hasRewardedVideo];
 }
 
 FString UPsIronSource_iOS::GetPlacementRewardName(const FString& PlacementName) const
 {
-	UE_LOG(LogPsIronSource, Warning, TEXT("%s"), *PS_FUNC_LINE);
+	UE_LOG(LogPsIronSource, Log, TEXT("%s"), *PS_FUNC_LINE);
 	NSString* PlacementNameNativeString = PlacementName.GetNSString();
 	ISPlacementInfo* Info = [IronSource rewardedVideoPlacementInfo:PlacementNameNativeString];
 	if (Info != nil)
@@ -195,7 +196,7 @@ FString UPsIronSource_iOS::GetPlacementRewardName(const FString& PlacementName) 
 
 FString UPsIronSource_iOS::GetPlacementRewardAmount(const FString& PlacementName) const
 {
-	UE_LOG(LogPsIronSource, Warning, TEXT("%s"), *PS_FUNC_LINE);
+	UE_LOG(LogPsIronSource, Log, TEXT("%s"), *PS_FUNC_LINE);
 	NSString* PlacementNameNativeString = PlacementName.GetNSString();
 	ISPlacementInfo* Info = [IronSource rewardedVideoPlacementInfo:PlacementNameNativeString];
 	if (Info != nil)
@@ -208,18 +209,26 @@ FString UPsIronSource_iOS::GetPlacementRewardAmount(const FString& PlacementName
 
 bool UPsIronSource_iOS::IsRewardedVideoCappedForPlacement(const FString& PlacementName) const
 {
-	UE_LOG(LogPsIronSource, Warning, TEXT("%s"), *PS_FUNC_LINE);
+	UE_LOG(LogPsIronSource, Log, TEXT("%s"), *PS_FUNC_LINE);
 	NSString* PlacementNameNativeString = PlacementName.GetNSString();
 	return [IronSource isRewardedVideoCappedForPlacement:PlacementNameNativeString];
 }
 
 void UPsIronSource_iOS::ShowRewardedVideo(const FString& PlacementName) const
 {
-	UE_LOG(LogPsIronSource, Warning, TEXT("%s"), *PS_FUNC_LINE);
+	UE_LOG(LogPsIronSource, Log, TEXT("%s"), *PS_FUNC_LINE);
 	NSString* PlacementNameNativeString = PlacementName.GetNSString();
 
 	dispatch_async(dispatch_get_main_queue(), ^{
 	  [IronSource showRewardedVideoWithViewController:[UIApplication sharedApplication].keyWindow.rootViewController placement:PlacementNameNativeString];
+	});
+}
+
+void UPsIronSource_iOS::SetGDPRConsent(bool bConsent) const
+{
+	UE_LOG(LogPsIronSource, Log, TEXT("%s"), *PS_FUNC_LINE);
+	dispatch_async(dispatch_get_main_queue(), ^{
+	  [IronSource setConsent:bConsent];
 	});
 }
 

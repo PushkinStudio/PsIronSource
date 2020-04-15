@@ -23,6 +23,7 @@ class UPsIronSource_Android : public UPsIronSourceProxy
 	virtual FString GetPlacementRewardAmount(const FString& PlacementName) const override;
 	virtual bool IsRewardedVideoCappedForPlacement(const FString& PlacementName) const override;
 	virtual void ShowRewardedVideo(const FString& PlacementName) const override;
+	virtual void SetGDPRConsent(bool bConsent) const override;
 	// End UPsIronSourceProxy interface
 
 public:
@@ -33,5 +34,6 @@ public:
 	static jmethodID AndroidThunkJava_IronSource_getPlacementRewardAmount;
 	static jmethodID AndroidThunkJava_IronSource_isRewardedVideoCappedForPlacement;
 	static jmethodID AndroidThunkJava_IronSource_showRewardedVideo;
+	static jmethodID AndroidThunkJava_IronSource_setGDPRConsent;
 #endif // WITH_IRONSOURCE && PLATFORM_ANDROID
 };
