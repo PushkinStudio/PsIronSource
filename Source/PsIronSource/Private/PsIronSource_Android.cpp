@@ -22,12 +22,18 @@ UPsIronSource_Android::UPsIronSource_Android(const FObjectInitializer& ObjectIni
 
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_init;
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_ForceUpdateUser;
+jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_setGDPRConsent;
+
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_hasRewardedVideo;
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_getPlacementRewardName;
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_getPlacementRewardAmount;
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_isRewardedVideoCappedForPlacement;
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_showRewardedVideo;
-jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_setGDPRConsent;
+
+jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_isInterstitialReady;
+jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_loadInterstitial;
+jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_isInterstitialPlacementCapped;
+jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_showInterstitial;
 
 UPsIronSourceProxy* ISProxy;
 
@@ -193,7 +199,7 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdOpenedThunk
 	AsyncTask(ENamedThreads::GameThread, []() {
 		if (ISProxy != nullptr)
 		{
-			ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoOpened);
+			ISProxy->VideoStateDelegate.Broadcast(EIronSourceVideoEventType::VideoOpened);
 		}
 		else
 		{
@@ -207,7 +213,7 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdClosedThunk
 	AsyncTask(ENamedThreads::GameThread, []() {
 		if (ISProxy != nullptr)
 		{
-			ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoClosed);
+			ISProxy->VideoStateDelegate.Broadcast(EIronSourceVideoEventType::VideoClosed);
 		}
 		else
 		{
@@ -227,7 +233,7 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdStartedThun
 	AsyncTask(ENamedThreads::GameThread, []() {
 		if (ISProxy != nullptr)
 		{
-			ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoStarted);
+			ISProxy->VideoStateDelegate.Broadcast(EIronSourceVideoEventType::VideoStarted);
 		}
 		else
 		{
@@ -242,7 +248,7 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdEndedThunkC
 	AsyncTask(ENamedThreads::GameThread, []() {
 		if (ISProxy != nullptr)
 		{
-			ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoEnded);
+			ISProxy->VideoStateDelegate.Broadcast(EIronSourceVideoEventType::VideoEnded);
 		}
 		else
 		{
@@ -257,7 +263,7 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdRewardedThu
 	AsyncTask(ENamedThreads::GameThread, []() {
 		if (ISProxy != nullptr)
 		{
-			ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::ReceivedReward);
+			ISProxy->VideoStateDelegate.Broadcast(EIronSourceVideoEventType::ReceivedReward);
 		}
 		else
 		{
@@ -272,7 +278,7 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdShowFailedT
 	AsyncTask(ENamedThreads::GameThread, []() {
 		if (ISProxy != nullptr)
 		{
-			ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoShowFailed);
+			ISProxy->VideoStateDelegate.Broadcast(EIronSourceVideoEventType::VideoShowFailed);
 		}
 		else
 		{
@@ -286,7 +292,7 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdClickedThun
 	AsyncTask(ENamedThreads::GameThread, []() {
 		if (ISProxy != nullptr)
 		{
-			ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoTapped);
+			ISProxy->VideoStateDelegate.Broadcast(EIronSourceVideoEventType::VideoTapped);
 		}
 		else
 		{
@@ -294,5 +300,174 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdClickedThun
 		}
 	});
 }
+
+void UPsIronSource_Android::LoadInterstitial() const
+{
+	LOGD("%s", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+	if (JNIEnv* Env = FAndroidApplication::GetJavaEnv(true))
+	{
+		UPsIronSource_Android::AndroidThunkJava_IronSource_loadInterstitial = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_IronSource_loadInterstitial", "()V", false);
+		FJavaWrapper::CallVoidMethod(Env, FJavaWrapper::GameActivityThis, UPsIronSource_Android::AndroidThunkJava_IronSource_loadInterstitial);
+	}
+	else
+	{
+		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+	}
+};
+
+bool UPsIronSource_Android::IsInterstitialReady() const
+{
+	LOGD("%s", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+	if (JNIEnv* Env = FAndroidApplication::GetJavaEnv(true))
+	{
+		UPsIronSource_Android::AndroidThunkJava_IronSource_isInterstitialReady = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_IronSource_isInterstitialReady", "()Z", false);
+		const bool bReady = FJavaWrapper::CallBooleanMethod(Env, FJavaWrapper::GameActivityThis, UPsIronSource_Android::AndroidThunkJava_IronSource_isInterstitialReady);
+		return bReady;
+	}
+	else
+	{
+		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+		return false;
+	}
+};
+
+bool UPsIronSource_Android::IsInterstitialCappedForPlacement(const FString& PlacementName) const
+{
+	LOGD("%s", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+	if (JNIEnv* Env = FAndroidApplication::GetJavaEnv(true))
+	{
+		UPsIronSource_Android::AndroidThunkJava_IronSource_isInterstitialPlacementCapped = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_IronSource_isInterstitialPlacementCapped", "(Ljava/lang/String;)Z", false);
+		jstring JPlacementName = Env->NewStringUTF(TCHAR_TO_UTF8(*PlacementName));
+		const bool bCapped = FJavaWrapper::CallBooleanMethod(Env, FJavaWrapper::GameActivityThis, UPsIronSource_Android::AndroidThunkJava_IronSource_isInterstitialPlacementCapped, JPlacementName);
+		Env->DeleteLocalRef(JPlacementName);
+		return bCapped;
+	}
+	else
+	{
+		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+		return false;
+	}
+};
+
+void UPsIronSource_Android::ShowInterstitial(const FString& PlacementName) const
+{
+	LOGD("%s", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+	if (JNIEnv* Env = FAndroidApplication::GetJavaEnv(true))
+	{
+		UPsIronSource_Android::AndroidThunkJava_IronSource_showInterstitial = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_IronSource_showInterstitial", "(Ljava/lang/String;)V", false);
+		jstring JPlacementName = Env->NewStringUTF(TCHAR_TO_UTF8(*PlacementName));
+        FJavaWrapper::CallVoidMethod(Env, FJavaWrapper::GameActivityThis, UPsIronSource_Android::AndroidThunkJava_IronSource_showInterstitial, JPlacementName);
+		Env->DeleteLocalRef(JPlacementName);
+	}
+	else
+	{
+		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+	}
+};
+
+// Invoked when Interstitial Ad is ready to be shown after load function was called.
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdReadyThunkCpp(JNIEnv* jenv, jobject thiz)
+{
+	AsyncTask(ENamedThreads::GameThread, []() {
+        if (ISProxy != nullptr)
+        {
+            ISProxy->InterstitialStateDelegate.Broadcast(EIronSourceInterstitialEventType::InterstitialReady);
+        }
+        else
+        {
+            LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+        }
+    });
+};
+
+// Invoked when there is no Interstitial Ad available after calling load function.
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdLoadFailedThunkCpp(JNIEnv* jenv, jobject thiz, jint errorCode, jstring errorMessage)
+{
+	AsyncTask(ENamedThreads::GameThread, []() {
+        if (ISProxy != nullptr)
+        {
+            ISProxy->InterstitialStateDelegate.Broadcast(EIronSourceInterstitialEventType::InterstitialLoadFailed);
+        }
+        else
+        {
+            LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+        }
+    });
+};
+
+// Called each time the Interstitial window is about to open
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdOpenedThunkCpp(JNIEnv* jenv, jobject thiz)
+{
+	AsyncTask(ENamedThreads::GameThread, []() {
+        if (ISProxy != nullptr)
+        {
+            ISProxy->InterstitialStateDelegate.Broadcast(EIronSourceInterstitialEventType::InterstitialOpened);
+        }
+        else
+        {
+            LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+        }
+    });
+};
+
+// Called each time the Interstitial window is about to close
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdClosedThunkCpp(JNIEnv* jenv, jobject thiz)
+{
+	AsyncTask(ENamedThreads::GameThread, []() {
+        if (ISProxy != nullptr)
+        {
+            ISProxy->InterstitialStateDelegate.Broadcast(EIronSourceInterstitialEventType::InterstitialClosed);
+        }
+        else
+        {
+            LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+        }
+    });
+};
+
+// Called each time the Interstitial window has opened successfully.
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdShowSucceededThunkCpp(JNIEnv* jenv, jobject thiz)
+{
+	AsyncTask(ENamedThreads::GameThread, []() {
+        if (ISProxy != nullptr)
+        {
+            ISProxy->InterstitialStateDelegate.Broadcast(EIronSourceInterstitialEventType::InterstitialSucceeded);
+        }
+        else
+        {
+            LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+        }
+    });
+};
+
+// Called if showing the Interstitial for the user has failed.
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdShowFailedThunkCpp(JNIEnv* jenv, jobject thiz, jint errorCode, jstring errorMessage)
+{
+	AsyncTask(ENamedThreads::GameThread, []() {
+        if (ISProxy != nullptr)
+        {
+            ISProxy->InterstitialStateDelegate.Broadcast(EIronSourceInterstitialEventType::InterstitialShowFailed);
+        }
+        else
+        {
+            LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+        }
+    });
+};
+
+// Called each time the end user has clicked on the Interstitial ad.
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdClickedThunkCpp(JNIEnv* jenv, jobject thiz)
+{
+	AsyncTask(ENamedThreads::GameThread, []() {
+        if (ISProxy != nullptr)
+        {
+            ISProxy->InterstitialStateDelegate.Broadcast(EIronSourceInterstitialEventType::InterstitialTapped);
+        }
+        else
+        {
+            LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+        }
+    });
+};
 
 #endif // WITH_IRONSOURCE && PLATFORM_ANDROID

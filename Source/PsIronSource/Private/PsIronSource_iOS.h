@@ -9,7 +9,7 @@
 
 #import "IronSource/IronSource.h"
 
-@interface PSISDelegate : NSObject <ISRewardedVideoDelegate>
+@interface PSISVideoDelegate : NSObject <ISRewardedVideoDelegate>
 
 - (void)rewardedVideoHasChangedAvailability:(BOOL)available;
 - (void)didReceiveRewardForPlacement:(ISPlacementInfo *)placementInfo;
@@ -21,6 +21,20 @@
 - (void)didClickRewardedVideo:(ISPlacementInfo *)placementInfo;
 
 @property (nonatomic) FPSIronSourceVideoDelegate *PluginDelegate;
+
+@end
+
+@interface PSISInterstitialDelegate : NSObject <ISInterstitialDelegate>
+
+- (void)interstitialDidFailToLoadWithError:(NSError *)error;
+- (void)interstitialDidFailToShowWithError:(NSError *)error;
+- (void)interstitialDidLoad;
+- (void)interstitialDidShow;
+- (void)didClickInterstitial;
+- (void)interstitialDidClose;
+- (void)interstitialDidOpen;
+
+@property (nonatomic) FPSIronSourceInterstitialDelegate *PluginDelegate;
 
 @end
 
@@ -42,16 +56,24 @@ class UPsIronSource_iOS : public UPsIronSourceProxy
 	// Begin UPsIronSourceProxy interface
 	virtual void InitIronSource(const FString& UserId) override;
 	virtual void ForceUpdateIronSourceUser(const FString& UserId) override;
+	virtual void SetGDPRConsent(bool bConsent) const override;
+	
 	virtual bool HasRewardedVideo() const override;
 	virtual FString GetPlacementRewardName(const FString& PlacementName) const override;
 	virtual FString GetPlacementRewardAmount(const FString& PlacementName) const override;
 	virtual bool IsRewardedVideoCappedForPlacement(const FString& PlacementName) const override;
 	virtual void ShowRewardedVideo(const FString& PlacementName) const override;
-	virtual void SetGDPRConsent(bool bConsent) const override;
+
+	virtual void LoadInterstitial() const override;
+	virtual bool IsInterstitialReady() const override;
+	virtual bool IsInterstitialCappedForPlacement(const FString& PlacementName) const override;
+	virtual void ShowInterstitial(const FString& PlacementName) const override;
+
 	// End UPsIronSourceProxy interface
 
 private:
-	PSISDelegate* Delegate;
+	PSISVideoDelegate* VideoDelegate;
+	PSISInterstitialDelegate* InterstitialDelegate;
 	PSISLogDelegate* LogDelegate;
 
 #endif // WITH_IRONSOURCE && PLATFORM_IOS
