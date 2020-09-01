@@ -55,6 +55,7 @@ bool UPsIronSourceProxy::IsRewardedVideoCappedForPlacement(const FString& Placem
 void UPsIronSourceProxy::ShowRewardedVideo(const FString& PlacementName) const
 {
 	UE_LOG(LogPsIronSource, Warning, TEXT("%s: Null proxy used"), *PS_FUNC_LINE);
+	VideoStateDelegate.Broadcast(EIronSourceEventType::VideoShowFailed);
 }
 
 void UPsIronSourceProxy::SetGDPRConsent(bool bConsent) const
