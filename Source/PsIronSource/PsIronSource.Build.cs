@@ -50,6 +50,13 @@ namespace UnrealBuildTool.Rules
                             "../../ThirdParty/iOS/ISFacebookAdapter.embeddedframework.zip"
                         )
                     );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "UnityAds",
+                            "../../ThirdParty/iOS/UnityAds.embeddedframework.zip"
+                        )
+                    );
                     
                     PublicAdditionalFrameworks.Add(
                         new Framework(
@@ -97,6 +104,22 @@ namespace UnrealBuildTool.Rules
                         )
                     );
 
+                    // Dependence for ISAdMobAdapter
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "PromisesObjC",
+                            "../../ThirdParty/iOS/PromisesObjC_is.embeddedframework.zip"
+                        )
+                    );
+
+                    // Dependence for ISAdMobAdapter
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "UserMessagingPlatform",
+                            "../../ThirdParty/iOS/UserMessagingPlatform.embeddedframework.zip"
+                        )
+                    );
+
                     PublicAdditionalFrameworks.Add(
                         new Framework(
                             "ISAppLovinAdapter",
@@ -115,8 +138,22 @@ namespace UnrealBuildTool.Rules
 
                     PublicAdditionalFrameworks.Add(
                         new Framework(
+                            "VungleSDK",
+                            "../../ThirdParty/iOS/VungleSDK.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
                             "ISVungleAdapter",
                             "../../ThirdParty/iOS/ISVungleAdapter.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "AdColony",
+                            "../../ThirdParty/iOS/AdColony.embeddedframework.zip"
                         )
                     );
 
@@ -129,9 +166,30 @@ namespace UnrealBuildTool.Rules
 
                     PublicAdditionalFrameworks.Add(
                         new Framework(
-                            "ISTapjoyAdapter",
-                            "../../ThirdParty/iOS/ISTapjoyAdapter.embeddedframework.zip",
+                            "Tapjoy",
+                            "../../ThirdParty/iOS/Tapjoy.embeddedframework.zip",
                             "TapjoyResources.bundle"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "ISTapjoyAdapter",
+                            "../../ThirdParty/iOS/ISTapjoyAdapter.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "InMobiSDK",
+                            "../../ThirdParty/iOS/InMobiSDK.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "INMMoatMobileAppKit",
+                            "../../ThirdParty/iOS/INMMoatMobileAppKit.embeddedframework.zip"
                         )
                     );
 
@@ -154,6 +212,13 @@ namespace UnrealBuildTool.Rules
                     );
 
                     PublicAdditionalLibraries.Add("resolv");
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "Chartboost",
+                            "../../ThirdParty/iOS/Chartboost.embeddedframework.zip"
+                        )
+                    );
 
                     PublicAdditionalFrameworks.Add(
                         new Framework(
