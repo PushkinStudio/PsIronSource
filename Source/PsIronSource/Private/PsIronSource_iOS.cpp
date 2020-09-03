@@ -65,9 +65,7 @@ UPsIronSource_iOS::UPsIronSource_iOS(const FObjectInitializer& ObjectInitializer
 	});
 }
 
-// This method gets invoked when we return controlback to your hands.
-// We chose to notify you about rewards here and not in 'didReceiveRewardForPlacement'.
-// This is because reward can occur in the middle of the video.
+// This method gets invoked when we return control back to your hands.
 - (void)rewardedVideoDidClose
 {
 	NSLog(@"%s", __PRETTY_FUNCTION__);
@@ -81,6 +79,9 @@ UPsIronSource_iOS::UPsIronSource_iOS(const FObjectInitializer& ObjectInitializer
 }
 
 // This method gets invoked when the video has started playing.
+// Note: the events DidStart & DidEnd below are not available for all supported rewarded video ad networks. Check which events are available per ad network you choose
+//to include in your build.
+// We recommend only using events which register to ALL ad networks you //include in your build.
 - (void)rewardedVideoDidStart
 {
 	NSLog(@"%s", __PRETTY_FUNCTION__);

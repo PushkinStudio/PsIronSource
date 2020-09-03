@@ -31,7 +31,7 @@ bool UPsIronSourceProxy::IsInitialized() const
 bool UPsIronSourceProxy::HasRewardedVideo() const
 {
 	UE_LOG(LogPsIronSource, Warning, TEXT("%s: Null proxy used"), *PS_FUNC_LINE);
-	return false;
+	return true;
 }
 
 FString UPsIronSourceProxy::GetPlacementRewardName(const FString& PlacementName) const
