@@ -200,8 +200,8 @@ namespace UnrealBuildTool.Rules
                         )
                     );
 
-                    PublicAdditionalLibraries.Add("xml2");
-                    PublicAdditionalLibraries.Add("sqlite3");
+                    PublicSystemLibraries.Add("xml2");
+                    PublicSystemLibraries.Add("sqlite3");
 
                     PublicAdditionalFrameworks.Add(
                         new Framework(
@@ -211,7 +211,7 @@ namespace UnrealBuildTool.Rules
                         )
                     );
 
-                    PublicAdditionalLibraries.Add("resolv");
+                    PublicSystemLibraries.Add("resolv");
 
                     PublicAdditionalFrameworks.Add(
                         new Framework(
