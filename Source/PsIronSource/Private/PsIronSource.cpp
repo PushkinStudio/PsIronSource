@@ -15,7 +15,6 @@
 #endif // WITH_IRONSOURCE
 
 #include "ISettingsModule.h"
-#include "Misc/ConfigCacheIni.h"
 #include "UObject/Package.h"
 
 #define LOCTEXT_NAMESPACE "IronSource"

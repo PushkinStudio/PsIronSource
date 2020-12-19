@@ -2,11 +2,6 @@
 
 #include "PsIronSource_iOS.h"
 
-#include "PsIronSourceDefines.h"
-#include "PsIronSourceSettings.h"
-
-#include "Async/Async.h"
-
 UPsIronSource_iOS::UPsIronSource_iOS(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {

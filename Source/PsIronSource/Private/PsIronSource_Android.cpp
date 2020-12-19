@@ -2,11 +2,6 @@
 
 #include "PsIronSource_Android.h"
 
-#include "PsIronSourceDefines.h"
-#include "PsIronSourceSettings.h"
-
-#include "Async/Async.h"
-
 UPsIronSource_Android::UPsIronSource_Android(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
