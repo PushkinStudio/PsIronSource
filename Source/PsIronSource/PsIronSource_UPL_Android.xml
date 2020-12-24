@@ -381,6 +381,9 @@
 
 	<gameActivityClassAdditions>
 		<insert>
+			
+			// --------- Rewarded video callbacks ---------
+			
 			private native void onRewardedVideoAdOpenedThunkCpp();
 			private native void onRewardedVideoAdClosedThunkCpp();
 			private native void onRewardedVideoAvailabilityChangedThunkCpp(boolean available);
@@ -457,11 +460,77 @@
 			    }
 			};
 
+			// --------- Interstitial callbacks ---------
+			
+			private native void onInterstitialAdReadyThunkCpp();
+			private native void onInterstitialAdLoadFailedThunkCpp(int errorCode, String errorMessage);
+			private native void onInterstitialAdOpenedThunkCpp();
+			private native void onInterstitialAdClosedThunkCpp();
+			private native void onInterstitialAdShowSucceededThunkCpp();
+			private native void onInterstitialAdShowFailedThunkCpp(int errorCode, String errorMessage);
+			private native void onInterstitialAdClickedThunkCpp();
+			
+			InterstitialListener mInterstitialListener = new InterstitialListener() {
+				/**
+				Invoked when Interstitial Ad is ready to be shown after load function was called.
+				*/
+				@Override
+				public void onInterstitialAdReady() {
+					onInterstitialAdReadyThunkCpp();
+				}
+				/**
+				invoked when there is no Interstitial Ad available after calling load function.
+				*/
+				@Override
+				public void onInterstitialAdLoadFailed(IronSourceError ironSourceError) {
+					onInterstitialAdLoadFailedThunkCpp(ironSourceError.getErrorCode(), ironSourceError.getErrorMessage());
+				}
+				/**
+				Invoked when the Interstitial Ad Unit is opened
+				*/
+				@Override
+				public void onInterstitialAdOpened() {
+					onInterstitialAdOpenedThunkCpp();
+				}
+				/*
+				* Invoked when the ad is closed and the user is about to return to the application.
+				*/
+				@Override
+				public void onInterstitialAdClosed() {
+					onInterstitialAdClosedThunkCpp();
+				}
+				/*
+				* Invoked when the ad was opened and shown successfully.
+				*/
+				@Override
+				public void onInterstitialAdShowSucceeded() {
+					onInterstitialAdShowSucceededThunkCpp();
+				}
+				/**
+				* Invoked when Interstitial ad failed to show.
+				// @param error - An object which represents the reason of showInterstitial failure.
+				*/
+				@Override
+				public void onInterstitialAdShowFailed(IronSourceError ironSourceError) {
+					onInterstitialAdShowFailedThunkCpp(ironSourceError.getErrorCode(), ironSourceError.getErrorMessage());
+				}
+				/*
+				* Invoked when the end user clicked on the interstitial ad.
+				*/
+				@Override
+				public void onInterstitialAdClicked() {
+					onInterstitialAdClickedThunkCpp();
+				}
+			};
+			
+			// --------- Wrappers and methods ---------
+
 			public void AndroidThunkJava_IronSource_init(String APIKey, String UserId)
 			{
 				Log.debug("AndroidThunkJava_IronSource_init");
 				IronSource.setUserId(UserId);
 				IronSource.setRewardedVideoListener(mRewardedVideoListener);
+				IronSource.setInterstitialListener(mInterstitialListener);
 				IronSource.init(this, APIKey);
 				IntegrationHelper.validateIntegration(this);
 			}
@@ -472,6 +541,14 @@
 				IronSource.setDynamicUserId(UserId);
 				IntegrationHelper.validateIntegration(this);
 			}
+
+			public void AndroidThunkJava_IronSource_setGDPRConsent(boolean bConsent)
+			{
+				Log.debug("AndroidThunkJava_IronSource_setGDPRConsent");
+				IronSource.setConsent(bConsent);
+			}
+
+			// ---- Video ----
 
 			public boolean AndroidThunkJava_IronSource_hasRewardedVideo()
 			{
@@ -518,10 +595,29 @@
 				IronSource.showRewardedVideo(PlacementName);
 			}
 
-			public void AndroidThunkJava_IronSource_setGDPRConsent(boolean bConsent)
+			// ---- Interstitial ----
+
+			public boolean AndroidThunkJava_IronSource_isInterstitialReady()
 			{
-				Log.debug("AndroidThunkJava_IronSource_setGDPRConsent");
-				IronSource.setConsent(bConsent);
+				Log.debug("AndroidThunkJava_IronSource_isInterstitialReady");
+				return IronSource.isInterstitialReady();
+			}
+
+			public void AndroidThunkJava_IronSource_loadInterstitial()
+			{
+				Log.debug("AndroidThunkJava_IronSource_loadInterstitial");
+				IronSource.loadInterstitial();
+			}
+
+			public boolean AndroidThunkJava_IronSource_isInterstitialPlacementCapped(String PlacementName)
+			{
+				return IronSource.isInterstitialPlacementCapped(PlacementName);
+			}
+
+			public void AndroidThunkJava_IronSource_showInterstitial(String PlacementName)
+			{
+				Log.debug("AndroidThunkJava_IronSource_showInterstitial");
+				IronSource.showInterstitial(PlacementName);
 			}
 		</insert>
 	</gameActivityClassAdditions>

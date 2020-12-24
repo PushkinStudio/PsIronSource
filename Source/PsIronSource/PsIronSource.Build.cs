@@ -76,7 +76,7 @@ namespace UnrealBuildTool.Rules
                     PublicAdditionalFrameworks.Add(
                         new Framework(
                             "GoogleAppMeasurement",
-                            "../../ThirdParty/iOS/GoogleAppMeasurement_is.embeddedframework.zip"
+                            "../../ThirdParty/iOS/GoogleAppMeasurement.embeddedframework.zip"
                         )
                     );
 
@@ -92,7 +92,7 @@ namespace UnrealBuildTool.Rules
                     PublicAdditionalFrameworks.Add(
                         new Framework(
                             "GoogleUtilities",
-                            "../../ThirdParty/iOS/GoogleUtilities_is.embeddedframework.zip"
+                            "../../ThirdParty/iOS/GoogleUtilities.embeddedframework.zip"
                         )
                     );
 
@@ -100,7 +100,7 @@ namespace UnrealBuildTool.Rules
                     PublicAdditionalFrameworks.Add(
                         new Framework(
                             "nanopb",
-                            "../../ThirdParty/iOS/nanopb_is.embeddedframework.zip"
+                            "../../ThirdParty/iOS/nanopb.embeddedframework.zip"
                         )
                     );
 
