@@ -241,12 +241,11 @@ namespace UnrealBuildTool.Rules
                         )
                     );
                 }
-                // ZEN-5852 temporarily disable IS on Android
-                // else if (Target.Platform == UnrealTargetPlatform.Android)
-                // {
-                //     string PluginPath = Utils.MakePathRelativeTo(ModuleDirectory, Target.RelativeEnginePath);
-                //     AdditionalPropertiesForReceipt.Add("AndroidPlugin", Path.Combine(PluginPath, "PsIronSource_UPL_Android.xml"));
-                // }
+                else if (Target.Platform == UnrealTargetPlatform.Android)
+                {
+                    string PluginPath = Utils.MakePathRelativeTo(ModuleDirectory, Target.RelativeEnginePath);
+                    AdditionalPropertiesForReceipt.Add("AndroidPlugin", Path.Combine(PluginPath, "PsIronSource_UPL_Android.xml"));
+                }
             }
         }
     }
