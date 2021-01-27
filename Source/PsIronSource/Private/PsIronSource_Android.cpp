@@ -10,6 +10,8 @@ UPsIronSource_Android::UPsIronSource_Android(const FObjectInitializer& ObjectIni
 #if WITH_IRONSOURCE && PLATFORM_ANDROID
 
 #include "Android/AndroidApplication.h"
+#include "PsIronSourceDefines.h"
+#include "PsIronSourceSettings.h"
 #include "Runtime/Launch/Public/Android/AndroidJNI.h"
 
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)

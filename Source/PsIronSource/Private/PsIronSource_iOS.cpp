@@ -9,6 +9,9 @@ UPsIronSource_iOS::UPsIronSource_iOS(const FObjectInitializer& ObjectInitializer
 
 #if WITH_IRONSOURCE && PLATFORM_IOS
 
+#include "PsIronSourceDefines.h"
+#include "PsIronSourceSettings.h"
+
 @implementation PSISDelegate
 // This method lets you know whether or not there is a video
 // ready to be presented. It is only after this method is invoked

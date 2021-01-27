@@ -4,5 +4,6 @@
 
 UPsIronSourceSettings::UPsIronSourceSettings(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
+	, bIronSourceEnable(false)
 {
 }

@@ -1,97 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root xmlns:android="http://schemas.ios.com/res/ios">
-    <trace enable="true"/>
+	<trace enable="true"/>
 
-    <init>
-        <setStringFromProperty result="GADAppId" ini="Engine" section="/Script/PsIronSource.PsIronSourceSettings" property="AdMobIOSAppId" default=""/>
-    </init>
+	<init>
+		<setBoolFromProperty result="bIronSourceEnable" ini="Engine" section="/Script/PsIronSource.PsIronSourceSettings" property="bIronSourceEnable" default="false"/>
+		<setStringFromProperty result="GADAppId" ini="Engine" section="/Script/PsIronSource.PsIronSourceSettings" property="AdMobIOSAppId" default=""/>
+	</init>
 
-    <iosPListUpdates>
-    <loopElements tag="$">
-      <setStringFromTag result="sCurrentTag" tag="$"/>
-      <setBoolIsEqual   result="isRootDictionary" arg1="$S(sCurrentTag)" arg2="dict"/>
+	<iosPListUpdates>
+		<if condition="bIronSourceEnable">
+			<true>
+				<loopElements tag="$">
+					<setStringFromTag result="sCurrentTag" tag="$"/>
+					<setBoolIsEqual   result="isRootDictionary" arg1="$S(sCurrentTag)" arg2="dict"/>
 
-      <if condition="isRootDictionary">
-        <true>
-            <setElement result="eGADApplicationIdentifier" value="key" text="GADApplicationIdentifier"/>
-            <addElement tag="$" name="eGADApplicationIdentifier"/>
+					<if condition="isRootDictionary">
+						<true>
+							<setElement result="eGADApplicationIdentifier" value="key" text="GADApplicationIdentifier"/>
+							<addElement tag="$" name="eGADApplicationIdentifier"/>
 
-            <setElement result="eGADAppId" value="string" text="$S(GADAppId)"/>
-            <addElement tag="$" name="eGADAppId"/>
+							<setElement result="eGADAppId" value="string" text="$S(GADAppId)"/>
+							<addElement tag="$" name="eGADAppId"/>
 
-            <setBool result="bSKAdNetworkItemsFound" value="false"/>
-            <setBool result="bSKAdNetworkItemsNext" value="false"/>
+							<setBool result="bSKAdNetworkItemsFound" value="false"/>
+							<setBool result="bSKAdNetworkItemsNext" value="false"/>
 
-            <!-- find SKAdNetworkItems -->
-            <loopElements tag="$">
-              <setStringFromTagText result="TagIteratorValue" tag="$"/>
-              <setBoolIsEqual result="isSKAdNetworkItems" arg1="$S(TagIteratorValue)" arg2="SKAdNetworkItems"/>
+							<!-- find SKAdNetworkItems -->
+							<loopElements tag="$">
+								<setStringFromTagText result="TagIteratorValue" tag="$"/>
+								<setBoolIsEqual result="isSKAdNetworkItems" arg1="$S(TagIteratorValue)" arg2="SKAdNetworkItems"/>
 
-              <if condition="isSKAdNetworkItems">
-                <true>
-                  <setBool result="bSKAdNetworkItemsFound" value="true"/>
-                </true>
-              </if>
-            </loopElements>
+								<if condition="isSKAdNetworkItems">
+									<true>
+										<setBool result="bSKAdNetworkItemsFound" value="true"/>
+									</true>
+								</if>
+							</loopElements>
 
-            <!-- if SKAdNetworkItems not found, create it -->
-            <if condition="bSKAdNetworkItemsFound">
-              <false>
-                <setElement result="dSKAdNetworkItems" value="key" text="SKAdNetworkItems"/>
-                <addElement tag="$" name="dSKAdNetworkItems"/>
-                <setElement result="dSKAdNetworkItemsRootArray" value="array"/>
-                <addElement tag="$" name="dSKAdNetworkItemsRootArray"/>
-              </false>
-            </if>
+							<!-- if SKAdNetworkItems not found, create it -->
+							<if condition="bSKAdNetworkItemsFound">
+								<false>
+									<setElement result="dSKAdNetworkItems" value="key" text="SKAdNetworkItems"/>
+									<addElement tag="$" name="dSKAdNetworkItems"/>
+									<setElement result="dSKAdNetworkItemsRootArray" value="array"/>
+									<addElement tag="$" name="dSKAdNetworkItemsRootArray"/>
+								</false>
+							</if>
 
-            <loopElements tag="$">
-              <setStringFromTagText result="TagIteratorValue" tag="$"/>
-              <setBoolIsEqual result="isSKAdNetworkItems" arg1="$S(TagIteratorValue)" arg2="SKAdNetworkItems"/>
+							<loopElements tag="$">
+								<setStringFromTagText result="TagIteratorValue" tag="$"/>
+								<setBoolIsEqual result="isSKAdNetworkItems" arg1="$S(TagIteratorValue)" arg2="SKAdNetworkItems"/>
 
-              <if condition="bSKAdNetworkItemsNext">
-                <true>
-                  <setBool result="bSKAdNetworkItemsNext" value="false"/>
+								<if condition="bSKAdNetworkItemsNext">
+									<true>
+										<setBool result="bSKAdNetworkItemsNext" value="false"/>
 
-                  <!-- IronSource network id -->
-                  <setElement result="dSKAdNetworkItemDictIS" value="dict"/>
-                  <setElement result="dSKAdNetworkIdentifierKey" value="key" text="SKAdNetworkIdentifier"/>
-                  <addElement tag="$dSKAdNetworkItemDictIS" name="dSKAdNetworkIdentifierKey"/>
-                  <setElement result="dSKAdNetworkIdIS" value="string" text="SU67R6K2V3.skadnetwork"/>
-                  <addElement tag="$dSKAdNetworkItemDictIS" name="dSKAdNetworkIdIS"/>
-                  <addElement tag="$" name="dSKAdNetworkItemDictIS"/>
+										<!-- IronSource network id -->
+										<setElement result="dSKAdNetworkItemDictIS" value="dict"/>
+										<setElement result="dSKAdNetworkIdentifierKey" value="key" text="SKAdNetworkIdentifier"/>
+										<addElement tag="$dSKAdNetworkItemDictIS" name="dSKAdNetworkIdentifierKey"/>
+										<setElement result="dSKAdNetworkIdIS" value="string" text="SU67R6K2V3.skadnetwork"/>
+										<addElement tag="$dSKAdNetworkItemDictIS" name="dSKAdNetworkIdIS"/>
+										<addElement tag="$" name="dSKAdNetworkItemDictIS"/>
 
-                  <!-- AdColony network id -->
-                  <setElement result="dSKAdNetworkItemDictAdColony" value="dict"/>
-                  <addElement tag="$dSKAdNetworkItemDictAdColony" name="dSKAdNetworkIdentifierKey"/>
-                  <setElement result="dSKAdNetworkIdAdColony" value="string" text="4PFYVQ9L8R.skadnetwork"/>
-                  <addElement tag="$dSKAdNetworkItemDictAdColony" name="dSKAdNetworkIdAdColony"/>
-                  <addElement tag="$" name="dSKAdNetworkItemDictAdColony"/>
+										<!-- AdColony network id -->
+										<setElement result="dSKAdNetworkItemDictAdColony" value="dict"/>
+										<addElement tag="$dSKAdNetworkItemDictAdColony" name="dSKAdNetworkIdentifierKey"/>
+										<setElement result="dSKAdNetworkIdAdColony" value="string" text="4PFYVQ9L8R.skadnetwork"/>
+										<addElement tag="$dSKAdNetworkItemDictAdColony" name="dSKAdNetworkIdAdColony"/>
+										<addElement tag="$" name="dSKAdNetworkItemDictAdColony"/>
 
-                  <!-- AdMob network id -->
-                  <setElement result="dSKAdNetworkItemDictAdMob" value="dict"/>
-                  <addElement tag="$dSKAdNetworkItemDictAdMob" name="dSKAdNetworkIdentifierKey"/>
-                  <setElement result="dSKAdNetworkIdAdMob" value="string" text="cstr6suwn9.skadnetwork"/>
-                  <addElement tag="$dSKAdNetworkItemDictAdMob" name="dSKAdNetworkIdAdMob"/>
-                  <addElement tag="$" name="dSKAdNetworkItemDictAdMob"/>
+										<!-- AdMob network id -->
+										<setElement result="dSKAdNetworkItemDictAdMob" value="dict"/>
+										<addElement tag="$dSKAdNetworkItemDictAdMob" name="dSKAdNetworkIdentifierKey"/>
+										<setElement result="dSKAdNetworkIdAdMob" value="string" text="cstr6suwn9.skadnetwork"/>
+										<addElement tag="$dSKAdNetworkItemDictAdMob" name="dSKAdNetworkIdAdMob"/>
+										<addElement tag="$" name="dSKAdNetworkItemDictAdMob"/>
 
-                  <!-- UnityAds network id -->
-                  <setElement result="dSKAdNetworkItemDictUnityAds" value="dict"/>
-                  <addElement tag="$dSKAdNetworkItemDictUnityAds" name="dSKAdNetworkIdentifierKey"/>
-                  <setElement result="dSKAdNetworkIdUnityAds" value="string" text="4DZT52R2T5.skadnetwork"/>
-                  <addElement tag="$dSKAdNetworkItemDictUnityAds" name="dSKAdNetworkIdUnityAds"/>
-                  <addElement tag="$" name="dSKAdNetworkItemDictUnityAds"/>
-                </true>
-              </if>
+										<!-- UnityAds network id -->
+										<setElement result="dSKAdNetworkItemDictUnityAds" value="dict"/>
+										<addElement tag="$dSKAdNetworkItemDictUnityAds" name="dSKAdNetworkIdentifierKey"/>
+										<setElement result="dSKAdNetworkIdUnityAds" value="string" text="4DZT52R2T5.skadnetwork"/>
+										<addElement tag="$dSKAdNetworkItemDictUnityAds" name="dSKAdNetworkIdUnityAds"/>
+										<addElement tag="$" name="dSKAdNetworkItemDictUnityAds"/>
 
-              <if condition="isSKAdNetworkItems">
-                <true>
-                  <setBool result="bSKAdNetworkItemsNext" value="true"/>
-                </true>
-              </if>
-            </loopElements>
-          
-        </true>
-      </if>
-    </loopElements>
-    </iosPListUpdates>
+										<!-- Facebook network id (1) https://developers.facebook.com/docs/audience-network/guides/SKAdNetwork/ -->
+										<setElement result="dSKAdNetworkItemDictFB1" value="dict"/>
+										<addElement tag="$dSKAdNetworkItemDictFB1" name="dSKAdNetworkIdentifierKey"/>
+										<setElement result="dSKAdNetworkIdFB1" value="string" text="v9wttpbfk9.skadnetwork"/>
+										<addElement tag="$dSKAdNetworkItemDictFB1" name="dSKAdNetworkIdFB1"/>
+										<addElement tag="$" name="dSKAdNetworkItemDictFB1"/>
+
+										<!-- Facebook network id (2) https://developers.facebook.com/docs/audience-network/guides/SKAdNetwork/ -->
+										<setElement result="dSKAdNetworkItemDictFB2" value="dict"/>
+										<addElement tag="$dSKAdNetworkItemDictFB2" name="dSKAdNetworkIdentifierKey"/>
+										<setElement result="dSKAdNetworkIdFB2" value="string" text="n38lu8286q.skadnetwork"/>
+										<addElement tag="$dSKAdNetworkItemDictFB2" name="dSKAdNetworkIdFB2"/>
+										<addElement tag="$" name="dSKAdNetworkItemDictFB2"/>
+									</true>
+								</if>
+
+								<if condition="isSKAdNetworkItems">
+									<true>
+										<setBool result="bSKAdNetworkItemsNext" value="true"/>
+									</true>
+								</if>
+							</loopElements>
+							
+						</true>
+					</if>
+				</loopElements>
+			</true>
+		</if>
+	</iosPListUpdates>
 </root>

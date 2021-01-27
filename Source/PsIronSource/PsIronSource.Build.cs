@@ -1,6 +1,7 @@
 // Copyright 2015-2020 Mail.Ru Group. All Rights Reserved.
 
 using System.IO;
+using Tools.DotNETCommon;
 
 namespace UnrealBuildTool.Rules
 {
@@ -8,8 +9,10 @@ namespace UnrealBuildTool.Rules
     {
         public PsIronSource(ReadOnlyTargetRules Target) : base(Target)
         {
-            const bool bEnableIronSource = true;
-            PublicDefinitions.Add("WITH_IRONSOURCE=" + (bEnableIronSource ? "1" : "0"));
+            bool bIronSourceEnable = false;
+            ConfigHierarchy EngineConfig = ConfigCache.ReadHierarchy(ConfigHierarchyType.Engine, DirectoryReference.FromFile(Target.ProjectFile), Target.Platform);
+            EngineConfig.TryGetValue("/Script/PsIronSource.PsIronSourceSettings", "bIronSourceEnable", out bIronSourceEnable);
+            PublicDefinitions.Add("WITH_IRONSOURCE=" + (bIronSourceEnable ? "1" : "0"));
 
             PrivateIncludePaths.AddRange(
                 new string[] {
@@ -30,7 +33,7 @@ namespace UnrealBuildTool.Rules
                 }
             );
 
-            if (bEnableIronSource)
+            if (bIronSourceEnable)
             {
                 if (Target.Platform == UnrealTargetPlatform.IOS)
                 {
@@ -202,15 +205,6 @@ namespace UnrealBuildTool.Rules
 
                     PublicSystemLibraries.Add("xml2");
                     PublicSystemLibraries.Add("sqlite3");
-
-                    PublicAdditionalFrameworks.Add(
-                        new Framework(
-                            "ISTikTokAdapter",
-                            "../../ThirdParty/iOS/ISTikTokAdapter.embeddedframework.zip",
-                            "BUAdSDK.bundle"
-                        )
-                    );
-
                     PublicSystemLibraries.Add("resolv");
 
                     PublicAdditionalFrameworks.Add(
@@ -229,17 +223,42 @@ namespace UnrealBuildTool.Rules
 
                     PublicAdditionalFrameworks.Add(
                         new Framework(
-                            "ISMintegralAdapter",
-                            "../../ThirdParty/iOS/ISMintegralAdapter.embeddedframework.zip"
+                            "ISMyTargetAdapter",
+                            "../../ThirdParty/iOS/ISMyTargetAdapter.embeddedframework.zip"
                         )
                     );
 
                     PublicAdditionalFrameworks.Add(
                         new Framework(
-                            "ISMyTargetAdapter",
-                            "../../ThirdParty/iOS/ISMyTargetAdapter.embeddedframework.zip"
+                            "MyTargetSDK",
+                            "../../ThirdParty/iOS/MyTargetSDK.embeddedframework.zip"
                         )
                     );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "ISPangleAdapter",
+                            "../../ThirdParty/iOS/ISPangleAdapter.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "BUAdSDK",
+                            "../../ThirdParty/iOS/BUAdSDK.embeddedframework.zip",
+                            "BUAdSDK.bundle"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "BUFoundation",
+                            "../../ThirdParty/iOS/BUFoundation.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicSystemLibraries.Add("z");
+                    PublicSystemLibraries.Add("bz2");
                 }
                 else if (Target.Platform == UnrealTargetPlatform.Android)
                 {

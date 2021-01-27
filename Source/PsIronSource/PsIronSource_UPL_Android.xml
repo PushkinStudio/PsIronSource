@@ -3,534 +3,565 @@
 	<trace enable="true"/>
 
 	<init>
+		<setBoolFromProperty result="bIronSourceEnable" ini="Engine" section="/Script/PsIronSource.PsIronSourceSettings" property="bIronSourceEnable" default="false"/>
 		<setStringFromProperty result="GADAppId" ini="Engine" section="/Script/PsIronSource.PsIronSourceSettings" property="AdMobAndroidAppId" default="" />
 	</init>
 
-  <androidManifestUpdates>
-    <addPermission android:name="android.permission.INTERNET"/>
-	<addPermission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+	<androidManifestUpdates>
+		<if condition="bIronSourceEnable">
+			<true>
+				<addPermission android:name="android.permission.INTERNET"/>
+				<addPermission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
-    <setElement result="ControllerActivity" value="activity" />
-	<addAttribute tag="$ControllerActivity" name="android:name" value="com.ironsource.sdk.controller.ControllerActivity" />
-	<addAttribute tag="$ControllerActivity" name="android:configChanges" value="orientation|screenSize" />
-	<addAttribute tag="$ControllerActivity" name="android:hardwareAccelerated" value="true" />
-	<addElement tag="application" name="ControllerActivity" />
+				<setElement result="ControllerActivity" value="activity" />
+				<addAttribute tag="$ControllerActivity" name="android:name" value="com.ironsource.sdk.controller.ControllerActivity" />
+				<addAttribute tag="$ControllerActivity" name="android:configChanges" value="orientation|screenSize" />
+				<addAttribute tag="$ControllerActivity" name="android:hardwareAccelerated" value="true" />
+				<addElement tag="application" name="ControllerActivity" />
 
-	<setElement result="InterstitialActivity" value="activity" />
-	<addAttribute tag="$InterstitialActivity" name="android:name" value="com.ironsource.sdk.controller.InterstitialActivity" />
-	<addAttribute tag="$InterstitialActivity" name="android:configChanges" value="orientation|screenSize" />
-	<addAttribute tag="$InterstitialActivity" name="android:hardwareAccelerated" value="true" />
-	<addAttribute tag="$InterstitialActivity" name="android:theme" value="@android:style/Theme.Translucent" />
-	<addElement tag="application" name="InterstitialActivity" />
+				<setElement result="InterstitialActivity" value="activity" />
+				<addAttribute tag="$InterstitialActivity" name="android:name" value="com.ironsource.sdk.controller.InterstitialActivity" />
+				<addAttribute tag="$InterstitialActivity" name="android:configChanges" value="orientation|screenSize" />
+				<addAttribute tag="$InterstitialActivity" name="android:hardwareAccelerated" value="true" />
+				<addAttribute tag="$InterstitialActivity" name="android:theme" value="@android:style/Theme.Translucent" />
+				<addElement tag="application" name="InterstitialActivity" />
 
-	<setElement result="OpenUrlActivity" value="activity" />
-	<addAttribute tag="$OpenUrlActivity" name="android:name" value="com.ironsource.sdk.controller.OpenUrlActivity" />
-	<addAttribute tag="$OpenUrlActivity" name="android:configChanges" value="orientation|screenSize" />
-	<addAttribute tag="$OpenUrlActivity" name="android:hardwareAccelerated" value="true" />
-	<addAttribute tag="$OpenUrlActivity" name="android:theme" value="@android:style/Theme.Translucent" />
-	<addElement tag="application" name="OpenUrlActivity" />
+				<setElement result="OpenUrlActivity" value="activity" />
+				<addAttribute tag="$OpenUrlActivity" name="android:name" value="com.ironsource.sdk.controller.OpenUrlActivity" />
+				<addAttribute tag="$OpenUrlActivity" name="android:configChanges" value="orientation|screenSize" />
+				<addAttribute tag="$OpenUrlActivity" name="android:hardwareAccelerated" value="true" />
+				<addAttribute tag="$OpenUrlActivity" name="android:theme" value="@android:style/Theme.Translucent" />
+				<addElement tag="application" name="OpenUrlActivity" />
 
-	<setElement result="AudienceNetworkActivity" value="activity" />
-	<addAttribute tag="$AudienceNetworkActivity" name="android:name" value="com.facebook.ads.AudienceNetworkActivity" />
-	<addAttribute tag="$AudienceNetworkActivity" name="android:configChanges" value="keyboardHidden|orientation|screenSize" />
-	<addAttribute tag="$AudienceNetworkActivity" name="android:hardwareAccelerated" value="true" />
-	<addElement tag="application" name="AudienceNetworkActivity" />
+				<setElement result="AudienceNetworkActivity" value="activity" />
+				<addAttribute tag="$AudienceNetworkActivity" name="android:name" value="com.facebook.ads.AudienceNetworkActivity" />
+				<addAttribute tag="$AudienceNetworkActivity" name="android:configChanges" value="keyboardHidden|orientation|screenSize" />
+				<addAttribute tag="$AudienceNetworkActivity" name="android:hardwareAccelerated" value="true" />
+				<addElement tag="application" name="AudienceNetworkActivity" />
 
-	<setElement result="AdUnitActivity" value="activity" />
-	<addAttribute tag="$AdUnitActivity" name="android:name" value="com.unity3d.services.ads.adunit.AdUnitActivity" />
-	<addAttribute tag="$AdUnitActivity" name="android:configChanges" value="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen" />
-	<addAttribute tag="$AdUnitActivity" name="android:hardwareAccelerated" value="true" />
-	<addAttribute tag="$AdUnitActivity" name="android:theme" value="@android:style/Theme.NoTitleBar.Fullscreen" />
-	<addElement tag="application" name="AdUnitActivity" />
+				<setElement result="AdUnitActivity" value="activity" />
+				<addAttribute tag="$AdUnitActivity" name="android:name" value="com.unity3d.services.ads.adunit.AdUnitActivity" />
+				<addAttribute tag="$AdUnitActivity" name="android:configChanges" value="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen" />
+				<addAttribute tag="$AdUnitActivity" name="android:hardwareAccelerated" value="true" />
+				<addAttribute tag="$AdUnitActivity" name="android:theme" value="@android:style/Theme.NoTitleBar.Fullscreen" />
+				<addElement tag="application" name="AdUnitActivity" />
 
-    <setElement result="AdUnitTransparentActivity" value="activity" />
-	<addAttribute tag="$AdUnitTransparentActivity" name="android:name" value="com.unity3d.services.ads.adunit.AdUnitTransparentActivity" />
-	<addAttribute tag="$AdUnitTransparentActivity" name="android:configChanges" value="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen" />
-	<addAttribute tag="$AdUnitTransparentActivity" name="android:hardwareAccelerated" value="true" />
-	<addAttribute tag="$AdUnitTransparentActivity" name="android:theme" value="@android:style/Theme.NoTitleBar.Fullscreen" />
-	<addElement tag="application" name="AdUnitTransparentActivity" />
+				<setElement result="AdUnitTransparentActivity" value="activity" />
+				<addAttribute tag="$AdUnitTransparentActivity" name="android:name" value="com.unity3d.services.ads.adunit.AdUnitTransparentActivity" />
+				<addAttribute tag="$AdUnitTransparentActivity" name="android:configChanges" value="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen" />
+				<addAttribute tag="$AdUnitTransparentActivity" name="android:hardwareAccelerated" value="true" />
+				<addAttribute tag="$AdUnitTransparentActivity" name="android:theme" value="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+				<addElement tag="application" name="AdUnitTransparentActivity" />
 
-    <setElement result="AdUnitTransparentSoftwareActivity" value="activity" />
-	<addAttribute tag="$AdUnitTransparentSoftwareActivity" name="android:name" value="com.unity3d.services.ads.adunit.AdUnitTransparentSoftwareActivity" />
-	<addAttribute tag="$AdUnitTransparentSoftwareActivity" name="android:configChanges" value="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen" />
-	<addAttribute tag="$AdUnitTransparentSoftwareActivity" name="android:hardwareAccelerated" value="false" />
-	<addAttribute tag="$AdUnitTransparentSoftwareActivity" name="android:theme" value="@android:style/Theme.NoTitleBar.Fullscreen" />
-	<addElement tag="application" name="AdUnitTransparentSoftwareActivity" />
+				<setElement result="AdUnitTransparentSoftwareActivity" value="activity" />
+				<addAttribute tag="$AdUnitTransparentSoftwareActivity" name="android:name" value="com.unity3d.services.ads.adunit.AdUnitTransparentSoftwareActivity" />
+				<addAttribute tag="$AdUnitTransparentSoftwareActivity" name="android:configChanges" value="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen" />
+				<addAttribute tag="$AdUnitTransparentSoftwareActivity" name="android:hardwareAccelerated" value="false" />
+				<addAttribute tag="$AdUnitTransparentSoftwareActivity" name="android:theme" value="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+				<addElement tag="application" name="AdUnitTransparentSoftwareActivity" />
 
-	<setElement result="AdUnitSoftwareActivity" value="activity" />
-	<addAttribute tag="$AdUnitSoftwareActivity" name="android:name" value="com.unity3d.services.ads.adunit.AdUnitSoftwareActivity" />
-	<addAttribute tag="$AdUnitSoftwareActivity" name="android:configChanges" value="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen" />
-	<addAttribute tag="$AdUnitSoftwareActivity" name="android:hardwareAccelerated" value="false" />
-	<addAttribute tag="$AdUnitSoftwareActivity" name="android:theme" value="@android:style/Theme.NoTitleBar.Fullscreen" />
-	<addElement tag="application" name="AdUnitSoftwareActivity" />
+				<setElement result="AdUnitSoftwareActivity" value="activity" />
+				<addAttribute tag="$AdUnitSoftwareActivity" name="android:name" value="com.unity3d.services.ads.adunit.AdUnitSoftwareActivity" />
+				<addAttribute tag="$AdUnitSoftwareActivity" name="android:configChanges" value="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen" />
+				<addAttribute tag="$AdUnitSoftwareActivity" name="android:hardwareAccelerated" value="false" />
+				<addAttribute tag="$AdUnitSoftwareActivity" name="android:theme" value="@android:style/Theme.NoTitleBar.Fullscreen" />
+				<addElement tag="application" name="AdUnitSoftwareActivity" />
 
-    <setElement result="AppLovinInterstitialActivity" value="activity" />
-	<addAttribute tag="$AppLovinInterstitialActivity" name="android:name" value="com.applovin.adview.AppLovinInterstitialActivity" />
-	<addAttribute tag="$AppLovinInterstitialActivity" name="android:configChanges" value="orientation|screenSize" />
-	<addAttribute tag="$AppLovinInterstitialActivity" name="android:hardwareAccelerated" value="true" />
-	<addAttribute tag="$AppLovinInterstitialActivity" name="android:screenOrientation" value="behind" />
-	<addElement tag="application" name="AppLovinInterstitialActivity" />
+				<setElement result="AppLovinInterstitialActivity" value="activity" />
+				<addAttribute tag="$AppLovinInterstitialActivity" name="android:name" value="com.applovin.adview.AppLovinInterstitialActivity" />
+				<addAttribute tag="$AppLovinInterstitialActivity" name="android:configChanges" value="orientation|screenSize|smallestScreenSize|screenLayout|uiMode" />
+				<addAttribute tag="$AppLovinInterstitialActivity" name="android:hardwareAccelerated" value="true" />
+				<addAttribute tag="$AppLovinInterstitialActivity" name="android:screenOrientation" value="behind" />
+				<addElement tag="application" name="AppLovinInterstitialActivity" />
 
-    <setElement result="AppLovinWebViewActivity" value="activity" />
-	<addAttribute tag="$AppLovinWebViewActivity" name="android:name" value="com.applovin.sdk.AppLovinWebViewActivity" />
-	<addAttribute tag="$AppLovinWebViewActivity" name="android:configChanges" value="keyboardHidden|orientation|screenSize" />
-	<addElement tag="application" name="AppLovinWebViewActivity" />
+				<setElement result="AppLovinFullscreenActivity" value="activity" />
+				<addAttribute tag="$AppLovinFullscreenActivity" name="android:name" value="com.applovin.adview.AppLovinFullscreenActivity" />
+				<addAttribute tag="$AppLovinFullscreenActivity" name="android:configChanges" value="keyboard|keyboardHidden|locale|orientation|screenLayout|screenSize|smallestScreenSize|uiMode" />
+				<addAttribute tag="$AppLovinFullscreenActivity" name="android:hardwareAccelerated" value="true" />
+				<addAttribute tag="$AppLovinFullscreenActivity" name="android:screenOrientation" value="behind" />
+				<addAttribute tag="$AppLovinFullscreenActivity" name="android:launchMode" value="singleTop" />
+				<addElement tag="application" name="AppLovinFullscreenActivity" />
 
-	<setElement result="GmsAdActivity" value="activity" />
-	<addAttribute tag="$GmsAdActivity" name="android:name" value="com.google.android.gms.ads.AdActivity" />
-	<addAttribute tag="$GmsAdActivity" name="android:configChanges" value="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />
-	<addAttribute tag="$GmsAdActivity" name="android:theme" value="@android:style/Theme.Translucent" />
-	<addElement tag="application" name="GmsAdActivity" />
+				<setElement result="AppLovinWebViewActivity" value="activity" />
+				<addAttribute tag="$AppLovinWebViewActivity" name="android:name" value="com.applovin.sdk.AppLovinWebViewActivity" />
+				<addAttribute tag="$AppLovinWebViewActivity" name="android:configChanges" value="keyboardHidden|orientation|screenSize|uiMode" />
+				<addElement tag="application" name="AppLovinWebViewActivity" />
 
-	<meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="$S(GADAppId)"/>
+				<setElement result="GmsAdActivity" value="activity" />
+				<addAttribute tag="$GmsAdActivity" name="android:name" value="com.google.android.gms.ads.AdActivity" />
+				<addAttribute tag="$GmsAdActivity" name="android:configChanges" value="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />
+				<addAttribute tag="$GmsAdActivity" name="android:theme" value="@android:style/Theme.Translucent" />
+				<addElement tag="application" name="GmsAdActivity" />
 
-	<addAttribute tag="application" name="android:usesCleartextTraffic" value="true"/>
+				<setElement result="AdMobAppId" value="meta-data" />
+				<addAttribute tag="$AdMobAppId" name="android:name" value="com.google.android.gms.ads.APPLICATION_ID" />
+				<addAttribute tag="$AdMobAppId" name="android:value" value="$S(GADAppId)" />
+				<addElement tag="application" name="AdMobAppId" />
 
-    <setElement result="AdColonyInterstitialActivity" value="activity" />
-	<addAttribute tag="$AdColonyInterstitialActivity" name="android:name" value="com.adcolony.sdk.AdColonyInterstitialActivity" />
-	<addAttribute tag="$AdColonyInterstitialActivity" name="android:configChanges" value="keyboardHidden|orientation|screenSize" />
-	<addAttribute tag="$AdColonyInterstitialActivity" name="android:hardwareAccelerated" value="true" />
-	<addElement tag="application" name="AdColonyInterstitialActivity" />
+				<addAttribute tag="application" name="android:usesCleartextTraffic" value="true"/>
 
-	<setElement result="AdColonyAdViewActivity" value="activity" />
-	<addAttribute tag="$AdColonyAdViewActivity" name="android:name" value="com.adcolony.sdk.AdColonyAdViewActivity" />
-	<addAttribute tag="$AdColonyAdViewActivity" name="android:configChanges" value="keyboardHidden|orientation|screenSize" />
-	<addAttribute tag="$AdColonyAdViewActivity" name="android:hardwareAccelerated" value="true" />
-	<addElement tag="application" name="AdColonyAdViewActivity" />
+				<setElement result="AdColonyInterstitialActivity" value="activity" />
+				<addAttribute tag="$AdColonyInterstitialActivity" name="android:name" value="com.adcolony.sdk.AdColonyInterstitialActivity" />
+				<addAttribute tag="$AdColonyInterstitialActivity" name="android:configChanges" value="keyboardHidden|orientation|screenSize" />
+				<addAttribute tag="$AdColonyInterstitialActivity" name="android:hardwareAccelerated" value="true" />
+				<addElement tag="application" name="AdColonyInterstitialActivity" />
 
-	<setElement result="TJAdUnitActivity" value="activity" />
-	<addAttribute tag="$TJAdUnitActivity" name="android:name" value="com.tapjoy.TJAdUnitActivity" />
-	<addAttribute tag="$TJAdUnitActivity" name="android:configChanges" value="orientation|keyboardHidden|screenSize" />
-	<addAttribute tag="$TJAdUnitActivity" name="android:hardwareAccelerated" value="true" />
-	<addAttribute tag="$TJAdUnitActivity" name="android:theme" value="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
-	<addElement tag="application" name="TJAdUnitActivity" />
+				<setElement result="AdColonyAdViewActivity" value="activity" />
+				<addAttribute tag="$AdColonyAdViewActivity" name="android:name" value="com.adcolony.sdk.AdColonyAdViewActivity" />
+				<addAttribute tag="$AdColonyAdViewActivity" name="android:configChanges" value="keyboardHidden|orientation|screenSize" />
+				<addAttribute tag="$AdColonyAdViewActivity" name="android:hardwareAccelerated" value="true" />
+				<addElement tag="application" name="AdColonyAdViewActivity" />
 
-	<setElement result="TJContentActivity" value="activity" />
-	<addAttribute tag="$TJContentActivity" name="android:name" value="com.tapjoy.TJContentActivity" />
-	<addAttribute tag="$TJContentActivity" name="android:configChanges" value="orientation|keyboardHidden|screenSize" />
-	<addAttribute tag="$TJContentActivity" name="android:hardwareAccelerated" value="true" />
-	<addAttribute tag="$TJContentActivity" name="android:theme" value="@android:style/Theme.Translucent.NoTitleBar" />
-	<addElement tag="application" name="TJContentActivity" />
+				<setElement result="TJAdUnitActivity" value="activity" />
+				<addAttribute tag="$TJAdUnitActivity" name="android:name" value="com.tapjoy.TJAdUnitActivity" />
+				<addAttribute tag="$TJAdUnitActivity" name="android:configChanges" value="orientation|keyboardHidden|screenSize" />
+				<addAttribute tag="$TJAdUnitActivity" name="android:hardwareAccelerated" value="true" />
+				<addAttribute tag="$TJAdUnitActivity" name="android:theme" value="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+				<addElement tag="application" name="TJAdUnitActivity" />
 
-    <setElement result="InMobiAdActivity" value="activity" />
-	<addAttribute tag="$InMobiAdActivity" name="android:name" value="com.inmobi.ads.rendering.InMobiAdActivity" />
-	<addAttribute tag="$InMobiAdActivity" name="android:configChanges" value="keyboardHidden|orientation|keyboard|smallestScreenSize|screenSize|screenLayout|locale|fontScale|uiMode" />
-	<addAttribute tag="$InMobiAdActivity" name="android:hardwareAccelerated" value="true" />
-	<addAttribute tag="$InMobiAdActivity" name="android:theme" value="@android:style/Theme.NoTitleBar" />
-	<addElement tag="application" name="InMobiAdActivity" />
+				<setElement result="TJContentActivity" value="activity" />
+				<addAttribute tag="$TJContentActivity" name="android:name" value="com.tapjoy.TJContentActivity" />
+				<addAttribute tag="$TJContentActivity" name="android:configChanges" value="orientation|keyboardHidden|screenSize" />
+				<addAttribute tag="$TJContentActivity" name="android:hardwareAccelerated" value="true" />
+				<addAttribute tag="$TJContentActivity" name="android:theme" value="@android:style/Theme.Translucent.NoTitleBar" />
+				<addElement tag="application" name="TJContentActivity" />
 
-	<setElement result="CBImpressionActivity" value="activity" />
-	<addAttribute tag="$CBImpressionActivity" name="android:name" value="com.chartboost.sdk.CBImpressionActivity" />
-	<addAttribute tag="$CBImpressionActivity" name="android:configChanges" value="keyboardHidden|orientation|screenSize" />
-	<addAttribute tag="$CBImpressionActivity" name="android:hardwareAccelerated" value="true" />
-	<addAttribute tag="$CBImpressionActivity" name="android:excludeFromRecents" value="true" />
-	<addAttribute tag="$CBImpressionActivity" name="android:theme" value="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
-	<addElement tag="application" name="CBImpressionActivity" />
+				<setElement result="InMobiAdActivity" value="activity" />
+				<addAttribute tag="$InMobiAdActivity" name="android:name" value="com.inmobi.ads.rendering.InMobiAdActivity" />
+				<addAttribute tag="$InMobiAdActivity" name="android:configChanges" value="keyboardHidden|orientation|keyboard|smallestScreenSize|screenSize|screenLayout|locale|fontScale|uiMode" />
+				<addAttribute tag="$InMobiAdActivity" name="android:hardwareAccelerated" value="true" />
+				<addAttribute tag="$InMobiAdActivity" name="android:theme" value="@android:style/Theme.NoTitleBar" />
+				<addElement tag="application" name="InMobiAdActivity" />
 
-	<addLibrary android:name="org.apache.http.legacy" android:required="false"/>
+				<setElement result="CBImpressionActivity" value="activity" />
+				<addAttribute tag="$CBImpressionActivity" name="android:name" value="com.chartboost.sdk.CBImpressionActivity" />
+				<addAttribute tag="$CBImpressionActivity" name="android:configChanges" value="keyboardHidden|orientation|screenSize" />
+				<addAttribute tag="$CBImpressionActivity" name="android:hardwareAccelerated" value="true" />
+				<addAttribute tag="$CBImpressionActivity" name="android:excludeFromRecents" value="true" />
+				<addAttribute tag="$CBImpressionActivity" name="android:theme" value="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+				<addElement tag="application" name="CBImpressionActivity" />
 
-    <setElement result="MTGCommonActivity" value="activity" />
-	<addAttribute tag="$MTGCommonActivity" name="android:name" value="com.mintegral.msdk.activity.MTGCommonActivity" />
-	<addAttribute tag="$MTGCommonActivity" name="android:configChanges" value="keyboard|orientation" />
-	<addAttribute tag="$MTGCommonActivity" name="android:screenOrientation" value="portrait" />
-	<addAttribute tag="$MTGCommonActivity" name="android:exported" value="true" />
-	<addAttribute tag="$MTGCommonActivity" name="android:theme" value="@android:style/Theme.Translucent.NoTitleBar" />
-	<addElement tag="application" name="MTGCommonActivity" />
+				<addLibrary android:name="org.apache.http.legacy" android:required="false"/>
 
-    <setElement result="MTGRewardVideoActivity" value="activity" />
-	<addAttribute tag="$MTGRewardVideoActivity" name="android:name" value="com.mintegral.msdk.reward.player.MTGRewardVideoActivity" />
-	<addAttribute tag="$MTGRewardVideoActivity" name="android:configChanges" value="orientation|keyboardHidden|screenSize" />
-	<addAttribute tag="$MTGRewardVideoActivity" name="android:theme" value="@android:style/Theme.NoTitleBar.Fullscreen" />
-	<addElement tag="application" name="MTGRewardVideoActivity" />
+				<setElement result="MyTargetActivity" value="activity" />
+				<addAttribute tag="$MyTargetActivity" name="android:name" value="com.my.target.common.MyTargetActivity" />
+				<addAttribute tag="$MyTargetActivity" name="android:configChanges" value="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />
+				<addElement tag="application" name="MyTargetActivity" />
+			</true>
+		</if>
+	</androidManifestUpdates>
 
-    <setElement result="MyTargetActivity" value="activity" />
-	<addAttribute tag="$MyTargetActivity" name="android:name" value="com.my.target.common.MyTargetActivity" />
-	<addAttribute tag="$MyTargetActivity" name="android:configChanges" value="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />
-	<addElement tag="application" name="MyTargetActivity" />
-  </androidManifestUpdates>
-
-  <proguardAdditions>
-		<insert>
-
-		-keepclassmembers class com.ironsource.sdk.controller.IronSourceWebView$JSInterface {
-		    public *;
-		}
-		-keepclassmembers class * implements android.os.Parcelable {
-		    public static final android.os.Parcelable$Creator *;
-		}
-		-keep public class com.google.android.gms.ads.** {
-		   public *;
-		}
-		-keep class com.ironsource.adapters.** { *;
-		}
-		-dontwarn com.ironsource.mediationsdk.**
-		-dontwarn com.ironsource.adapters.**
-		-dontwarn com.moat.**
-		-keep class com.moat.** { public protected private *; }
-
-		# Custom
-		-dontwarn com.applovin.impl.**
-		-dontwarn com.chartboost.sdk.**
-		-dontwarn com.adcolony.sdk.**
-		-dontwarn com.google.android.exoplayer2.**
-		-dontwarn com.my.target.**
-		-dontwarn okhttp3.internal.platform.*
-
-		# AppLovin
-		-keepattributes Signature,InnerClasses,Exceptions,Annotation
-		-keep public class com.applovin.sdk.AppLovinSdk { *; }
-		-keep public class com.applovin.sdk.AppLovin* { public protected *; }
-		-keep public class com.applovin.nativeAds.AppLovin* { public protected *; }
-		-keep public class com.applovin.adview.* { public protected *; }
-		-keep public class com.applovin.mediation.* { public protected *; }
-		-keep public class com.applovin.mediation.ads.* { public protected *; }
-		-keep public class com.applovin.impl.*.AppLovin { public protected *; }
-		-keep public class com.applovin.impl.**.*Impl { public protected *; }
-		-keepclassmembers class com.applovin.sdk.AppLovinSdkSettings { private java.util.Map localSettings; }
-		-keep class com.applovin.mediation.adapters.** { *; }
-		-keep class com.applovin.mediation.adapter.** { *; }
-
-		# Vungle
-		-keep class com.vungle.warren.** { *; }
-		-dontwarn com.vungle.warren.error.VungleError$ErrorCode
-		# Moat SDK
-		-keep class com.moat.** { *; }
-		-dontwarn com.moat.**
-		# Okio
-		-dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
-		# Retrofit
-		-dontwarn okio.**
-		-dontwarn retrofit2.Platform$Java8
-		# Gson
-		-keepattributes Signature
-		-keepattributes *Annotation*
-		-dontwarn sun.misc.**
-		-keep class com.google.gson.examples.android.model.** { *; }
-		-keep class * implements com.google.gson.TypeAdapterFactory
-		-keep class * implements com.google.gson.JsonSerializer
-		-keep class * implements com.google.gson.JsonDeserializer
-		# Google Android Advertising ID
-		-keep class com.google.android.gms.internal.** { *; }
-		-dontwarn com.google.android.gms.ads.identifier.**
-
-		# Facebook
-		-dontwarn com.facebook.ads.internal.**
-		-keeppackagenames com.facebook.*
-		-keep public class com.facebook.ads.**
-		{ public protected *; }
-
-		# Unity
-		-keepattributes SourceFile,LineNumberTable
-		# Keep JavascriptInterface for WebView bridge
-		-keepattributes JavascriptInterface
-		# Sometimes keepattributes is not enough to keep annotations
-		-keep class android.webkit.JavascriptInterface {
-		   *;
-		}
-		# Keep all classes in Unity Ads package
-		-keep class com.unity3d.ads.** {
-		   *;
-		}
-		# Keep all classes in Unity Services package
-		-keep class com.unity3d.services.** {
-		   *;
-		}
-		-dontwarn com.google.ar.core.**
-		-dontwarn com.unity3d.services.**
-		-dontwarn com.ironsource.adapters.unityads.**
+	<proguardAdditions>
+		<if condition="bIronSourceEnable">
+			<true>
+				<insert>
+					<![CDATA[
+					# IronSource
+					-keepclassmembers class com.ironsource.sdk.controller.IronSourceWebView$JSInterface {
+					public *;
+					}
+					-keepclassmembers class * implements android.os.Parcelable {
+					public static final android.os.Parcelable$Creator *;
+					}
+					-keep public class com.google.android.gms.ads.** {
+					public *;
+					}
+					-keep class com.ironsource.adapters.** { *;
+					}
+					-dontwarn com.ironsource.mediationsdk.**
+					-dontwarn com.ironsource.adapters.**
+					-keepattributes JavascriptInterface
+					-keepclassmembers class * {
+					@android.webkit.JavascriptInterface <methods>;
+					}
 
 
-		# AdColony
-		# Keep ADCNative class members unobfuscated
-		-keepclassmembers class com.adcolony.sdk.ADCNative** {
-		    *;
-		 }
+					# Custom
+					-dontwarn com.applovin.impl.**
+					-dontwarn com.chartboost.sdk.**
+					-dontwarn com.adcolony.sdk.**
+					-dontwarn com.google.android.exoplayer2.**
+					-dontwarn com.my.target.**
+					-dontwarn okhttp3.internal.platform.*
 
 
-		#TapJoy
-		-keep class com.tapjoy.** { *; }
-		-keep class com.moat.** { *; }
-		-keepattributes JavascriptInterface
-		-keepattributes *Annotation*
-		-keep class * extends java.util.ListResourceBundle {
-			protected Object[][] getContents();
-		}
-		-keep public class com.google.android.gms.common.internal.safeparcel.SafeParcelable {
-			public static final *** NULL;
-		}
-		-keepnames @com.google.android.gms.common.annotation.KeepName class *
-		-keepclassmembernames class * {
-			@com.google.android.gms.common.annotation.KeepName *;
-		}
-		-keepnames class * implements android.os.Parcelable {
-			public static final ** CREATOR;
-		}
-		-keep class com.google.android.gms.ads.identifier.** { *; }
-		-dontwarn com.tapjoy.**
+					# AppLovin
+					-keepattributes Signature,InnerClasses,Exceptions,Annotation
+					-keep public class com.applovin.sdk.AppLovinSdk{ *; }
+					-keep public class com.applovin.sdk.AppLovin* { public protected *; }
+					-keep public class com.applovin.nativeAds.AppLovin* { public protected *; }
+					-keep public class com.applovin.adview.* { public protected *; }
+					-keep public class com.applovin.mediation.* { public protected *; }
+					-keep public class com.applovin.mediation.ads.* { public protected *; }
+					-keep public class com.applovin.impl.*.AppLovin { public protected *; }
+					-keep public class com.applovin.impl.**.*Impl { public protected *; }
+					-keepclassmembers class com.applovin.sdk.AppLovinSdkSettings { private java.util.Map localSettings; }
+					-keep class com.applovin.mediation.adapters.** { *; }
+					-keep class com.applovin.mediation.adapter.**{ *; }
 
 
-		# InMobi
-		-keepattributes SourceFile,LineNumberTable
-		-keep class com.inmobi.** { *; }
-		-dontwarn com.inmobi.**
-		-keep public class com.google.android.gms.**
-		-dontwarn com.google.android.gms.**
-		-dontwarn com.squareup.picasso.**
-		-keep class com.google.android.gms.ads.identifier.AdvertisingIdClient{
-		     public *;
-		}
-		-keep class com.google.android.gms.ads.identifier.AdvertisingIdClient$Info{
-		     public *;
-		}
-		# skip the Picasso library classes
-		-keep class com.squareup.picasso.** {*;}
-		-dontwarn com.squareup.picasso.**
-		-dontwarn com.squareup.okhttp.**
-		# skip Moat classes
-		-keep class com.moat.** {*;}
-		-dontwarn com.moat.**
-		# skip AVID classes
-		-keep class com.integralads.avid.library.* {*;}
+					# Facebook
+					-dontwarn com.facebook.ads.internal.**
+					-keeppackagenames com.facebook.*
+					-keep public class com.facebook.ads.** {*;}
+					-keep public class com.facebook.ads.**
+					{ public protected *; }
 
 
-		# MIntegral
-		-keepattributes Signature   
-		-keepattributes *Annotation*   
-		-keep class com.mintegral.** {*; }  
-		-keep interface com.mintegral.** {*; }  
-		-keep class android.support.v4.** { *; }  
-		-dontwarn com.mintegral.**   
-		-keep class **.R$* { public static final int mintegral*; }
-		-keep class com.alphab.** {*; }
-		-keep interface com.alphab.** {*; }
-	
-		</insert>
+					# Unity
+					# Keep filenames and line numbers for stack traces
+					-keepattributes SourceFile,LineNumberTable
+					# Keep JavascriptInterface for WebView bridge
+					-keepattributes JavascriptInterface
+					# Sometimes keepattributes is not enough to keep annotations
+					-keep class android.webkit.JavascriptInterface {
+					*;
+					}
+					# Keep all classes in Unity Ads package
+					-keep class com.unity3d.ads.** {
+					*;
+					}
+					# Keep all classes in Unity Services package
+					-keep class com.unity3d.services.** {
+					*;
+					}
+					-dontwarn com.google.ar.core.**
+					-dontwarn com.unity3d.services.**
+					-dontwarn com.ironsource.adapters.unityads.**
+
+
+					# AdColony
+					# Keep ADCNative class members unobfuscated
+					-keepclassmembers class com.adcolony.sdk.ADCNative** {
+					*;
+					}
+
+
+					#TapJoy
+					-keep class com.tapjoy.** { *; }
+					-keep class com.moat.** { *; }
+					-keepattributes JavascriptInterface
+					-keepattributes *Annotation*
+					-keep class * extends java.util.ListResourceBundle {
+					protected Object[][] getContents();
+					}
+					-keep public class com.google.android.gms.common.internal.safeparcel.SafeParcelable {
+					public static final *** NULL;
+					}
+					-keepnames @com.google.android.gms.common.annotation.KeepName class *
+					-keepclassmembernames class * {
+					@com.google.android.gms.common.annotation.KeepName *;
+					}
+					-keepnames class * implements android.os.Parcelable {
+					public static final ** CREATOR;
+					}
+					-keep class com.google.android.gms.ads.identifier.** { *; }
+					-dontwarn com.tapjoy.**
+
+
+					# InMobi
+					-keepattributes SourceFile,LineNumberTable
+					-keep class com.inmobi.** { *; }
+					-dontwarn com.inmobi.**
+					-keep public class com.google.android.gms.**
+					-dontwarn com.google.android.gms.**
+					-dontwarn com.squareup.picasso.**
+					-keep class com.google.android.gms.ads.identifier.AdvertisingIdClient{
+					public *;
+					}
+					-keep class com.google.android.gms.ads.identifier.AdvertisingIdClient$Info{
+					public *;
+					}
+					# skip the Picasso library classes
+					-keep class com.squareup.picasso.** {*;}
+					-dontwarn com.squareup.picasso.**
+					-dontwarn com.squareup.okhttp.**
+					# skip Moat classes
+					-keep class com.moat.** {*;}
+					-dontwarn com.moat.**
+					# skip AVID classes
+					-keep class com.integralads.avid.library.* {*;}
+
+
+					# Chartboost
+					-keep class com.chartboost.** { *; }
+
+
+					# MyTarget
+					-keep class com.my.target.** { *; }
+
+					# Pangle
+					-keep class com.bytedance.sdk.openadsdk.*{ public *; }
+					]]>
+				</insert>
+			</true>
+		</if>
 	</proguardAdditions>
 
 	<buildGradleAdditions>
-    <insert>
-		repositories {
-			maven {
-				url 'https://dl.bintray.com/ironsource-mobile/android-sdk'
-			}
-			maven {
-				url "https://dl.bintray.com/ironsource-mobile/android-adapters"
-			}
-			maven {
-				url "https://jitpack.io"
-			}
-			maven {
-				url  "https://adcolony.bintray.com/AdColony"
-			}
-		}
+		<if condition="bIronSourceEnable">
+			<true>
+				<insert>
+					repositories {
+					jcenter()
 
-		dependencies {
-			implementation 'com.ironsource.sdk:mediationsdk:6.16.0'
-			implementation 'com.ironsource.adapters:applovinadapter:4.3.9@jar'
-			implementation 'com.ironsource.adapters:vungleadapter:4.1.6@jar'
-			implementation 'com.vungle:publisher-sdk-android:6.4.11'
-			implementation 'com.ironsource.adapters:admobadapter:4.3.8@jar'
-			implementation 'com.ironsource.adapters:facebookadapter:4.3.11@jar'
-			implementation 'com.facebook.android:audience-network-sdk:5.7.1'
-			implementation 'com.ironsource.adapters:unityadsadapter:4.3.0@jar'
-			implementation 'com.ironsource.adapters:adcolonyadapter:4.3.0@jar'
-			implementation 'com.adcolony:sdk:4.1.4'
-			implementation 'com.ironsource.adapters:tapjoyadapter:4.1.9@jar'
-			implementation 'com.ironsource.adapters:inmobiadapter:4.3.2@jar'
-			implementation 'com.squareup.picasso:picasso:2.71828'
-			implementation 'com.ironsource.adapters:chartboostadapter:4.3.0@jar'
-			implementation 'com.ironsource.adapters:mintegraladapter:4.3.0@jar'
-			implementation 'com.mintegral.msdk:common:12.1.51'
-			implementation 'com.mintegral.msdk:interstitialvideo:12.1.51'
-			implementation 'com.mintegral.msdk:mtgbid:12.1.51'
-			implementation 'com.mintegral.msdk:mtgjscommon:12.1.51'
-			implementation 'com.mintegral.msdk:playercommon:12.1.51'
-			implementation 'com.mintegral.msdk:reward:12.1.51'
-			implementation 'com.mintegral.msdk:videocommon:12.1.51'
-			implementation 'com.mintegral.msdk:videojs:12.1.51'
-			implementation 'com.ironsource.adapters:mytargetadapter:4.1.0@jar'
-			implementation 'com.google.android.exoplayer:exoplayer-core:2.11.1'
-			implementation 'com.google.android.exoplayer:exoplayer-hls:2.11.1'
-		}
+					maven {
+					url 'https://dl.bintray.com/ironsource-mobile/android-sdk'
+					}
+					maven {
+					url "https://dl.bintray.com/ironsource-mobile/android-adapters"
+					}
+					maven {
+					url "https://jitpack.io"
+					}
+					maven {
+					url  "https://adcolony.bintray.com/AdColony"
+					}
+					maven {
+					url  "https://chartboostmobile.bintray.com/Chartboost"
+					}
+					}
 
-		android {
-			compileOptions {
-				sourceCompatibility 1.8
-				targetCompatibility 1.8
-			}
-		}
-    </insert>
-  </buildGradleAdditions>
+					dependencies {
+					implementation 'com.ironsource.sdk:mediationsdk:7.1.0.1'
+					implementation fileTree(dir: 'libs', include: ['*.jar'])
+					implementation 'com.google.android.gms:play-services-ads-identifier:17.0.0'
+					implementation 'com.google.android.gms:play-services-basement:17.1.1'
+
+					implementation 'com.ironsource.adapters:applovinadapter:4.3.21'
+					implementation 'com.applovin:applovin-sdk:9.14.12'
+
+					implementation 'com.ironsource.adapters:admobadapter:4.3.15'
+					implementation 'com.google.android.gms:play-services-ads:19.6.0'
+
+					implementation 'com.ironsource.adapters:facebookadapter:4.3.23'
+					implementation 'com.facebook.android:audience-network-sdk:6.2.0'
+					
+					implementation 'com.ironsource.adapters:unityadsadapter:4.3.9'
+					implementation 'com.unity3d.ads:unity-ads:3.6.0'
+
+					implementation 'com.ironsource.adapters:adcolonyadapter:4.3.4'
+					implementation 'com.adcolony:sdk:4.2.4'
+
+					implementation 'com.ironsource.adapters:tapjoyadapter:4.1.15'
+					implementation 'com.tapjoy:tapjoy-android-sdk:12.7.1'
+
+					implementation 'com.ironsource.adapters:inmobiadapter:4.3.8'
+					implementation 'com.inmobi.monetization:inmobi-ads:9.1.0'
+					implementation 'com.android.support:customtabs:28.0.0'
+					implementation 'com.squareup.picasso:picasso:2.71828'
+					implementation 'com.android.support:support-v4:28.0.0'
+					implementation 'com.android.support:recyclerview-v7:28.0.0'
+
+					implementation 'com.ironsource.adapters:chartboostadapter:4.3.5'
+					implementation 'com.chartboost:chartboost-sdk:8.2.0'
+					implementation 'com.google.android.gms:play-services-base:17.2.1'
+
+					implementation 'com.ironsource.adapters:mytargetadapter:4.1.5'
+					implementation 'com.google.android.exoplayer:exoplayer-core:2.11.1'
+					implementation 'com.google.android.exoplayer:exoplayer-hls:2.11.1'
+					implementation 'com.my.target:mytarget-sdk:5.11.9'
+
+					implementation 'com.ironsource.adapters:pangleadapter:4.3.0'
+					implementation 'com.bytedance.sdk:pangle-sdk:3.4.1.1'
+					}
+
+					android {
+					compileOptions {
+					sourceCompatibility 1.8
+					targetCompatibility 1.8
+					}
+					}
+				</insert>
+			</true>
+		</if>
+	</buildGradleAdditions>
 
 	<gameActivityImportAdditions>
-		<insert>
-			import android.util.Log;
-			import com.ironsource.adapters.supersonicads.SupersonicConfig;
-			import com.ironsource.mediationsdk.IronSource;
-			import com.ironsource.mediationsdk.IronSourceBannerLayout;
-			import com.ironsource.mediationsdk.integration.IntegrationHelper;
-			import com.ironsource.mediationsdk.logger.IronSourceError;
-			import com.ironsource.mediationsdk.model.Placement;
-			import com.ironsource.mediationsdk.sdk.BannerListener;
-			import com.ironsource.mediationsdk.sdk.InterstitialListener;
-			import com.ironsource.mediationsdk.sdk.OfferwallListener;
-			import com.ironsource.mediationsdk.sdk.RewardedVideoListener;
-			import com.ironsource.mediationsdk.utils.IronSourceUtils;
-		</insert>
+		<if condition="bIronSourceEnable">
+			<true>
+				<insert>
+					import android.util.Log;
+					import com.ironsource.adapters.supersonicads.SupersonicConfig;
+					import com.ironsource.mediationsdk.IronSource;
+					import com.ironsource.mediationsdk.IronSourceBannerLayout;
+					import com.ironsource.mediationsdk.integration.IntegrationHelper;
+					import com.ironsource.mediationsdk.logger.IronSourceError;
+					import com.ironsource.mediationsdk.model.Placement;
+					import com.ironsource.mediationsdk.sdk.BannerListener;
+					import com.ironsource.mediationsdk.sdk.InterstitialListener;
+					import com.ironsource.mediationsdk.sdk.OfferwallListener;
+					import com.ironsource.mediationsdk.sdk.RewardedVideoListener;
+					import com.ironsource.mediationsdk.utils.IronSourceUtils;
+				</insert>
+			</true>
+		</if>
 	</gameActivityImportAdditions>
 
 	<gameActivityClassAdditions>
-		<insert>
-			private native void onRewardedVideoAdOpenedThunkCpp();
-			private native void onRewardedVideoAdClosedThunkCpp();
-			private native void onRewardedVideoAvailabilityChangedThunkCpp(boolean available);
-			private native void onRewardedVideoAdStartedThunkCpp();
-			private native void onRewardedVideoAdEndedThunkCpp();
-			private native void onRewardedVideoAdRewardedThunkCpp();
-			private native void onRewardedVideoAdShowFailedThunkCpp(int errorCode, String errorMessage);
-			private native void onRewardedVideoAdClickedThunkCpp();
+		<if condition="bIronSourceEnable">
+			<true>
+				<insert>
+					private native void onRewardedVideoAdOpenedThunkCpp();
+					private native void onRewardedVideoAdClosedThunkCpp();
+					private native void onRewardedVideoAvailabilityChangedThunkCpp(boolean available);
+					private native void onRewardedVideoAdStartedThunkCpp();
+					private native void onRewardedVideoAdEndedThunkCpp();
+					private native void onRewardedVideoAdRewardedThunkCpp();
+					private native void onRewardedVideoAdShowFailedThunkCpp(int errorCode, String errorMessage);
+					private native void onRewardedVideoAdClickedThunkCpp();
 
-			RewardedVideoListener mRewardedVideoListener = new RewardedVideoListener()
-			{
-				// Invoked when the RewardedVideo ad view has opened.
-				// Your Activity will lose focus. Please avoid performing heavy 
-				// tasks till the video ad will be closed.
-				@Override
-				public void onRewardedVideoAdOpened()
-				{
+					RewardedVideoListener mRewardedVideoListener = new RewardedVideoListener()
+					{
+					// Invoked when the RewardedVideo ad view has opened.
+					// Your Activity will lose focus. Please avoid performing heavy 
+					// tasks till the video ad will be closed.
+					@Override
+					public void onRewardedVideoAdOpened()
+					{
 					onRewardedVideoAdOpenedThunkCpp();
-				}
+					}
 
-				// Invoked when the RewardedVideo ad view is about to be closed.
-				// Your activity will now regain its focus.
-				@Override
-				public void onRewardedVideoAdClosed()
-				{
+					// Invoked when the RewardedVideo ad view is about to be closed.
+					// Your activity will now regain its focus.
+					@Override
+					public void onRewardedVideoAdClosed()
+					{
 					onRewardedVideoAdClosedThunkCpp();
-				}
+					}
 
-				// Invoked when there is a change in the ad availability status.
-				// @param - available - value will change to true when rewarded videos are available. 
-				// You can then show the video by calling showRewardedVideo().
-				// Value will change to false when no videos are available.
-				@Override
-				public void onRewardedVideoAvailabilityChanged(boolean available)
-				{
+					// Invoked when there is a change in the ad availability status.
+					// @param - available - value will change to true when rewarded videos are available. 
+					// You can then show the video by calling showRewardedVideo().
+					// Value will change to false when no videos are available.
+					@Override
+					public void onRewardedVideoAvailabilityChanged(boolean available)
+					{
 					onRewardedVideoAvailabilityChangedThunkCpp(available);
-				}
+					}
 
-				// Invoked when the video ad starts playing.
-				@Override
-				public void onRewardedVideoAdStarted()
-				{
+					// Invoked when the video ad starts playing.
+					@Override
+					public void onRewardedVideoAdStarted()
+					{
 					onRewardedVideoAdStartedThunkCpp();
-				}
+					}
 
-				// Invoked when the video ad finishes playing.
-				@Override
-				public void onRewardedVideoAdEnded()
-				{
+					// Invoked when the video ad finishes playing.
+					@Override
+					public void onRewardedVideoAdEnded()
+					{
 					onRewardedVideoAdEndedThunkCpp();
-				}
+					}
 
-				// Invoked when the user completed the video and should be rewarded. 
-				// If using server-to-server callbacks you may ignore this events and wait for 
-				// the callback from the Supersonic server.
-				// @param - placement - the Placement the user completed a video from.
-				@Override
-				public void onRewardedVideoAdRewarded(Placement placement)
-				{
+					// Invoked when the user completed the video and should be rewarded. 
+					// If using server-to-server callbacks you may ignore this events and wait for 
+					// the callback from the Supersonic server.
+					// @param - placement - the Placement the user completed a video from.
+					@Override
+					public void onRewardedVideoAdRewarded(Placement placement)
+					{
 					onRewardedVideoAdRewardedThunkCpp();
-				}
+					}
 
-				// Invoked when RewardedVideo call to show a rewarded video has failed
-				@Override
-			    public void onRewardedVideoAdShowFailed(IronSourceError ironSourceError)
-			    {
+					// Invoked when RewardedVideo call to show a rewarded video has failed
+					@Override
+					public void onRewardedVideoAdShowFailed(IronSourceError ironSourceError)
+					{
 					onRewardedVideoAdShowFailedThunkCpp(ironSourceError.getErrorCode(), ironSourceError.getErrorMessage());
-				}
+					}
 
-				@Override
-				public void onRewardedVideoAdClicked(Placement placement)
-				{
+					@Override
+					public void onRewardedVideoAdClicked(Placement placement)
+					{
 					onRewardedVideoAdClickedThunkCpp();
-			    }
-			};
+					}
+					};
 
-			public void AndroidThunkJava_IronSource_init(String APIKey, String UserId)
-			{
-				Log.debug("AndroidThunkJava_IronSource_init");
-				IronSource.setUserId(UserId);
-				IronSource.setRewardedVideoListener(mRewardedVideoListener);
-				IronSource.init(this, APIKey);
-				IntegrationHelper.validateIntegration(this);
-			}
-			
-			public void AndroidThunkJava_IronSource_ForceUpdateUser(String UserId)
-			{
-				Log.debug("AndroidThunkJava_IronSource_ForceUpdateUser");
-				IronSource.setDynamicUserId(UserId);
-				IntegrationHelper.validateIntegration(this);
-			}
+					public void AndroidThunkJava_IronSource_init(String APIKey, String UserId)
+					{
+					Log.debug("AndroidThunkJava_IronSource_init");
+					IronSource.setUserId(UserId);
+					IronSource.setRewardedVideoListener(mRewardedVideoListener);
+					IronSource.init(this, APIKey);
+					IntegrationHelper.validateIntegration(this);
+					}
+					
+					public void AndroidThunkJava_IronSource_ForceUpdateUser(String UserId)
+					{
+					Log.debug("AndroidThunkJava_IronSource_ForceUpdateUser");
+					IronSource.setDynamicUserId(UserId);
+					IntegrationHelper.validateIntegration(this);
+					}
 
-			public boolean AndroidThunkJava_IronSource_hasRewardedVideo()
-			{
-				return IronSource.isRewardedVideoAvailable();
-			}
+					public boolean AndroidThunkJava_IronSource_hasRewardedVideo()
+					{
+					return IronSource.isRewardedVideoAvailable();
+					}
 
-			public String AndroidThunkJava_IronSource_getPlacementRewardName(String PlacementName)
-			{
-				Log.debug("AndroidThunkJava_IronSource_getPlacementRewardName");
-				Placement CurrentPlacement = IronSource.getRewardedVideoPlacementInfo(PlacementName);
-				if (CurrentPlacement != null)
-				{
-				    return CurrentPlacement.getRewardName();
-				}
-				else
-				{
+					public String AndroidThunkJava_IronSource_getPlacementRewardName(String PlacementName)
+					{
+					Log.debug("AndroidThunkJava_IronSource_getPlacementRewardName");
+					Placement CurrentPlacement = IronSource.getRewardedVideoPlacementInfo(PlacementName);
+					if (CurrentPlacement != null)
+					{
+					return CurrentPlacement.getRewardName();
+					}
+					else
+					{
 					return new String();
-				}
-			}
+					}
+					}
 
-			public int AndroidThunkJava_IronSource_getPlacementRewardAmount(String PlacementName)
-			{
-				Log.debug("AndroidThunkJava_IronSource_getPlacementRewardAmount");
-				Placement CurrentPlacement = IronSource.getRewardedVideoPlacementInfo(PlacementName);
-				if (CurrentPlacement != null)
-				{
-				    return CurrentPlacement.getRewardAmount();
-				}
-				else
-				{
+					public int AndroidThunkJava_IronSource_getPlacementRewardAmount(String PlacementName)
+					{
+					Log.debug("AndroidThunkJava_IronSource_getPlacementRewardAmount");
+					Placement CurrentPlacement = IronSource.getRewardedVideoPlacementInfo(PlacementName);
+					if (CurrentPlacement != null)
+					{
+					return CurrentPlacement.getRewardAmount();
+					}
+					else
+					{
 					return 0;
-				}
-			}
+					}
+					}
 
-			public boolean AndroidThunkJava_IronSource_isRewardedVideoCappedForPlacement(String PlacementName)
-			{
-				Log.debug("AndroidThunkJava_IronSource_isRewardedVideoCappedForPlacement");
-				return IronSource.isRewardedVideoPlacementCapped(PlacementName);
-			}
+					public boolean AndroidThunkJava_IronSource_isRewardedVideoCappedForPlacement(String PlacementName)
+					{
+					Log.debug("AndroidThunkJava_IronSource_isRewardedVideoCappedForPlacement");
+					return IronSource.isRewardedVideoPlacementCapped(PlacementName);
+					}
 
-			public void AndroidThunkJava_IronSource_showRewardedVideo(String PlacementName)
-			{
-				Log.debug("AndroidThunkJava_IronSource_showRewardedVideo");
-				IronSource.showRewardedVideo(PlacementName);
-			}
+					public void AndroidThunkJava_IronSource_showRewardedVideo(String PlacementName)
+					{
+					Log.debug("AndroidThunkJava_IronSource_showRewardedVideo");
+					IronSource.showRewardedVideo(PlacementName);
+					}
 
-			public void AndroidThunkJava_IronSource_setGDPRConsent(boolean bConsent)
-			{
-				Log.debug("AndroidThunkJava_IronSource_setGDPRConsent");
-				IronSource.setConsent(bConsent);
-			}
-		</insert>
+					public void AndroidThunkJava_IronSource_setGDPRConsent(boolean bConsent)
+					{
+					Log.debug("AndroidThunkJava_IronSource_setGDPRConsent");
+					IronSource.setConsent(bConsent);
+					}
+				</insert>
+			</true>
+		</if>
 	</gameActivityClassAdditions>
 	
 	<gameActivityOnPauseAdditions>
-		IronSource.onPause(this);
+		<if condition="bIronSourceEnable">
+			<true>
+				IronSource.onPause(this);
+			</true>
+		</if>
 	</gameActivityOnPauseAdditions>
 
 	<gameActivityOnResumeAdditions>
-		IronSource.onResume(this);
+		<if condition="bIronSourceEnable">
+			<true>
+				IronSource.onResume(this);
+			</true>
+		</if>
 	</gameActivityOnResumeAdditions>
 </root>

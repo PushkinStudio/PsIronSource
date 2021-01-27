@@ -9,8 +9,7 @@
 #if PLATFORM_IOS
 #include "PsIronSource_iOS.h"
 #elif PLATFORM_ANDROID
-// ZEN-5906
-//#include "PsIronSource_Android.h"
+#include "PsIronSource_Android.h"
 #endif // PLATFORM_ANDROID
 #endif // WITH_IRONSOURCE
 
@@ -42,8 +41,7 @@ class FPsIronSource : public IPsIronSource
 #if PLATFORM_IOS
 		PlatformClass = UPsIronSource_iOS::StaticClass();
 #elif PLATFORM_ANDROID
-		// ZEN-5906
-		//PlatformClass = UPsIronSource_Android::StaticClass();
+		PlatformClass = UPsIronSource_Android::StaticClass();
 #endif // PLATFORM_ANDROID
 #endif // WITH_IRONSOURCE
 
