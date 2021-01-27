@@ -10,6 +10,10 @@ class UPsIronSourceSettings : public UObject
 	GENERATED_UCLASS_BODY()
 
 public:
+	/** Whether IronSource is enabled */
+	UPROPERTY(Config, EditAnywhere)
+	bool bIronSourceEnable;
+
 	/** IronSource iOS app Key */
 	UPROPERTY(Config, EditAnywhere)
 	FString IronSourceIOSAppKey;
