@@ -312,7 +312,7 @@
 					url "https://dl.bintray.com/ironsource-mobile/android-adapters"
 					}
 					maven {
-					url "https://jitpack.io"
+					url "https://www.jitpack.io"
 					}
 					maven {
 					url  "https://adcolony.bintray.com/AdColony"
@@ -320,34 +320,37 @@
 					maven {
 					url  "https://chartboostmobile.bintray.com/Chartboost"
 					}
+					maven {
+					url "https://sdk.tapjoy.com/"
+					}
 					}
 
 					dependencies {
-					implementation 'com.ironsource.sdk:mediationsdk:7.1.0.1'
+					implementation 'com.ironsource.sdk:mediationsdk:7.1.4.1'
 					implementation fileTree(dir: 'libs', include: ['*.jar'])
 					implementation 'com.google.android.gms:play-services-ads-identifier:17.0.0'
 					implementation 'com.google.android.gms:play-services-basement:17.1.1'
 
-					implementation 'com.ironsource.adapters:applovinadapter:4.3.21'
-					implementation 'com.applovin:applovin-sdk:9.14.12'
+					implementation 'com.ironsource.adapters:applovinadapter:4.3.23'
+					implementation 'com.applovin:applovin-sdk:10.0.1'
 
-					implementation 'com.ironsource.adapters:admobadapter:4.3.15'
-					implementation 'com.google.android.gms:play-services-ads:19.6.0'
+					implementation 'com.ironsource.adapters:admobadapter:4.3.18'
+					implementation 'com.google.android.gms:play-services-ads:19.8.0'
 
-					implementation 'com.ironsource.adapters:facebookadapter:4.3.23'
-					implementation 'com.facebook.android:audience-network-sdk:6.2.0'
+					implementation 'com.ironsource.adapters:facebookadapter:4.3.25'
+					implementation 'com.facebook.android:audience-network-sdk:6.3.0'
 					
-					implementation 'com.ironsource.adapters:unityadsadapter:4.3.9'
+					implementation 'com.ironsource.adapters:unityadsadapter:4.3.10'
 					implementation 'com.unity3d.ads:unity-ads:3.6.0'
 
-					implementation 'com.ironsource.adapters:adcolonyadapter:4.3.4'
-					implementation 'com.adcolony:sdk:4.2.4'
+					implementation 'com.ironsource.adapters:adcolonyadapter:4.3.7'
+					implementation 'com.adcolony:sdk:4.4.1'
 
-					implementation 'com.ironsource.adapters:tapjoyadapter:4.1.15'
-					implementation 'com.tapjoy:tapjoy-android-sdk:12.7.1'
+					implementation 'com.ironsource.adapters:tapjoyadapter:4.1.16'
+					api 'com.tapjoy:tapjoy-android-sdk:12.8.0@aar'
 
-					implementation 'com.ironsource.adapters:inmobiadapter:4.3.8'
-					implementation 'com.inmobi.monetization:inmobi-ads:9.1.0'
+					implementation 'com.ironsource.adapters:inmobiadapter:4.3.9'
+					implementation 'com.inmobi.monetization:inmobi-ads:9.1.6'
 					implementation 'com.android.support:customtabs:28.0.0'
 					implementation 'com.squareup.picasso:picasso:2.71828'
 					implementation 'com.android.support:support-v4:28.0.0'
@@ -357,12 +360,12 @@
 					implementation 'com.chartboost:chartboost-sdk:8.2.0'
 					implementation 'com.google.android.gms:play-services-base:17.2.1'
 
-					implementation 'com.ironsource.adapters:mytargetadapter:4.1.5'
+					implementation 'com.ironsource.adapters:mytargetadapter:4.1.7'
 					implementation 'com.google.android.exoplayer:exoplayer-core:2.11.1'
 					implementation 'com.google.android.exoplayer:exoplayer-hls:2.11.1'
-					implementation 'com.my.target:mytarget-sdk:5.11.9'
+					implementation 'com.my.target:mytarget-sdk:5.12.1'
 
-					implementation 'com.ironsource.adapters:pangleadapter:4.3.0'
+					implementation 'com.ironsource.adapters:pangleadapter:4.3.1'
 					implementation 'com.bytedance.sdk:pangle-sdk:3.4.1.1'
 					}
 

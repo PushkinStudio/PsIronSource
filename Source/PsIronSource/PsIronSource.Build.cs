@@ -170,8 +170,7 @@ namespace UnrealBuildTool.Rules
                     PublicAdditionalFrameworks.Add(
                         new Framework(
                             "Tapjoy",
-                            "../../ThirdParty/iOS/Tapjoy.embeddedframework.zip",
-                            "TapjoyResources.bundle"
+                            "../../ThirdParty/iOS/Tapjoy.embeddedframework.zip"
                         )
                     );
 
@@ -179,27 +178,6 @@ namespace UnrealBuildTool.Rules
                         new Framework(
                             "ISTapjoyAdapter",
                             "../../ThirdParty/iOS/ISTapjoyAdapter.embeddedframework.zip"
-                        )
-                    );
-
-                    PublicAdditionalFrameworks.Add(
-                        new Framework(
-                            "InMobiSDK",
-                            "../../ThirdParty/iOS/InMobiSDK.embeddedframework.zip"
-                        )
-                    );
-
-                    PublicAdditionalFrameworks.Add(
-                        new Framework(
-                            "INMMoatMobileAppKit",
-                            "../../ThirdParty/iOS/INMMoatMobileAppKit.embeddedframework.zip"
-                        )
-                    );
-
-                    PublicAdditionalFrameworks.Add(
-                        new Framework(
-                            "ISInMobiAdapter",
-                            "../../ThirdParty/iOS/ISInMobiAdapter.embeddedframework.zip"
                         )
                     );
 
