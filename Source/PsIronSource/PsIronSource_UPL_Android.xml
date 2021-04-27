@@ -303,13 +303,11 @@
 			<true>
 				<insert>
 					repositories {
+
 					jcenter()
 
 					maven {
-					url 'https://dl.bintray.com/ironsource-mobile/android-sdk'
-					}
-					maven {
-					url "https://dl.bintray.com/ironsource-mobile/android-adapters"
+					url 'https://android-sdk.is.com/'
 					}
 					maven {
 					url "https://www.jitpack.io"
