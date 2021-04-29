@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <atomic>
+
 #include "PsIronSourceProxy.generated.h"
 
 UENUM(BlueprintType)
@@ -63,6 +65,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "IronSource")
 	virtual void SetGDPRConsent(bool bConsent) const;
 
+	/** Whether there are events waiting to be sent to game thread */
+	bool HasQueuedEvents() const;
+
+	/** Increment event counter */
+	void EnqueueEvent();
+
+	/** Decrement event counter */
+	void DequeueEvent();
+
 public:
 	/** Delegate broadcasting video-related events */
 	UPROPERTY(BlueprintAssignable)
@@ -71,4 +82,7 @@ public:
 protected:
 	/** Whether SDK is initialized */
 	bool bIronSourceInitialized;
+
+	/** Number of queued events */
+	std::atomic<int32> QueuedEventsCount;
 };

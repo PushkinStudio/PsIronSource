@@ -187,30 +187,42 @@ void UPsIronSource_Android::SetGDPRConsent(bool bConsent) const
 
 JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdOpenedThunkCpp(JNIEnv* jenv, jobject thiz)
 {
-	AsyncTask(ENamedThreads::GameThread, []() {
-		if (ISProxy != nullptr)
-		{
-			ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoOpened);
-		}
-		else
-		{
-			LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
-		}
-	});
+	if (ISProxy != nullptr)
+	{
+		ISProxy->EnqueueEvent();
+
+		AsyncTask(ENamedThreads::GameThread, []() {
+			if (ISProxy != nullptr)
+			{
+				ISProxy->DequeueEvent();
+				ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoOpened);
+			}
+			else
+			{
+				LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+			}
+		});
+	}
 }
 
 JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdClosedThunkCpp(JNIEnv* jenv, jobject thiz)
 {
-	AsyncTask(ENamedThreads::GameThread, []() {
-		if (ISProxy != nullptr)
-		{
-			ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoClosed);
-		}
-		else
-		{
-			LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
-		}
-	});
+	if (ISProxy != nullptr)
+	{
+		ISProxy->EnqueueEvent();
+
+		AsyncTask(ENamedThreads::GameThread, []() {
+			if (ISProxy != nullptr)
+			{
+				ISProxy->DequeueEvent();
+				ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoClosed);
+			}
+			else
+			{
+				LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+			}
+		});
+	}
 }
 
 // Invoked when there is a change in the ad availability status
@@ -221,75 +233,105 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAvailabilityC
 // Invoked when the RewardedVideo ad view has opened
 JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdStartedThunkCpp(JNIEnv* jenv, jobject thiz)
 {
-	AsyncTask(ENamedThreads::GameThread, []() {
-		if (ISProxy != nullptr)
-		{
-			ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoStarted);
-		}
-		else
-		{
-			LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
-		}
-	});
+	if (ISProxy != nullptr)
+	{
+		ISProxy->EnqueueEvent();
+
+		AsyncTask(ENamedThreads::GameThread, []() {
+			if (ISProxy != nullptr)
+			{
+				ISProxy->DequeueEvent();
+				ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoStarted);
+			}
+			else
+			{
+				LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+			}
+		});
+	}
 }
 
 // Invoked when the RewardedVideo ad view is about to be closed
 JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdEndedThunkCpp(JNIEnv* jenv, jobject thiz)
 {
-	AsyncTask(ENamedThreads::GameThread, []() {
-		if (ISProxy != nullptr)
-		{
-			ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoEnded);
-		}
-		else
-		{
-			LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
-		}
-	});
+	if (ISProxy != nullptr)
+	{
+		ISProxy->EnqueueEvent();
+
+		AsyncTask(ENamedThreads::GameThread, []() {
+			if (ISProxy != nullptr)
+			{
+				ISProxy->DequeueEvent();
+				ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoEnded);
+			}
+			else
+			{
+				LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+			}
+		});
+	}
 }
 
 // Invoked when the user completed the video and should be rewarded
 JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdRewardedThunkCpp(JNIEnv* jenv, jobject thiz)
 {
-	AsyncTask(ENamedThreads::GameThread, []() {
-		if (ISProxy != nullptr)
-		{
-			ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::ReceivedReward);
-		}
-		else
-		{
-			LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
-		}
-	});
+	if (ISProxy != nullptr)
+	{
+		ISProxy->EnqueueEvent();
+
+		AsyncTask(ENamedThreads::GameThread, []() {
+			if (ISProxy != nullptr)
+			{
+				ISProxy->DequeueEvent();
+				ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::ReceivedReward);
+			}
+			else
+			{
+				LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+			}
+		});
+	}
 }
 
 // Invoked when RewardedVideo call to show a rewarded video has failed
 JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdShowFailedThunkCpp(JNIEnv* jenv, jobject thiz, jint errorCode, jstring errorMessage)
 {
-	AsyncTask(ENamedThreads::GameThread, []() {
-		if (ISProxy != nullptr)
-		{
-			ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoShowFailed);
-		}
-		else
-		{
-			LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
-		}
-	});
+	if (ISProxy != nullptr)
+	{
+		ISProxy->EnqueueEvent();
+
+		AsyncTask(ENamedThreads::GameThread, []() {
+			if (ISProxy != nullptr)
+			{
+				ISProxy->DequeueEvent();
+				ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoShowFailed);
+			}
+			else
+			{
+				LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+			}
+		});
+	}
 }
 
 JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdClickedThunkCpp(JNIEnv* jenv, jobject thiz)
 {
-	AsyncTask(ENamedThreads::GameThread, []() {
-		if (ISProxy != nullptr)
-		{
-			ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoTapped);
-		}
-		else
-		{
-			LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
-		}
-	});
+	if (ISProxy != nullptr)
+	{
+		ISProxy->EnqueueEvent();
+
+		AsyncTask(ENamedThreads::GameThread, []() {
+			if (ISProxy != nullptr)
+			{
+				ISProxy->DequeueEvent();
+				ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoTapped);
+			}
+			else
+			{
+				LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+			}
+		});
+	}
 }
 
 #endif // WITH_IRONSOURCE && PLATFORM_ANDROID
