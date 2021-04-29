@@ -8,6 +8,7 @@ UPsIronSourceProxy::UPsIronSourceProxy(const FObjectInitializer& ObjectInitializ
 	: Super(ObjectInitializer)
 {
 	bIronSourceInitialized = false;
+	QueuedEventsCount = 0;
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -61,4 +62,21 @@ void UPsIronSourceProxy::ShowRewardedVideo(const FString& PlacementName) const
 void UPsIronSourceProxy::SetGDPRConsent(bool bConsent) const
 {
 	UE_LOG(LogPsIronSource, Warning, TEXT("%s: Null proxy used"), *PS_FUNC_LINE);
+}
+
+bool UPsIronSourceProxy::HasQueuedEvents() const
+{
+	return QueuedEventsCount > 0;
+}
+
+void UPsIronSourceProxy::EnqueueEvent()
+{
+	QueuedEventsCount += 1;
+	UE_LOG(LogPsIronSource, Log, TEXT("%s: QueuedEventsCount %d"), *PS_FUNC_LINE, QueuedEventsCount.load());
+}
+
+void UPsIronSourceProxy::DequeueEvent()
+{
+	QueuedEventsCount -= 1;
+	UE_LOG(LogPsIronSource, Log, TEXT("%s: QueuedEventsCount %d"), *PS_FUNC_LINE, QueuedEventsCount.load());
 }
