@@ -16,6 +16,7 @@ enum class EIronSourceEventType : uint8
 	VideoStarted,    // video has started playing
 	VideoEnded,      // video has stopped playing
 	VideoTapped,     // video has been tapped
+	VideoAvailable,  // video has changed availability to Available
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPSIronSourceVideoDelegate, EIronSourceEventType, Event);

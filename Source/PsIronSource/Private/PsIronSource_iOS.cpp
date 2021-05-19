@@ -18,7 +18,14 @@ UPsIronSource_iOS::UPsIronSource_iOS(const FObjectInitializer& ObjectInitializer
 // with 'hasAvailableAds' set to 'YES' that you can should 'showRV'.
 - (void)rewardedVideoHasChangedAvailability:(BOOL)available
 {
-	NSLog(@"%s", __PRETTY_FUNCTION__);
+	NSLog(@"%s %d", __PRETTY_FUNCTION__, available);
+
+	AsyncTask(ENamedThreads::GameThread, [self]() {
+		if (self.PluginDelegate != nullptr)
+		{
+			self.PluginDelegate->Broadcast(EIronSourceEventType::VideoAvailable);
+		}
+	});
 }
 
 // This method gets invoked after the user has been rewarded.
