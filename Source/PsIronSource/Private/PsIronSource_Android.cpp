@@ -228,6 +228,17 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdClosedThunk
 // Invoked when there is a change in the ad availability status
 JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAvailabilityChangedThunkCpp(JNIEnv* jenv, jobject thiz, jboolean available)
 {
+	// this event does not need to be counted
+	AsyncTask(ENamedThreads::GameThread, []() {
+		if (ISProxy != nullptr)
+		{
+			ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoAvailable);
+		}
+		else
+		{
+			LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+		}
+	});
 }
 
 // Invoked when the RewardedVideo ad view has opened
