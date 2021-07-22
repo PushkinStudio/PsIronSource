@@ -147,6 +147,14 @@
 				<addAttribute tag="$MyTargetActivity" name="android:name" value="com.my.target.common.MyTargetActivity" />
 				<addAttribute tag="$MyTargetActivity" name="android:configChanges" value="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />
 				<addElement tag="application" name="MyTargetActivity" />
+
+				<!--
+				<setElement result="TTProvider" value="provider" />
+				<addAttribute tag="$TTProvider" name="android:name" value="com.bytedance.sdk.openadsdk.multipro.TTMultiProvider" />
+				<addAttribute tag="$TTProvider" name="android:authorities" value="$S(PackageName).TTMultiProvider" />
+				<addAttribute tag="$TTProvider" name="android:exported" value="false" />
+				<addElement tag="application" name="TTProvider" />
+				-->
 			</true>
 		</if>
 	</androidManifestUpdates>
@@ -321,50 +329,54 @@
 					maven {
 					url "https://sdk.tapjoy.com/"
 					}
+					maven {
+					url "https://artifact.bytedance.com/repository/pangle"
+					}
 					}
 
 					dependencies {
-					implementation 'com.ironsource.sdk:mediationsdk:7.1.4.1'
+					implementation 'com.ironsource.sdk:mediationsdk:7.1.7'
 					implementation fileTree(dir: 'libs', include: ['*.jar'])
 					implementation 'com.google.android.gms:play-services-ads-identifier:17.0.0'
 					implementation 'com.google.android.gms:play-services-basement:17.1.1'
 
-					implementation 'com.ironsource.adapters:applovinadapter:4.3.23'
-					implementation 'com.applovin:applovin-sdk:10.0.1'
+					implementation 'com.ironsource.adapters:applovinadapter:4.3.26'
+					implementation 'com.applovin:applovin-sdk:10.3.1'
 
-					implementation 'com.ironsource.adapters:admobadapter:4.3.18'
-					implementation 'com.google.android.gms:play-services-ads:19.8.0'
+					implementation 'com.ironsource.adapters:admobadapter:4.3.21'
+					implementation 'com.google.android.gms:play-services-ads:20.2.0'
 
-					implementation 'com.ironsource.adapters:facebookadapter:4.3.25'
-					implementation 'com.facebook.android:audience-network-sdk:6.3.0'
+					implementation 'com.ironsource.adapters:facebookadapter:4.3.28'
+					implementation 'com.facebook.android:audience-network-sdk:6.5.1'
 					
-					implementation 'com.ironsource.adapters:unityadsadapter:4.3.10'
-					implementation 'com.unity3d.ads:unity-ads:3.6.0'
+					implementation 'com.ironsource.adapters:unityadsadapter:4.3.11'
+					implementation 'com.unity3d.ads:unity-ads:3.7.2'
 
-					implementation 'com.ironsource.adapters:adcolonyadapter:4.3.7'
-					implementation 'com.adcolony:sdk:4.4.1'
+					implementation 'com.ironsource.adapters:adcolonyadapter:4.3.8'
+					implementation 'com.adcolony:sdk:4.5.0'
 
-					implementation 'com.ironsource.adapters:tapjoyadapter:4.1.16'
-					api 'com.tapjoy:tapjoy-android-sdk:12.8.0@aar'
+					implementation 'com.ironsource.adapters:tapjoyadapter:4.1.17'
+					api 'com.tapjoy:tapjoy-android-sdk:12.8.1@aar'
 
-					implementation 'com.ironsource.adapters:inmobiadapter:4.3.9'
-					implementation 'com.inmobi.monetization:inmobi-ads:9.1.6'
+					implementation 'com.ironsource.adapters:inmobiadapter:4.3.11'
+					implementation 'com.inmobi.monetization:inmobi-ads:9.2.0'
 					implementation 'com.android.support:customtabs:28.0.0'
 					implementation 'com.squareup.picasso:picasso:2.71828'
 					implementation 'com.android.support:support-v4:28.0.0'
 					implementation 'com.android.support:recyclerview-v7:28.0.0'
 
-					implementation 'com.ironsource.adapters:chartboostadapter:4.3.5'
-					implementation 'com.chartboost:chartboost-sdk:8.2.0'
+					implementation 'com.ironsource.adapters:chartboostadapter:4.3.6'
+					implementation 'com.chartboost:chartboost-sdk:8.2.1'
 					implementation 'com.google.android.gms:play-services-base:17.2.1'
 
-					implementation 'com.ironsource.adapters:mytargetadapter:4.1.7'
-					implementation 'com.google.android.exoplayer:exoplayer-core:2.11.1'
-					implementation 'com.google.android.exoplayer:exoplayer-hls:2.11.1'
-					implementation 'com.my.target:mytarget-sdk:5.12.1'
+					implementation 'com.ironsource.adapters:mytargetadapter:4.1.9'
+					implementation 'com.my.target:mytarget-sdk:5.13.1'
+					implementation 'com.google.android.exoplayer:exoplayer-core:2.13.3'
+					implementation 'com.google.android.exoplayer:exoplayer-hls:2.13.3'
+					implementation 'com.my.tracker:mytracker-sdk:2.1.2'
 
-					implementation 'com.ironsource.adapters:pangleadapter:4.3.1'
-					implementation 'com.bytedance.sdk:pangle-sdk:3.4.1.1'
+					implementation 'com.ironsource.adapters:pangleadapter:4.3.4'
+					implementation 'com.pangle.global:ads-sdk:3.7.1.1'
 					}
 
 					android {
