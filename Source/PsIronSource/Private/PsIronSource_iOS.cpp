@@ -226,7 +226,7 @@ void UPsIronSource_iOS::ShowRewardedVideo(const FString& PlacementName) const
 	NSString* PlacementNameNativeString = PlacementName.GetNSString();
 
 	dispatch_async(dispatch_get_main_queue(), ^{
-	  [IronSource showRewardedVideoWithViewController:[UIApplication sharedApplication].keyWindow.rootViewController placement:PlacementNameNativeString];
+	  [IronSource showRewardedVideoWithViewController:UIApplication.sharedApplication.delegate.window.rootViewController placement:PlacementNameNativeString];
 	});
 }
 
