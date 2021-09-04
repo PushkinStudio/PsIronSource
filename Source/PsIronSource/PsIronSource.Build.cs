@@ -235,8 +235,23 @@ namespace UnrealBuildTool.Rules
                         )
                     );
 
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "BUCNAuxiliary",
+                            "../../ThirdParty/iOS/BUCNAuxiliary.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "BUVAAuxiliary",
+                            "../../ThirdParty/iOS/BUVAAuxiliary.embeddedframework.zip"
+                        )
+                    );
+
                     PublicSystemLibraries.Add("z");
                     PublicSystemLibraries.Add("bz2");
+                    PublicSystemLibraries.Add("c++abi");
                 }
                 else if (Target.Platform == UnrealTargetPlatform.Android)
                 {
