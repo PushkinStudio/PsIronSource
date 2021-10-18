@@ -7,7 +7,7 @@
 
 #if PLATFORM_ANDROID
 #include <jni.h>
-#endif //PLATFORM_ANDROID
+#endif // PLATFORM_ANDROID
 
 UCLASS()
 class UPsIronSource_Android : public UPsIronSourceProxy

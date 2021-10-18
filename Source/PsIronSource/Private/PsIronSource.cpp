@@ -73,7 +73,7 @@ class FPsIronSource : public IPsIronSource
 
 private:
 	/** Settings */
-	UPsIronSourceSettings* ISSettings;
+	UPsIronSourceSettings* ISSettings = nullptr;
 };
 
 IMPLEMENT_MODULE(FPsIronSource, PsIronSource);

@@ -85,7 +85,7 @@ UPsIronSource_iOS::UPsIronSource_iOS(const FObjectInitializer& ObjectInitializer
 
 // This method gets invoked when the video has started playing.
 // Note: the events DidStart & DidEnd below are not available for all supported rewarded video ad networks. Check which events are available per ad network you choose
-//to include in your build.
+// to include in your build.
 // We recommend only using events which register to ALL ad networks you //include in your build.
 - (void)rewardedVideoDidStart
 {
