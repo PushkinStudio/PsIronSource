@@ -324,9 +324,6 @@
 					url  "https://adcolony.bintray.com/AdColony"
 					}
 					maven {
-					url  "https://chartboostmobile.bintray.com/Chartboost"
-					}
-					maven {
 					url "https://sdk.tapjoy.com/"
 					}
 					maven {
