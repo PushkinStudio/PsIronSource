@@ -313,15 +313,13 @@
 					repositories {
 
 					jcenter()
+					mavenCentral()
 
 					maven {
 					url 'https://android-sdk.is.com/'
 					}
 					maven {
 					url "https://www.jitpack.io"
-					}
-					maven {
-					url  "https://adcolony.bintray.com/AdColony"
 					}
 					maven {
 					url "https://sdk.tapjoy.com/"
