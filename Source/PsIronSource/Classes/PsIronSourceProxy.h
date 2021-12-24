@@ -17,9 +17,65 @@ enum class EIronSourceEventType : uint8
 	VideoEnded,      // video has stopped playing
 	VideoTapped,     // video has been tapped
 	VideoAvailable,  // video has changed availability to Available
+	Impression       // ad impression delegate callback
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPSIronSourceVideoDelegate, EIronSourceEventType, Event);
+
+USTRUCT()
+struct FPsIronSourceImpressionData
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	FString AuctionId;
+
+	UPROPERTY()
+	FString AdUnit;
+
+	UPROPERTY()
+	FString AdNetwork;
+
+	UPROPERTY()
+	FString InstanceName;
+
+	UPROPERTY()
+	FString InstanceId;
+
+	UPROPERTY()
+	FString Country;
+
+	UPROPERTY()
+	FString Placement;
+
+	UPROPERTY()
+	float Revenue;
+
+	UPROPERTY()
+	FString Precision;
+
+	UPROPERTY()
+	FString Ab;
+
+	UPROPERTY()
+	FString SegmentName;
+
+	UPROPERTY()
+	float LifetimeRevenue;
+
+	UPROPERTY()
+	FString EncryptedCpm;
+
+	UPROPERTY()
+	float ConversionValue;
+
+	FPsIronSourceImpressionData()
+		: Revenue(0.f)
+		, LifetimeRevenue(0.f)
+		, ConversionValue(0.f)
+	{
+	}
+};
 
 UCLASS()
 class PSIRONSOURCE_API UPsIronSourceProxy : public UObject
@@ -75,6 +131,12 @@ public:
 	/** Decrement event counter */
 	void DequeueEvent();
 
+	/** Set impression data */
+	void SetImpressionData(const FPsIronSourceImpressionData& InImpressionData);
+
+	/** Get last impression data */
+	FPsIronSourceImpressionData GetImpressionData() const;
+
 public:
 	/** Delegate broadcasting video-related events */
 	UPROPERTY(BlueprintAssignable)
@@ -86,4 +148,7 @@ protected:
 
 	/** Number of queued events */
 	std::atomic<int32> QueuedEventsCount;
+
+	/** Impression data instance */
+	FPsIronSourceImpressionData ImpressionData;
 };

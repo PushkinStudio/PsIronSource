@@ -30,6 +30,14 @@
 
 @end
 
+@interface PSISImpressionDataDelegate : NSObject <ISImpressionDataDelegate>
+
+- (void)impressionDataDidSucceed:(ISImpressionData *)impressionData;
+
+@property (nonatomic) UPsIronSourceProxy *Proxy;
+
+@end
+
 #endif // WITH_IRONSOURCE && PLATFORM_IOS
 
 UCLASS()
@@ -53,6 +61,7 @@ class UPsIronSource_iOS : public UPsIronSourceProxy
 private:
 	PSISDelegate* Delegate;
 	PSISLogDelegate* LogDelegate;
+	PSISImpressionDataDelegate* ImpressionDelegate;
 
 #endif // WITH_IRONSOURCE && PLATFORM_IOS
 };

@@ -345,4 +345,53 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdClickedThun
 	}
 }
 
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onImpressionSuccessThunkCpp(JNIEnv* jenv, jobject thiz, jobject jImpressionData)
+{
+	if (ISProxy != nullptr)
+	{
+		jclass ImpressionDataClass = jenv->FindClass("com/ironsource/mediationsdk/impressionData/ImpressionData");
+		jmethodID getAuctionIdMethodId = jenv->GetMethodID(ImpressionDataClass, "getAuctionId", "()Ljava/lang/String;");
+		jmethodID getAdUnitMethodId = jenv->GetMethodID(ImpressionDataClass, "getAdUnit", "()Ljava/lang/String;");
+		jmethodID getCountryMethodId = jenv->GetMethodID(ImpressionDataClass, "getCountry", "()Ljava/lang/String;");
+		jmethodID getAbMethodId = jenv->GetMethodID(ImpressionDataClass, "getAb", "()Ljava/lang/String;");
+		jmethodID getSegmentNameMethodId = jenv->GetMethodID(ImpressionDataClass, "getSegmentName", "()Ljava/lang/String;");
+		jmethodID getPlacementMethodId = jenv->GetMethodID(ImpressionDataClass, "getPlacement", "()Ljava/lang/String;");
+		jmethodID getAdNetworkMethodId = jenv->GetMethodID(ImpressionDataClass, "getAdNetwork", "()Ljava/lang/String;");
+		jmethodID getInstanceNameMethodId = jenv->GetMethodID(ImpressionDataClass, "getInstanceName", "()Ljava/lang/String;");
+		jmethodID getInstanceIdMethodId = jenv->GetMethodID(ImpressionDataClass, "getInstanceId", "()Ljava/lang/String;");
+		jmethodID getRevenueMethodId = jenv->GetMethodID(ImpressionDataClass, "getRevenue", "()Ljava/lang/Double;");
+		jmethodID getPrecisionMethodId = jenv->GetMethodID(ImpressionDataClass, "getPrecision", "()Ljava/lang/String;");
+		jmethodID getLifetimeRevenueMethodId = jenv->GetMethodID(ImpressionDataClass, "getLifetimeRevenue", "()Ljava/lang/Double;");
+		jmethodID getEncryptedCPMMethodId = jenv->GetMethodID(ImpressionDataClass, "getEncryptedCPM", "()Ljava/lang/String;");
+
+		FPsIronSourceImpressionData Data;
+		Data.AuctionId = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jImpressionData, getAuctionIdMethodId));
+		Data.AdUnit = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jImpressionData, getAdUnitMethodId));
+		Data.AdNetwork = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jImpressionData, getAdNetworkMethodId));
+		Data.InstanceName = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jImpressionData, getInstanceNameMethodId));
+		Data.InstanceId = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jImpressionData, getInstanceIdMethodId));
+		Data.Country = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jImpressionData, getCountryMethodId));
+		Data.Placement = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jImpressionData, getPlacementMethodId));
+		Data.Revenue = jenv->CallDoubleMethod(jImpressionData, getRevenueMethodId);
+		Data.Precision = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jImpressionData, getPrecisionMethodId));
+		Data.Ab = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jImpressionData, getAbMethodId));
+		Data.SegmentName = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jImpressionData, getSegmentNameMethodId));
+		Data.LifetimeRevenue = jenv->CallDoubleMethod(jImpressionData, getLifetimeRevenueMethodId);
+		Data.EncryptedCpm = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jImpressionData, getEncryptedCPMMethodId));
+		// no Data.ConversionValue
+
+		AsyncTask(ENamedThreads::GameThread, [Data]() {
+			if (ISProxy != nullptr)
+			{
+				ISProxy->SetImpressionData(Data);
+				ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::Impression);
+			}
+			else
+			{
+				LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+			}
+		});
+	}
+}
+
 #endif // WITH_IRONSOURCE && PLATFORM_ANDROID

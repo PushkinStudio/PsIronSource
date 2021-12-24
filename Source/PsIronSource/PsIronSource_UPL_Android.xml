@@ -400,6 +400,8 @@
 					import com.ironsource.mediationsdk.sdk.InterstitialListener;
 					import com.ironsource.mediationsdk.sdk.OfferwallListener;
 					import com.ironsource.mediationsdk.sdk.RewardedVideoListener;
+					import com.ironsource.mediationsdk.impressionData.ImpressionDataListener;
+					import com.ironsource.mediationsdk.impressionData.ImpressionData;
 					import com.ironsource.mediationsdk.utils.IronSourceUtils;
 				</insert>
 			</true>
@@ -418,6 +420,7 @@
 					private native void onRewardedVideoAdRewardedThunkCpp();
 					private native void onRewardedVideoAdShowFailedThunkCpp(int errorCode, String errorMessage);
 					private native void onRewardedVideoAdClickedThunkCpp();
+					private native void onImpressionSuccessThunkCpp(ImpressionData Data);
 
 					RewardedVideoListener mRewardedVideoListener = new RewardedVideoListener()
 					{
@@ -486,11 +489,21 @@
 					}
 					};
 
+					ImpressionDataListener mImpressionDataListener = new ImpressionDataListener()
+					{
+					@Override 
+					public void onImpressionSuccess(ImpressionData impressionData)
+					{
+					onImpressionSuccessThunkCpp(impressionData);
+					}
+					};
+
 					public void AndroidThunkJava_IronSource_init(String APIKey, String UserId)
 					{
 					Log.debug("AndroidThunkJava_IronSource_init");
 					IronSource.setUserId(UserId);
 					IronSource.setRewardedVideoListener(mRewardedVideoListener);
+					IronSource.addImpressionDataListener(mImpressionDataListener);
 					IronSource.init(this, APIKey);
 					IntegrationHelper.validateIntegration(this);
 					}
