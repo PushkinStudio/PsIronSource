@@ -80,3 +80,13 @@ void UPsIronSourceProxy::DequeueEvent()
 	QueuedEventsCount -= 1;
 	UE_LOG(LogPsIronSource, Log, TEXT("%s: QueuedEventsCount %d"), *PS_FUNC_LINE, QueuedEventsCount.load());
 }
+
+void UPsIronSourceProxy::SetImpressionData(const FPsIronSourceImpressionData& InImpressionData)
+{
+	ImpressionData = InImpressionData;
+}
+
+FPsIronSourceImpressionData UPsIronSourceProxy::GetImpressionData() const
+{
+	return ImpressionData;
+}

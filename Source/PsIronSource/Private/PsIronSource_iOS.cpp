@@ -124,6 +124,7 @@ UPsIronSource_iOS::UPsIronSource_iOS(const FObjectInitializer& ObjectInitializer
 		}
 	});
 }
+
 @end
 
 @implementation PSISLogDelegate
@@ -131,6 +132,43 @@ UPsIronSource_iOS::UPsIronSource_iOS(const FObjectInitializer& ObjectInitializer
 - (void)sendLog:(NSString*)log level:(ISLogLevel)level tag:(LogTag)tag
 {
 	NSLog(@"%@", log);
+}
+
+@end
+
+@implementation PSISImpressionDataDelegate
+
+// Called after an impression
+- (void)impressionDataDidSucceed:(ISImpressionData*)impressionData
+{
+	NSLog(@"%s", __PRETTY_FUNCTION__);
+
+	FPsIronSourceImpressionData Data;
+	if (impressionData != nil)
+	{
+		Data.AuctionId = FString(impressionData.auction_id);
+		Data.AdUnit = FString(impressionData.ad_unit);
+		Data.AdNetwork = FString(impressionData.ad_network);
+		Data.InstanceName = FString(impressionData.instance_name);
+		Data.InstanceId = FString(impressionData.instance_id);
+		Data.Country = FString(impressionData.country);
+		Data.Placement = FString(impressionData.placement);
+		Data.Revenue = [impressionData.revenue floatValue];
+		Data.Precision = FString(impressionData.precision);
+		Data.Ab = FString(impressionData.ab);
+		Data.SegmentName = FString(impressionData.segment_name);
+		Data.LifetimeRevenue = [impressionData.lifetime_revenue floatValue];
+		Data.EncryptedCpm = FString(impressionData.encrypted_cpm);
+		Data.ConversionValue = [impressionData.conversion_value floatValue];
+	}
+
+	AsyncTask(ENamedThreads::GameThread, [self, Data]() {
+		if (self.Proxy != nullptr)
+		{
+			self.Proxy->SetImpressionData(Data);
+			self.Proxy->VideoStateDelegate.Broadcast(EIronSourceEventType::Impression);
+		}
+	});
 }
 
 @end
@@ -154,8 +192,12 @@ void UPsIronSource_iOS::InitIronSource(const FString& UserId)
 
 	  LogDelegate = [[PSISLogDelegate alloc] init];
 
+	  ImpressionDelegate = [[PSISImpressionDataDelegate alloc] init];
+	  ImpressionDelegate.Proxy = this;
+
 	  [IronSource setLogDelegate:LogDelegate];
 	  [IronSource setRewardedVideoDelegate:Delegate];
+	  [IronSource addImpressionDataDelegate:ImpressionDelegate];
 	  [IronSource setUserId:UserIdNativeString];
 	  [IronSource initWithAppKey:AppKeyNativeString];
 	  [ISIntegrationHelper validateIntegration];
