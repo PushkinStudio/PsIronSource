@@ -349,6 +349,9 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onImpressionSuccessThunkCpp(
 {
 	if (ISProxy != nullptr)
 	{
+		jclass DoubleClass = jenv->FindClass("java/lang/Double");
+		jmethodID DoubleValueMethodId = jenv->GetMethodID(DoubleClass, "doubleValue", "()D");
+
 		jclass ImpressionDataClass = jenv->FindClass("com/ironsource/mediationsdk/impressionData/ImpressionData");
 		jmethodID getAuctionIdMethodId = jenv->GetMethodID(ImpressionDataClass, "getAuctionId", "()Ljava/lang/String;");
 		jmethodID getAdUnitMethodId = jenv->GetMethodID(ImpressionDataClass, "getAdUnit", "()Ljava/lang/String;");
@@ -372,13 +375,24 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onImpressionSuccessThunkCpp(
 		Data.InstanceId = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jImpressionData, getInstanceIdMethodId));
 		Data.Country = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jImpressionData, getCountryMethodId));
 		Data.Placement = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jImpressionData, getPlacementMethodId));
-		Data.Revenue = jenv->CallDoubleMethod(jImpressionData, getRevenueMethodId);
+
+		jobject RevenueDoubleObject = jenv->CallObjectMethod(jImpressionData, getRevenueMethodId);
+		Data.Revenue = jenv->CallDoubleMethod(RevenueDoubleObject, DoubleValueMethodId);
+		jenv->DeleteLocalRef(RevenueDoubleObject);
+
 		Data.Precision = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jImpressionData, getPrecisionMethodId));
 		Data.Ab = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jImpressionData, getAbMethodId));
 		Data.SegmentName = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jImpressionData, getSegmentNameMethodId));
-		Data.LifetimeRevenue = jenv->CallDoubleMethod(jImpressionData, getLifetimeRevenueMethodId);
+
+		jobject LifetimeRevenueDoubleObject = jenv->CallObjectMethod(jImpressionData, getLifetimeRevenueMethodId);
+		Data.LifetimeRevenue = jenv->CallDoubleMethod(LifetimeRevenueDoubleObject, DoubleValueMethodId);
+		jenv->DeleteLocalRef(LifetimeRevenueDoubleObject);
+
 		Data.EncryptedCpm = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jImpressionData, getEncryptedCPMMethodId));
 		// no Data.ConversionValue
+
+		jenv->DeleteLocalRef(DoubleClass);
+		jenv->DeleteLocalRef(ImpressionDataClass);
 
 		AsyncTask(ENamedThreads::GameThread, [Data]() {
 			if (ISProxy != nullptr)
