@@ -229,10 +229,17 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdClosedThunk
 JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAvailabilityChangedThunkCpp(JNIEnv* jenv, jobject thiz, jboolean available)
 {
 	// this event does not need to be counted
-	AsyncTask(ENamedThreads::GameThread, []() {
+	AsyncTask(ENamedThreads::GameThread, [available]() {
 		if (ISProxy != nullptr)
 		{
-			ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoAvailable);
+			if (available)
+			{
+				ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoAvailable);
+			}
+			else
+			{
+				ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoNotAvailable);
+			}
 		}
 		else
 		{
