@@ -9,15 +9,16 @@
 UENUM(BlueprintType)
 enum class EIronSourceEventType : uint8
 {
-	ReceivedReward,  // after the user has been rewarded
-	VideoShowFailed, // there is a problem playing the video
-	VideoOpened,     // when we take control, but before the video has started playing
-	VideoClosed,     // when we return control back to your hands
-	VideoStarted,    // video has started playing
-	VideoEnded,      // video has stopped playing
-	VideoTapped,     // video has been tapped
-	VideoAvailable,  // video has changed availability to Available
-	Impression       // ad impression delegate callback
+	ReceivedReward,    // after the user has been rewarded
+	VideoShowFailed,   // there is a problem playing the video
+	VideoOpened,       // when we take control, but before the video has started playing
+	VideoClosed,       // when we return control back to your hands
+	VideoStarted,      // video has started playing
+	VideoEnded,        // video has stopped playing
+	VideoTapped,       // video has been tapped
+	VideoAvailable,    // video has changed availability to Available
+	VideoNotAvailable, // video has changed availability to Not Available
+	Impression         // ad impression delegate callback
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPSIronSourceVideoDelegate, EIronSourceEventType, Event);

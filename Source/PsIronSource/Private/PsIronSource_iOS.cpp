@@ -20,10 +20,17 @@ UPsIronSource_iOS::UPsIronSource_iOS(const FObjectInitializer& ObjectInitializer
 {
 	NSLog(@"%s %d", __PRETTY_FUNCTION__, available);
 
-	AsyncTask(ENamedThreads::GameThread, [self]() {
+	AsyncTask(ENamedThreads::GameThread, [self, available]() {
 		if (self.PluginDelegate != nullptr)
 		{
-			self.PluginDelegate->Broadcast(EIronSourceEventType::VideoAvailable);
+			if (available)
+			{
+				self.PluginDelegate->Broadcast(EIronSourceEventType::VideoAvailable);
+			}
+			else
+			{
+				self.PluginDelegate->Broadcast(EIronSourceEventType::VideoNotAvailable);
+			}
 		}
 	});
 }
