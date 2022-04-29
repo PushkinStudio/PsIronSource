@@ -249,6 +249,13 @@ namespace UnrealBuildTool.Rules
                         )
                     );
 
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "BURelyFoundation_Global",
+                            "../../ThirdParty/iOS/BURelyFoundation_Global.embeddedframework.zip"
+                        )
+                    );
+
                     PublicSystemLibraries.Add("z");
                     PublicSystemLibraries.Add("bz2");
                     PublicSystemLibraries.Add("c++abi");
