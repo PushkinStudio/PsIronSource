@@ -301,6 +301,11 @@
 
 					# Pangle
 					-keep class com.bytedance.sdk.openadsdk.*{ public *; }
+
+					# Yandex
+					-keep class com.ironsource.mobileads.** {
+					    *;
+					}
 					]]>
 				</insert>
 			</true>
@@ -371,12 +376,24 @@
 					// Add UnityAds Network
 					implementation 'com.ironsource.adapters:unityadsadapter:4.3.21'
 					implementation 'com.unity3d.ads:unity-ads:4.1.0'
+
+					// Add Yandex network
+					implementation 'com.yandex.android:mobileads:5.1.1'
+					implementation 'com.yandex.ads.adapter:ironsource-mobileads:5.1.0.0'
 					}
 
 					android {
 					compileOptions {
 					sourceCompatibility 1.8
 					targetCompatibility 1.8
+					}
+					}
+
+					// Fix target sdk 30 compatibility for Yandex
+					configurations.all {
+					resolutionStrategy {
+					force 'androidx.core:core-ktx:1.6.0'
+					force 'androidx.core:core:1.6.0'
 					}
 					}
 				</insert>
@@ -402,6 +419,7 @@
 					import com.ironsource.mediationsdk.impressionData.ImpressionDataListener;
 					import com.ironsource.mediationsdk.impressionData.ImpressionData;
 					import com.ironsource.mediationsdk.utils.IronSourceUtils;
+					import com.yandex.mobile.ads.common.*;
 				</insert>
 			</true>
 		</if>
@@ -568,6 +586,19 @@
 			</true>
 		</if>
 	</gameActivityClassAdditions>
+
+	<gameActivityOnCreateAdditions>
+		<insert>
+			<![CDATA[
+			MobileAds.initialize(this, new InitializationListener() {
+				@Override
+				public void onInitializationCompleted() {
+					Log.debug("YandexMobileAds SDK initialized");
+				}
+			});
+			]]>
+		</insert>
+	</gameActivityOnCreateAdditions>
 	
 	<gameActivityOnPauseAdditions>
 		<if condition="bIronSourceEnable">
