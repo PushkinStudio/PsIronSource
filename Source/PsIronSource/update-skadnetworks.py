@@ -22,11 +22,11 @@ for Index, Line in enumerate(UPLContents):
 		break
 
 if 'StartIndex' not in globals():
-	print "Can't find start marker"
+	print("Can't find start marker")
 	quit()
 
 if 'EndIndex' not in globals():
-	print "Can't find end marker"
+	print("Can't find end marker")
 	quit()
 
 del UPLContents[StartIndex + 1:EndIndex]
