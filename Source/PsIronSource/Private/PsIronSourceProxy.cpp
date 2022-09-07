@@ -90,3 +90,26 @@ FPsIronSourceImpressionData UPsIronSourceProxy::GetImpressionData() const
 {
 	return ImpressionData;
 }
+
+void UPsIronSourceProxy::LoadInterstitial()
+{
+	UE_LOG(LogPsIronSource, Warning, TEXT("%s: Null proxy used"), *PS_FUNC_LINE);
+}
+
+bool UPsIronSourceProxy::IsInterstitialReady() const
+{
+	UE_LOG(LogPsIronSource, Warning, TEXT("%s: Null proxy used"), *PS_FUNC_LINE);
+	return true;
+}
+
+void UPsIronSourceProxy::ShowInterstitial(const FString& PlacementName) const
+{
+	UE_LOG(LogPsIronSource, Warning, TEXT("%s: Null proxy used"), *PS_FUNC_LINE);
+	VideoStateDelegate.Broadcast(EIronSourceEventType::InterstitialShowSucceeded);
+}
+
+bool UPsIronSourceProxy::IsInterstitialCappedForPlacement(const FString& PlacementName) const
+{
+	UE_LOG(LogPsIronSource, Warning, TEXT("%s: Null proxy used"), *PS_FUNC_LINE);
+	return false;
+}

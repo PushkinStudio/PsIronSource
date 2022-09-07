@@ -435,6 +435,9 @@
 		<if condition="bIronSourceEnable">
 			<true>
 				<insert>
+					/// ******************* CALL TO CPP ********************
+					///    *********************************************
+					///
 					private native void onRewardedVideoAdOpenedThunkCpp();
 					private native void onRewardedVideoAdClosedThunkCpp();
 					private native void onRewardedVideoAvailabilityChangedThunkCpp(boolean available);
@@ -445,149 +448,276 @@
 					private native void onRewardedVideoAdClickedThunkCpp();
 					private native void onImpressionSuccessThunkCpp(ImpressionData Data);
 
+					private native void onInterstitialAdReadyThunkCpp();
+					private native void onInterstitialAdLoadFailedThunkCpp(int errorCode, String errorMessage);
+					private native void onInterstitialAdOpenedThunkCpp();
+					private native void onInterstitialAdClosedThunkCpp();
+					private native void onInterstitialAdShowFailedThunkCpp(int errorCode, String errorMessage);
+					private native void onInterstitialAdClickedThunkCpp();
+					private native void onInterstitialAdShowSucceededThunkCpp();
+
+					/// ******************* REWARDED VIDEO ******************
+					///    ***********************************************
+					///
 					RewardedVideoListener mRewardedVideoListener = new RewardedVideoListener()
 					{
-					// Invoked when the RewardedVideo ad view has opened.
-					// Your Activity will lose focus. Please avoid performing heavy 
-					// tasks till the video ad will be closed.
-					@Override
-					public void onRewardedVideoAdOpened()
-					{
-					onRewardedVideoAdOpenedThunkCpp();
-					}
-
-					// Invoked when the RewardedVideo ad view is about to be closed.
-					// Your activity will now regain its focus.
-					@Override
-					public void onRewardedVideoAdClosed()
-					{
-					onRewardedVideoAdClosedThunkCpp();
-					}
-
-					// Invoked when there is a change in the ad availability status.
-					// @param - available - value will change to true when rewarded videos are available. 
-					// You can then show the video by calling showRewardedVideo().
-					// Value will change to false when no videos are available.
-					@Override
-					public void onRewardedVideoAvailabilityChanged(boolean available)
-					{
-					onRewardedVideoAvailabilityChangedThunkCpp(available);
-					}
-
-					// Invoked when the video ad starts playing.
-					@Override
-					public void onRewardedVideoAdStarted()
-					{
-					onRewardedVideoAdStartedThunkCpp();
-					}
-
-					// Invoked when the video ad finishes playing.
-					@Override
-					public void onRewardedVideoAdEnded()
-					{
-					onRewardedVideoAdEndedThunkCpp();
-					}
-
-					// Invoked when the user completed the video and should be rewarded. 
-					// If using server-to-server callbacks you may ignore this events and wait for 
-					// the callback from the Supersonic server.
-					// @param - placement - the Placement the user completed a video from.
-					@Override
-					public void onRewardedVideoAdRewarded(Placement placement)
-					{
-					onRewardedVideoAdRewardedThunkCpp();
-					}
-
-					// Invoked when RewardedVideo call to show a rewarded video has failed
-					@Override
-					public void onRewardedVideoAdShowFailed(IronSourceError ironSourceError)
-					{
-					onRewardedVideoAdShowFailedThunkCpp(ironSourceError.getErrorCode(), ironSourceError.getErrorMessage());
-					}
-
-					@Override
-					public void onRewardedVideoAdClicked(Placement placement)
-					{
-					onRewardedVideoAdClickedThunkCpp();
-					}
+						// Invoked when the RewardedVideo ad view has opened.
+						// Your Activity will lose focus. Please avoid performing heavy 
+						// tasks till the video ad will be closed.
+						@Override
+						public void onRewardedVideoAdOpened()
+						{
+							onRewardedVideoAdOpenedThunkCpp();
+						}
+	
+						// Invoked when the RewardedVideo ad view is about to be closed.
+						// Your activity will now regain its focus.
+						@Override
+						public void onRewardedVideoAdClosed()
+						{
+							onRewardedVideoAdClosedThunkCpp();
+						}
+	
+						// Invoked when there is a change in the ad availability status.
+						// @param - available - value will change to true when rewarded videos are available. 
+						// You can then show the video by calling showRewardedVideo().
+						// Value will change to false when no videos are available.
+						@Override
+						public void onRewardedVideoAvailabilityChanged(boolean available)
+						{
+							onRewardedVideoAvailabilityChangedThunkCpp(available);
+						}
+	
+						// Invoked when the video ad starts playing.
+						@Override
+						public void onRewardedVideoAdStarted()
+						{
+							onRewardedVideoAdStartedThunkCpp();
+						}
+	
+						// Invoked when the video ad finishes playing.
+						@Override
+						public void onRewardedVideoAdEnded()
+						{
+							onRewardedVideoAdEndedThunkCpp();
+						}
+	
+						// Invoked when the user completed the video and should be rewarded. 
+						// If using server-to-server callbacks you may ignore this events and wait for 
+						// the callback from the Supersonic server.
+						// @param - placement - the Placement the user completed a video from.
+						@Override
+						public void onRewardedVideoAdRewarded(Placement placement)
+						{
+							onRewardedVideoAdRewardedThunkCpp();
+						}
+	
+						// Invoked when RewardedVideo call to show a rewarded video has failed
+						@Override
+						public void onRewardedVideoAdShowFailed(IronSourceError ironSourceError)
+						{
+							onRewardedVideoAdShowFailedThunkCpp(ironSourceError.getErrorCode(), ironSourceError.getErrorMessage());
+						}
+	
+						@Override
+						public void onRewardedVideoAdClicked(Placement placement)
+						{
+							onRewardedVideoAdClickedThunkCpp();
+						}
 					};
 
+					/// ******************** IMPRESSION ********************
+					///    *********************************************
+					///
 					ImpressionDataListener mImpressionDataListener = new ImpressionDataListener()
 					{
-					@Override 
-					public void onImpressionSuccess(ImpressionData impressionData)
-					{
-					onImpressionSuccessThunkCpp(impressionData);
-					}
+						@Override 
+						public void onImpressionSuccess(ImpressionData impressionData)
+						{
+							onImpressionSuccessThunkCpp(impressionData);
+						}
 					};
 
+					/// ******************* INTERSTITIALS *******************
+					///    ***********************************************
+					///
+					InterstitialListener mInterstitialsVideoListener = new InterstitialListener()
+					{
+						/**
+						* Invoked when Interstitial Ad is ready to be shown after load function was called.
+						*/
+						@Override
+						public void onInterstitialAdReady()
+						{
+							Log.debug("onInterstitialAdReady");
+							onInterstitialAdReadyThunkCpp();
+						}
+	
+						/**
+						* Invoked when there is no Interstitial Ad available after calling load function.
+						*/
+						@Override
+						public void onInterstitialAdLoadFailed(IronSourceError error)
+						{
+							Log.debug(String.format("onInterstitialAdLoadFailed error. Errcode: %d, Reason: %s.",
+								error.getErrorCode(), error.getErrorMessage()));
+							
+							onInterstitialAdLoadFailedThunkCpp(error.getErrorCode(), error.getErrorMessage());
+						}
+	
+						/**
+						* Invoked when the Interstitial Ad Unit is opened
+						*/
+						@Override
+						public void onInterstitialAdOpened()
+						{
+							Log.debug("onInterstitialAdOpened");
+
+							onInterstitialAdOpenedThunkCpp();
+						}
+	
+						/*
+						* Invoked when the ad is closed and the user is about to return to the application
+						*/
+						@Override
+						public void onInterstitialAdClosed()
+						{
+							Log.debug("onInterstitialAdClosed");
+							onInterstitialAdClosedThunkCpp();
+						}
+	
+						/**
+						* Invoked when Interstitial ad failed to show
+						* @param error - An object which represents the reason of showInterstitial failure.
+						*/
+						@Override
+						public void onInterstitialAdShowFailed(IronSourceError error)
+						{
+							Log.debug(String.format("onInterstitialAdShowFailed error. Errcode: %d, Reason: %s.",
+								error.getErrorCode(), error.getErrorMessage()));
+					
+							onInterstitialAdShowFailedThunkCpp (error.getErrorCode(), error.getErrorMessage());
+						}
+	
+						/*
+						* Invoked when the end user clicked on the interstitial ad, for supported networks only
+						*/
+						@Override
+						public void onInterstitialAdClicked()
+						{
+							Log.debug("onInterstitialAdClicked");
+							onInterstitialAdClickedThunkCpp();
+						}
+						
+						/** Invoked right before the Interstitial screen is about to open.
+						*  NOTE - This event is available only for some of the networks.
+						*  You should NOT treat this event as an interstitial impression, but rather use InterstitialAdOpenedEvent
+						*/
+						@Override
+						public void onInterstitialAdShowSucceeded()
+						{
+							Log.debug("onInterstitialAdShowSucceeded");
+							onInterstitialAdShowSucceededThunkCpp();
+						}
+					};
+
+					/// ******************* CALLABLE FROM CPP *******************
+					///    ***********************************************
+					///
 					public void AndroidThunkJava_IronSource_init(String APIKey, String UserId)
 					{
-					Log.debug("AndroidThunkJava_IronSource_init");
-					IronSource.setUserId(UserId);
-					IronSource.setRewardedVideoListener(mRewardedVideoListener);
-					IronSource.addImpressionDataListener(mImpressionDataListener);
-					IronSource.init(this, APIKey);
-					IntegrationHelper.validateIntegration(this);
+						Log.debug("AndroidThunkJava_IronSource_init");
+						IronSource.setUserId(UserId);
+						IronSource.setRewardedVideoListener(mRewardedVideoListener);
+						IronSource.addImpressionDataListener(mImpressionDataListener);
+						IronSource.setInterstitialListener(mInterstitialsVideoListener);
+						
+						IronSource.init(this, APIKey);
+						IntegrationHelper.validateIntegration(this);
 					}
 					
 					public void AndroidThunkJava_IronSource_ForceUpdateUser(String UserId)
 					{
-					Log.debug("AndroidThunkJava_IronSource_ForceUpdateUser");
-					IronSource.setDynamicUserId(UserId);
-					IntegrationHelper.validateIntegration(this);
+						Log.debug("AndroidThunkJava_IronSource_ForceUpdateUser");
+						IronSource.setDynamicUserId(UserId);
+						IntegrationHelper.validateIntegration(this);
 					}
 
 					public boolean AndroidThunkJava_IronSource_hasRewardedVideo()
 					{
-					return IronSource.isRewardedVideoAvailable();
+						return IronSource.isRewardedVideoAvailable();
 					}
 
 					public String AndroidThunkJava_IronSource_getPlacementRewardName(String PlacementName)
 					{
-					Log.debug("AndroidThunkJava_IronSource_getPlacementRewardName");
-					Placement CurrentPlacement = IronSource.getRewardedVideoPlacementInfo(PlacementName);
-					if (CurrentPlacement != null)
-					{
-					return CurrentPlacement.getRewardName();
-					}
-					else
-					{
-					return new String();
-					}
+						Log.debug("AndroidThunkJava_IronSource_getPlacementRewardName");
+						Placement CurrentPlacement = IronSource.getRewardedVideoPlacementInfo(PlacementName);
+						if (CurrentPlacement != null)
+						{
+							return CurrentPlacement.getRewardName();
+						}
+						else
+						{
+							return new String();
+						}
 					}
 
 					public int AndroidThunkJava_IronSource_getPlacementRewardAmount(String PlacementName)
 					{
-					Log.debug("AndroidThunkJava_IronSource_getPlacementRewardAmount");
-					Placement CurrentPlacement = IronSource.getRewardedVideoPlacementInfo(PlacementName);
-					if (CurrentPlacement != null)
-					{
-					return CurrentPlacement.getRewardAmount();
-					}
-					else
-					{
-					return 0;
-					}
+						Log.debug("AndroidThunkJava_IronSource_getPlacementRewardAmount");
+						Placement CurrentPlacement = IronSource.getRewardedVideoPlacementInfo(PlacementName);
+						if (CurrentPlacement != null)
+						{
+							return CurrentPlacement.getRewardAmount();
+						}
+						else
+						{
+							return 0;
+						}
 					}
 
 					public boolean AndroidThunkJava_IronSource_isRewardedVideoCappedForPlacement(String PlacementName)
 					{
-					Log.debug("AndroidThunkJava_IronSource_isRewardedVideoCappedForPlacement");
-					return IronSource.isRewardedVideoPlacementCapped(PlacementName);
+						Log.debug("AndroidThunkJava_IronSource_isRewardedVideoCappedForPlacement");
+						return IronSource.isRewardedVideoPlacementCapped(PlacementName);
 					}
 
 					public void AndroidThunkJava_IronSource_showRewardedVideo(String PlacementName)
 					{
-					Log.debug("AndroidThunkJava_IronSource_showRewardedVideo");
-					IronSource.showRewardedVideo(PlacementName);
+						Log.debug("AndroidThunkJava_IronSource_showRewardedVideo");
+						IronSource.showRewardedVideo(PlacementName);
 					}
 
 					public void AndroidThunkJava_IronSource_setGDPRConsent(boolean bConsent)
 					{
-					Log.debug("AndroidThunkJava_IronSource_setGDPRConsent");
-					IronSource.setConsent(bConsent);
+						Log.debug("AndroidThunkJava_IronSource_setGDPRConsent");
+						IronSource.setConsent(bConsent);
 					}
+
+					public void AndroidThunkJava_IronSource_loadInterstitial()
+					{
+						Log.debug("AndroidThunkJava_IronSource_LoadInterstitial");
+						IronSource.loadInterstitial();
+					}
+
+					public boolean AndroidThunkJava_IronSource_isInterstitialReady()
+					{
+						Log.debug("AndroidThunkJava_IronSource_isInterstitialReady");
+						return IronSource.isInterstitialReady();
+					}
+
+					public void AndroidThunkJava_IronSource_showInterstitial(String PlacementName)
+					{
+						Log.debug("AndroidThunkJava_IronSource_showInterstitial");
+						IronSource.showInterstitial(PlacementName);
+					}
+
+					public boolean AndroidThunkJava_IronSource_isInterstitialCappedForPlacement(String PlacementName)
+					{
+						Log.debug("AndroidThunkJava_IronSource_isInterstitialCappedForPlacement");
+						return IronSource.isInterstitialPlacementCapped(PlacementName);
+					}
+
 				</insert>
 			</true>
 		</if>

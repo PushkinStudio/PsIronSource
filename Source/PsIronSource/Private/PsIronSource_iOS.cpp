@@ -53,7 +53,7 @@ UPsIronSource_iOS::UPsIronSource_iOS(const FObjectInitializer& ObjectInitializer
 // our knowledge center for help.
 - (void)rewardedVideoDidFailToShowWithError:(NSError*)error
 {
-	NSLog(@"%s %@", __PRETTY_FUNCTION__, error.localizedDescription);
+	NSLog(@"%s %@", __PRETTY_FUNCTION__, error.description);
 
 	AsyncTask(ENamedThreads::GameThread, [self]() {
 		if (self.PluginDelegate != nullptr)
@@ -180,6 +180,100 @@ UPsIronSource_iOS::UPsIronSource_iOS(const FObjectInitializer& ObjectInitializer
 
 @end
 
+@implementation PSISInterstitialDelegate
+
+// Invoked when Interstitial Ad is ready to be shown after load function was //called.
+- (void)interstitialDidLoad
+{
+	NSLog(@"%s", __PRETTY_FUNCTION__);
+
+	AsyncTask(ENamedThreads::GameThread, [self]() {
+		if (self.PluginDelegate != nullptr)
+		{
+			self.PluginDelegate->Broadcast(EIronSourceEventType::InterstitialReady);
+		}
+	});
+}
+// Called if showing the Interstitial for the user has failed.
+// You can learn about the reason by examining the ‘error’ value
+- (void)interstitialDidFailToShowWithError:(NSError*)error
+{
+	NSLog(@"%s %@", __PRETTY_FUNCTION__, error.description);
+
+	AsyncTask(ENamedThreads::GameThread, [self]() {
+		if (self.PluginDelegate != nullptr)
+		{
+			self.PluginDelegate->Broadcast(EIronSourceEventType::InterstitialShowFailed);
+		}
+	});
+}
+// Called each time the end user has clicked on the Interstitial ad, for supported networks only
+- (void)didClickInterstitial
+{
+	NSLog(@"%s", __PRETTY_FUNCTION__);
+
+	AsyncTask(ENamedThreads::GameThread, [self]() {
+		if (self.PluginDelegate != nullptr)
+		{
+			self.PluginDelegate->Broadcast(EIronSourceEventType::InterstitialClicked);
+		}
+	});
+}
+// Called each time the Interstitial window is about to close
+- (void)interstitialDidClose
+{
+	NSLog(@"%s", __PRETTY_FUNCTION__);
+
+	AsyncTask(ENamedThreads::GameThread, [self]() {
+		if (self.PluginDelegate != nullptr)
+		{
+			self.PluginDelegate->Broadcast(EIronSourceEventType::InterstitialClosed);
+		}
+	});
+}
+// Called each time the Interstitial window is about to open
+- (void)interstitialDidOpen
+{
+	NSLog(@"%s", __PRETTY_FUNCTION__);
+
+	AsyncTask(ENamedThreads::GameThread, [self]() {
+		if (self.PluginDelegate != nullptr)
+		{
+			self.PluginDelegate->Broadcast(EIronSourceEventType::InterstitialOpened);
+		}
+	});
+}
+// Invoked when there is no Interstitial Ad available after calling load function.
+// @param error - will contain the failure code and description.
+- (void)interstitialDidFailToLoadWithError:(NSError*)error
+{
+	NSLog(@"%s", __PRETTY_FUNCTION__);
+
+	AsyncTask(ENamedThreads::GameThread, [self]() {
+		if (self.PluginDelegate != nullptr)
+		{
+			self.PluginDelegate->Broadcast(EIronSourceEventType::InterstitialLoadFailed);
+		}
+	});
+}
+
+// Invoked right before the Interstitial screen is about to open.
+// NOTE - This event is available only for some of the networks.
+// You should NOT treat this event as an interstitial impression, but rather use InterstitialAdOpenedEvent
+- (void)interstitialDidShow
+{
+	NSLog(@"%s", __PRETTY_FUNCTION__);
+
+	AsyncTask(ENamedThreads::GameThread, [self]() {
+		if (self.PluginDelegate != nullptr)
+		{
+			self.PluginDelegate->Broadcast(EIronSourceEventType::InterstitialShowSucceeded);
+		}
+	});
+}
+
+@end
+
 void UPsIronSource_iOS::InitIronSource(const FString& UserId)
 {
 	UE_LOG(LogPsIronSource, Log, TEXT("%s: Initialize IronSource with iOS SDK"), *PS_FUNC_LINE);
@@ -202,9 +296,13 @@ void UPsIronSource_iOS::InitIronSource(const FString& UserId)
 	  ImpressionDelegate = [[PSISImpressionDataDelegate alloc] init];
 	  ImpressionDelegate.Proxy = this;
 
+	  InterstitialDelegate = [[PSISInterstitialDelegate alloc] init];
+	  InterstitialDelegate.PluginDelegate = &VideoStateDelegate;
+
 	  [IronSource setLogDelegate:LogDelegate];
 	  [IronSource setRewardedVideoDelegate:Delegate];
 	  [IronSource addImpressionDataDelegate:ImpressionDelegate];
+	  [IronSource setInterstitialDelegate:InterstitialDelegate];
 	  [IronSource setUserId:UserIdNativeString];
 	  [IronSource initWithAppKey:AppKeyNativeString];
 	  [ISIntegrationHelper validateIntegration];
@@ -285,6 +383,36 @@ void UPsIronSource_iOS::SetGDPRConsent(bool bConsent) const
 	dispatch_async(dispatch_get_main_queue(), ^{
 	  [IronSource setConsent:bConsent];
 	});
+}
+
+void UPsIronSource_iOS::LoadInterstitial()
+{
+	UE_LOG(LogPsIronSource, Log, TEXT("%s"), *PS_FUNC_LINE);
+	dispatch_async(dispatch_get_main_queue(), ^{
+	  [IronSource loadInterstitial];
+	});
+}
+
+bool UPsIronSource_iOS::IsInterstitialReady() const
+{
+	UE_LOG(LogPsIronSource, Log, TEXT("%s"), *PS_FUNC_LINE);
+	return [IronSource hasInterstitial];
+}
+
+void UPsIronSource_iOS::ShowInterstitial(const FString& PlacementName) const
+{
+	UE_LOG(LogPsIronSource, Log, TEXT("%s"), *PS_FUNC_LINE);
+	NSString* PlacementNameNativeString = PlacementName.GetNSString();
+	dispatch_async(dispatch_get_main_queue(), ^{
+	  [IronSource showInterstitialWithViewController:UIApplication.sharedApplication.delegate.window.rootViewController placement:PlacementNameNativeString];
+	});
+}
+
+bool UPsIronSource_iOS::IsInterstitialCappedForPlacement(const FString& PlacementName) const
+{
+	UE_LOG(LogPsIronSource, Log, TEXT("%s"), *PS_FUNC_LINE);
+	NSString* PlacementNameNativeString = PlacementName.GetNSString();
+	return [IronSource isInterstitialCappedForPlacement:PlacementNameNativeString];
 }
 
 #endif // WITH_IRONSOURCE && PLATFORM_IOS

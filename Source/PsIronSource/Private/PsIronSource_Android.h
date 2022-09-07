@@ -24,6 +24,11 @@ class UPsIronSource_Android : public UPsIronSourceProxy
 	virtual bool IsRewardedVideoCappedForPlacement(const FString& PlacementName) const override;
 	virtual void ShowRewardedVideo(const FString& PlacementName) const override;
 	virtual void SetGDPRConsent(bool bConsent) const override;
+
+	virtual void LoadInterstitial() override;
+	virtual bool IsInterstitialReady() const override;
+	virtual void ShowInterstitial(const FString& PlacementName) const override;
+	virtual bool IsInterstitialCappedForPlacement(const FString& PlacementName) const override;
 	// End UPsIronSourceProxy interface
 
 public:
@@ -35,5 +40,10 @@ public:
 	static jmethodID AndroidThunkJava_IronSource_isRewardedVideoCappedForPlacement;
 	static jmethodID AndroidThunkJava_IronSource_showRewardedVideo;
 	static jmethodID AndroidThunkJava_IronSource_setGDPRConsent;
+
+	static jmethodID AndroidThunkJava_IronSource_loadInterstitial;
+	static jmethodID AndroidThunkJava_IronSource_isInterstitialReady;
+	static jmethodID AndroidThunkJava_IronSource_showInterstitial;
+	static jmethodID AndroidThunkJava_IronSource_isInterstitialCappedForPlacement;
 #endif // WITH_IRONSOURCE && PLATFORM_ANDROID
 };
