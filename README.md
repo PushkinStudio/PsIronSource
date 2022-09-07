@@ -36,6 +36,14 @@ Initizalize SDK using `UPsIronSourceLibrary::GetIronSourceProxy()->InitIronSourc
 
 You can get notifications about various ad-related events by binding to `VideoStateDelegate`: `UPsIronSourceLibrary::GetIronSourceProxy()->VideoStateDelegate.AddDynamic(this, &AExampleGameMode::OnVideoAdStateChanged)`.
 
+## Rewarded video
+
 To query rewarded video availability, use `HasRewardedVideo`, `IsRewardedVideoCappedForPlacement` or `VideoStateDelegate` events.
 
 To start rewarded video, call `ShowRewardedVideo`.
+
+## Interstitials
+
+To query interstitial availability, use `IsInterstitialReady`, `IsInterstitialCappedForPlacement` or `VideoStateDelegate` events. 
+
+To start interstitial, call `ShowInterstitial`. You should load interstitial manually with function `LoadInterstitial` before first call `ShowInterstitial` and every time after interstitial was shown, e.g., you can use events `InterstitialClosed`, `InterstitialShowFailed` and `InterstitialLoadFailed`.
