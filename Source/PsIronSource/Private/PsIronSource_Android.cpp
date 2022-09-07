@@ -26,6 +26,11 @@ jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_isRewardedVideoCapp
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_showRewardedVideo;
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_setGDPRConsent;
 
+jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_loadInterstitial;
+jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_isInterstitialReady;
+jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_showInterstitial;
+jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_isInterstitialCappedForPlacement;
+
 UPsIronSourceProxy* ISProxy;
 
 void UPsIronSource_Android::InitIronSource(const FString& UserId)
@@ -182,6 +187,73 @@ void UPsIronSource_Android::SetGDPRConsent(bool bConsent) const
 	else
 	{
 		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+	}
+}
+
+void UPsIronSource_Android::LoadInterstitial()
+{
+	LOGD("%s", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+	if (JNIEnv* Env = FAndroidApplication::GetJavaEnv(true))
+	{
+		UPsIronSource_Android::AndroidThunkJava_IronSource_loadInterstitial = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_IronSource_loadInterstitial", "()V", false);
+
+		FJavaWrapper::CallVoidMethod(Env, FJavaWrapper::GameActivityThis, UPsIronSource_Android::AndroidThunkJava_IronSource_loadInterstitial);
+	}
+	else
+	{
+		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+	}
+}
+
+bool UPsIronSource_Android::IsInterstitialReady() const
+{
+	LOGD("%s", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+	if (JNIEnv* Env = FAndroidApplication::GetJavaEnv(true))
+	{
+		UPsIronSource_Android::AndroidThunkJava_IronSource_isInterstitialReady = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_IronSource_isInterstitialReady", "()Z", false);
+
+		return FJavaWrapper::CallBooleanMethod(Env, FJavaWrapper::GameActivityThis, UPsIronSource_Android::AndroidThunkJava_IronSource_isInterstitialReady);
+	}
+	else
+	{
+		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+		return false;
+	}
+}
+
+void UPsIronSource_Android::ShowInterstitial(const FString& PlacementName) const
+{
+	LOGD("%s", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+	if (JNIEnv* Env = FAndroidApplication::GetJavaEnv(true))
+	{
+		UPsIronSource_Android::AndroidThunkJava_IronSource_showInterstitial = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_IronSource_showInterstitial", "(Ljava/lang/String;)V", false);
+		jstring JPlacementName = Env->NewStringUTF(TCHAR_TO_UTF8(*PlacementName));
+		FJavaWrapper::CallVoidMethod(Env, FJavaWrapper::GameActivityThis, UPsIronSource_Android::AndroidThunkJava_IronSource_showInterstitial, JPlacementName);
+
+		Env->DeleteLocalRef(JPlacementName);
+	}
+	else
+	{
+		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+	}
+}
+
+bool UPsIronSource_Android::IsInterstitialCappedForPlacement(const FString& PlacementName) const
+{
+	LOGD("%s", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+	if (JNIEnv* Env = FAndroidApplication::GetJavaEnv(true))
+	{
+		UPsIronSource_Android::AndroidThunkJava_IronSource_isInterstitialCappedForPlacement = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_IronSource_isInterstitialCappedForPlacement", "(Ljava/lang/String;)Z", false);
+		jstring JPlacementName = Env->NewStringUTF(TCHAR_TO_UTF8(*PlacementName));
+		const bool bSuccess = FJavaWrapper::CallBooleanMethod(Env, FJavaWrapper::GameActivityThis, UPsIronSource_Android::AndroidThunkJava_IronSource_isInterstitialCappedForPlacement, JPlacementName);
+
+		Env->DeleteLocalRef(JPlacementName);
+		return bSuccess;
+	}
+	else
+	{
+		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+		return false;
 	}
 }
 
@@ -384,16 +456,22 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onImpressionSuccessThunkCpp(
 		Data.Placement = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jImpressionData, getPlacementMethodId));
 
 		jobject RevenueDoubleObject = jenv->CallObjectMethod(jImpressionData, getRevenueMethodId);
-		Data.Revenue = jenv->CallDoubleMethod(RevenueDoubleObject, DoubleValueMethodId);
-		jenv->DeleteLocalRef(RevenueDoubleObject);
+		if (RevenueDoubleObject != NULL)
+		{
+			Data.Revenue = jenv->CallDoubleMethod(RevenueDoubleObject, DoubleValueMethodId);
+			jenv->DeleteLocalRef(RevenueDoubleObject);
+		}
 
 		Data.Precision = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jImpressionData, getPrecisionMethodId));
 		Data.Ab = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jImpressionData, getAbMethodId));
 		Data.SegmentName = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jImpressionData, getSegmentNameMethodId));
 
 		jobject LifetimeRevenueDoubleObject = jenv->CallObjectMethod(jImpressionData, getLifetimeRevenueMethodId);
-		Data.LifetimeRevenue = jenv->CallDoubleMethod(LifetimeRevenueDoubleObject, DoubleValueMethodId);
-		jenv->DeleteLocalRef(LifetimeRevenueDoubleObject);
+		if (LifetimeRevenueDoubleObject != NULL)
+		{
+			Data.LifetimeRevenue = jenv->CallDoubleMethod(LifetimeRevenueDoubleObject, DoubleValueMethodId);
+			jenv->DeleteLocalRef(LifetimeRevenueDoubleObject);
+		}
 
 		Data.EncryptedCpm = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jImpressionData, getEncryptedCPMMethodId));
 		// no Data.ConversionValue
@@ -406,6 +484,146 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onImpressionSuccessThunkCpp(
 			{
 				ISProxy->SetImpressionData(Data);
 				ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::Impression);
+			}
+			else
+			{
+				LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+			}
+		});
+	}
+}
+
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdReadyThunkCpp(JNIEnv* jenv, jobject thiz)
+{
+	if (ISProxy != nullptr)
+	{
+		ISProxy->EnqueueEvent();
+
+		AsyncTask(ENamedThreads::GameThread, []() {
+			if (ISProxy != nullptr)
+			{
+				ISProxy->DequeueEvent();
+				ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::InterstitialReady);
+			}
+			else
+			{
+				LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+			}
+		});
+	}
+}
+
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdLoadFailedThunkCpp(JNIEnv* jenv, jobject thiz, jint errorCode, jstring errorMessage)
+{
+	if (ISProxy != nullptr)
+	{
+		ISProxy->EnqueueEvent();
+
+		AsyncTask(ENamedThreads::GameThread, []() {
+			if (ISProxy != nullptr)
+			{
+				ISProxy->DequeueEvent();
+				ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::InterstitialLoadFailed);
+			}
+			else
+			{
+				LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+			}
+		});
+	}
+}
+
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdOpenedThunkCpp(JNIEnv* jenv, jobject thiz)
+{
+	if (ISProxy != nullptr)
+	{
+		ISProxy->EnqueueEvent();
+
+		AsyncTask(ENamedThreads::GameThread, []() {
+			if (ISProxy != nullptr)
+			{
+				ISProxy->DequeueEvent();
+				ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::InterstitialOpened);
+			}
+			else
+			{
+				LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+			}
+		});
+	}
+}
+
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdClosedThunkCpp(JNIEnv* jenv, jobject thiz)
+{
+	if (ISProxy != nullptr)
+	{
+		ISProxy->EnqueueEvent();
+
+		AsyncTask(ENamedThreads::GameThread, []() {
+			if (ISProxy != nullptr)
+			{
+				ISProxy->DequeueEvent();
+				ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::InterstitialClosed);
+			}
+			else
+			{
+				LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+			}
+		});
+	}
+}
+
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdShowFailedThunkCpp(JNIEnv* jenv, jobject thiz, jint errorCode, jstring errorMessage)
+{
+	if (ISProxy != nullptr)
+	{
+		ISProxy->EnqueueEvent();
+
+		AsyncTask(ENamedThreads::GameThread, []() {
+			if (ISProxy != nullptr)
+			{
+				ISProxy->DequeueEvent();
+				ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::InterstitialShowFailed);
+			}
+			else
+			{
+				LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+			}
+		});
+	}
+}
+
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdClickedThunkCpp(JNIEnv* jenv, jobject thiz)
+{
+	if (ISProxy != nullptr)
+	{
+		ISProxy->EnqueueEvent();
+
+		AsyncTask(ENamedThreads::GameThread, []() {
+			if (ISProxy != nullptr)
+			{
+				ISProxy->DequeueEvent();
+				ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::InterstitialClicked);
+			}
+			else
+			{
+				LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+			}
+		});
+	}
+}
+
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdShowSucceededThunkCpp(JNIEnv* jenv, jobject thiz)
+{
+	if (ISProxy != nullptr)
+	{
+		ISProxy->EnqueueEvent();
+
+		AsyncTask(ENamedThreads::GameThread, []() {
+			if (ISProxy != nullptr)
+			{
+				ISProxy->DequeueEvent();
+				ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::InterstitialShowSucceeded);
 			}
 			else
 			{

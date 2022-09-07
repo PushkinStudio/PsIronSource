@@ -38,6 +38,20 @@
 
 @end
 
+@interface PSISInterstitialDelegate : NSObject <ISInterstitialDelegate>
+
+- (void)interstitialDidLoad;
+- (void)interstitialDidFailToShowWithError:(NSError *)error;
+- (void)didClickInterstitial;
+- (void)interstitialDidClose;
+- (void)interstitialDidOpen;
+- (void)interstitialDidFailToLoadWithError:(NSError *)error;
+- (void)interstitialDidShow;
+
+@property (nonatomic) FPSIronSourceVideoDelegate *PluginDelegate;
+
+@end
+
 #endif // WITH_IRONSOURCE && PLATFORM_IOS
 
 UCLASS()
@@ -56,12 +70,18 @@ class UPsIronSource_iOS : public UPsIronSourceProxy
 	virtual bool IsRewardedVideoCappedForPlacement(const FString& PlacementName) const override;
 	virtual void ShowRewardedVideo(const FString& PlacementName) const override;
 	virtual void SetGDPRConsent(bool bConsent) const override;
+
+	virtual void LoadInterstitial() override;
+	virtual bool IsInterstitialReady() const override;
+	virtual void ShowInterstitial(const FString& PlacementName) const override;
+	virtual bool IsInterstitialCappedForPlacement(const FString& PlacementName) const override;
 	// End UPsIronSourceProxy interface
 
 private:
 	PSISDelegate* Delegate;
 	PSISLogDelegate* LogDelegate;
 	PSISImpressionDataDelegate* ImpressionDelegate;
+	PSISInterstitialDelegate* InterstitialDelegate;
 
 #endif // WITH_IRONSOURCE && PLATFORM_IOS
 };

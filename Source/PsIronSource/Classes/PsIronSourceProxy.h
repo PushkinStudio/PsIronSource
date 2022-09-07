@@ -9,16 +9,25 @@
 UENUM(BlueprintType)
 enum class EIronSourceEventType : uint8
 {
-	ReceivedReward,    // after the user has been rewarded
-	VideoShowFailed,   // there is a problem playing the video
-	VideoOpened,       // when we take control, but before the video has started playing
-	VideoClosed,       // when we return control back to your hands
-	VideoStarted,      // video has started playing
-	VideoEnded,        // video has stopped playing
-	VideoTapped,       // video has been tapped
-	VideoAvailable,    // video has changed availability to Available
-	VideoNotAvailable, // video has changed availability to Not Available
-	Impression         // ad impression delegate callback
+	ReceivedReward,            // after the user has been rewarded
+	VideoShowFailed,           // there is a problem playing the video
+	VideoOpened,               // when we take control, but before the video has started playing
+	VideoClosed,               // when we return control back to your hands
+	VideoStarted,              // video has started playing
+	VideoEnded,                // video has stopped playing
+	VideoTapped,               // video has been tapped
+	VideoAvailable,            // video has changed availability to Available
+	VideoNotAvailable,         // video has changed availability to Not Available
+	Impression,                // ad impression delegate callback
+	InterstitialReady,         // when Interstitial Ad is ready to be shown after load function was called
+	InterstitialLoadFailed,    // when there is no Interstitial Ad available after calling load function
+	InterstitialOpened,        // when the Interstitial Ad Unit is opened
+	InterstitialClosed,        // when the ad is closed and the user is about to return to the application
+	InterstitialShowFailed,    // when Interstitial ad failed to show
+	InterstitialShowSucceeded, // right before the Interstitial screen is about to open.
+                               // NOTE - This event is available only for some of the networks.
+                               // You should NOT treat this event as an interstitial impression, but rather use InterstitialAdOpenedEvent
+	InterstitialClicked        // when the end user clicked on the interstitial ad, for supported networks only
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPSIronSourceVideoDelegate, EIronSourceEventType, Event);
@@ -137,6 +146,22 @@ public:
 
 	/** Get last impression data */
 	FPsIronSourceImpressionData GetImpressionData() const;
+
+	/** Load interstitial to local cache on mediation level */
+	UFUNCTION(BlueprintCallable, Category = "IronSource")
+	virtual void LoadInterstitial();
+
+	/** Check if interstitial loaded to local cache on mediation level */
+	UFUNCTION(BlueprintCallable, Category = "IronSource")
+	virtual bool IsInterstitialReady() const;
+
+	/** Show interstitial */
+	UFUNCTION(BlueprintCallable, Category = "IronSource")
+	virtual void ShowInterstitial(const FString& PlacementName) const;
+
+	/** Verify if a certain placement has reached its ad limit */
+	UFUNCTION(BlueprintCallable, Category = "IronSource")
+	virtual bool IsInterstitialCappedForPlacement(const FString& PlacementName) const;
 
 public:
 	/** Delegate broadcasting video-related events */
