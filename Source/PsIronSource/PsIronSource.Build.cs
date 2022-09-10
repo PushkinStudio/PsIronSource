@@ -187,8 +187,8 @@ namespace UnrealBuildTool.Rules
 
                     PublicAdditionalFrameworks.Add(
                         new Framework(
-                            "Chartboost",
-                            "../../ThirdParty/iOS/Chartboost.embeddedframework.zip"
+                            "ChartboostSDK",
+                            "../../ThirdParty/iOS/ChartboostSDK.embeddedframework.zip"
                         )
                     );
 
@@ -223,8 +223,7 @@ namespace UnrealBuildTool.Rules
                     PublicAdditionalFrameworks.Add(
                         new Framework(
                             "BUAdSDK",
-                            "../../ThirdParty/iOS/BUAdSDK.embeddedframework.zip",
-                            "BUAdSDK.bundle"
+                            "../../ThirdParty/iOS/BUAdSDK.embeddedframework.zip"
                         )
                     );
 
@@ -255,6 +254,49 @@ namespace UnrealBuildTool.Rules
                             "../../ThirdParty/iOS/BURelyFoundation_Global.embeddedframework.zip"
                         )
                     );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "BURelyAdSDK",
+                            "../../ThirdParty/iOS/BURelyAdSDK.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "PAGAdSDK",
+                            "../../ThirdParty/iOS/PAGAdSDK.embeddedframework.zip",
+                            "PAGAdSDK.bundle"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "YandexMobileAds",
+                            "../../ThirdParty/iOS/YandexMobileAds.embeddedframework.zip",
+                            "YandexMobileAdsBundle.bundle"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "YandexMobileMetrica",
+                            "../../ThirdParty/iOS/YandexMobileMetrica.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "IronSourceYandexMobileAdsAdapters",
+                            "../../ThirdParty/iOS/IronSourceYandexMobileAdsAdapters.embeddedframework.zip"
+                        )
+                    );
+
+                    string SDKROOT = Utils.RunLocalProcessAndReturnStdOut("/usr/bin/xcrun", "--sdk iphoneos --show-sdk-path");
+                    PublicSystemLibraryPaths.Add(SDKROOT + "/usr/lib/swift");
+                    PublicSystemLibraryPaths.Add(SDKROOT + "../../../../../../Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos");
+                    PublicSystemLibraryPaths.Add(SDKROOT + "../../../../../../Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0/iphoneos");
+                    PublicSystemLibraryPaths.Add(SDKROOT + "../../../../../../Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.5/iphoneos");
 
                     PublicSystemLibraries.Add("z");
                     PublicSystemLibraries.Add("bz2");

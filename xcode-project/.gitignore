@@ -1,0 +1,11 @@
+.DS_Store
+.Trashes
+DerivedData/
+build/
+*.xccheckout
+xcuserdata/
+
+Podfile.lock
+Pods/
+downloads/
+frameworks/

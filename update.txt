@@ -1,0 +1,5 @@
+IronSource.framework/Headers/ISBaseAdAdapter.h:31 must be as follows:
+
+@property (nonatomic, retain) ISAdUnit *adUnit; 
+
+Don't add GoogleAppMeasurementIdentitySupport framework.
