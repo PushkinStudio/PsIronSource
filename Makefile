@@ -25,4 +25,3 @@ clean:
 	rm -rf ThirdParty
 	rm -rf xcode-project/downloads
 	rm -rf xcode-project/frameworks
-	
