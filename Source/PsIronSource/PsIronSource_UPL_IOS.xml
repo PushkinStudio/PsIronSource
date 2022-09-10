@@ -57,6 +57,12 @@
 										<setElement result="dSKAdNetworkIdentifierKey" value="key" text="SKAdNetworkIdentifier"/>
 										<!-- SKAdNetworkId start -->
 
+<setElement result="dSKAdNetworkItemDict_zq492l623r" value="dict"/>
+<addElement tag="$dSKAdNetworkItemDict_zq492l623r" name="dSKAdNetworkIdentifierKey"/>
+<setElement result="dSKAdNetworkId_zq492l623r" value="string" text="zq492l623r.skadnetwork"/>
+<addElement tag="$dSKAdNetworkItemDict_zq492l623r" name="dSKAdNetworkId_zq492l623r"/>
+<addElement tag="$" name="dSKAdNetworkItemDict_zq492l623r"/>
+
 <setElement result="dSKAdNetworkItemDict_n9x2a789qt" value="dict"/>
 <addElement tag="$dSKAdNetworkItemDict_n9x2a789qt" name="dSKAdNetworkIdentifierKey"/>
 <setElement result="dSKAdNetworkId_n9x2a789qt" value="string" text="n9x2a789qt.skadnetwork"/>
