@@ -16,7 +16,7 @@ class UPsIronSource_Android : public UPsIronSourceProxy
 
 #if WITH_IRONSOURCE && PLATFORM_ANDROID
 	// Begin UPsIronSourceProxy interface
-	virtual void SetOfferwallUseClientSideCallbacks (bool bValue) override;
+	virtual void SetOfferwallUseClientSideCallbacks(bool bValue) override;
 	virtual void InitIronSource(const FString& UserId) override;
 	virtual void ForceUpdateIronSourceUser(const FString& UserId) override;
 	virtual bool HasRewardedVideo() const override;
