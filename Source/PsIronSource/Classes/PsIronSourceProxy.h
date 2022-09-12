@@ -109,6 +109,9 @@ public:
 	/////////////////////////////////////////////////////////////////////////
 	// Setup
 
+	/** Call SetOfferwallUseClientSideCallbacks before InitIronSource */
+	virtual void SetOfferwallUseClientSideCallbacks(bool bValue);
+
 	/** Initialize */
 	UFUNCTION(BlueprintCallable, Category = "IronSource")
 	virtual void InitIronSource(const FString& UserId);

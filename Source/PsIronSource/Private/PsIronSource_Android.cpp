@@ -17,6 +17,7 @@ UPsIronSource_Android::UPsIronSource_Android(const FObjectInitializer& ObjectIni
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
 #define LOG_TAG "[CPP] PSIronSource"
 
+jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_setOfferwallUseClientSideCallbacks;
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_init;
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_ForceUpdateUser;
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_hasRewardedVideo;
@@ -37,6 +38,28 @@ jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_showOfferwallWithPl
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_getOfferwallCredits;
 
 UPsIronSourceProxy* ISProxy;
+
+void UPsIronSource_Android::SetOfferwallUseClientSideCallbacks (bool bValue)
+{
+	LOGD("%s: SetOfferwallUseClientSideCallbacks IronSource with Android SDK", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+
+	if (bIronSourceInitialized)
+	{
+		LOGD("%s: Trying SetOfferwallUseClientSideCallbacks when IronSource already initialized!", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+		return;
+	}
+
+	if (JNIEnv* Env = FAndroidApplication::GetJavaEnv(true))
+	{
+		UPsIronSource_Android::AndroidThunkJava_IronSource_setOfferwallUseClientSideCallbacks = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_IronSource_setOfferwallUseClientSideCallbacks", "(Z)V", false);
+
+		FJavaWrapper::CallVoidMethod(Env, FJavaWrapper::GameActivityThis, UPsIronSource_Android::AndroidThunkJava_IronSource_setOfferwallUseClientSideCallbacks, bValue);
+	}
+	else
+	{
+		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+	}
+}
 
 void UPsIronSource_Android::InitIronSource(const FString& UserId)
 {

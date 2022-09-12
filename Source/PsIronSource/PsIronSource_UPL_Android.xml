@@ -719,13 +719,18 @@
 					/// ******************* CALLABLE FROM CPP *******************
 					///    ***********************************************
 					///
+					// NOTE: call _setSupersonicConfClientSideCallbacks before _init
+					public void AndroidThunkJava_IronSource_setOfferwallUseClientSideCallbacks(boolean value)
+					{
+						Log.debug(String.format("AndroidThunkJava_IronSource_setOfferwallUseClientSideCallbacks: %b", value));
+
+						SupersonicConfig.getConfigObj().setClientSideCallbacks(value);
+					}
+					
 					public void AndroidThunkJava_IronSource_init(String APIKey, String UserId)
 					{
 						Log.debug("AndroidThunkJava_IronSource_init");
-						
-						// NOTE: call setClientSideCallbacks(true) before IronSource.init ()
-						SupersonicConfig.getConfigObj().setClientSideCallbacks(true);					
-					
+
 						IronSource.setUserId(UserId);
 						IronSource.setRewardedVideoListener(mRewardedVideoListener);
 						IronSource.addImpressionDataListener(mImpressionDataListener);

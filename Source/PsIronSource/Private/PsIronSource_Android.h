@@ -16,6 +16,7 @@ class UPsIronSource_Android : public UPsIronSourceProxy
 
 #if WITH_IRONSOURCE && PLATFORM_ANDROID
 	// Begin UPsIronSourceProxy interface
+	virtual void SetOfferwallUseClientSideCallbacks (bool bValue) override;
 	virtual void InitIronSource(const FString& UserId) override;
 	virtual void ForceUpdateIronSourceUser(const FString& UserId) override;
 	virtual bool HasRewardedVideo() const override;
@@ -37,6 +38,7 @@ class UPsIronSource_Android : public UPsIronSourceProxy
 	// End UPsIronSourceProxy interface
 
 public:
+	static jmethodID AndroidThunkJava_IronSource_setOfferwallUseClientSideCallbacks;
 	static jmethodID AndroidThunkJava_IronSource_init;
 	static jmethodID AndroidThunkJava_IronSource_ForceUpdateUser;
 	static jmethodID AndroidThunkJava_IronSource_hasRewardedVideo;

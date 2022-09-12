@@ -116,6 +116,7 @@ class UPsIronSource_iOS : public UPsIronSourceProxy
 #if WITH_IRONSOURCE && PLATFORM_IOS
 
 	// Begin UPsIronSourceProxy interface
+	virtual void SetOfferwallUseClientSideCallbacks(bool bValue) override;
 	virtual void InitIronSource(const FString& UserId) override;
 	virtual void ForceUpdateIronSourceUser(const FString& UserId) override;
 	virtual bool HasRewardedVideo() const override;
