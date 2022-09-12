@@ -31,6 +31,11 @@ jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_isInterstitialReady
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_showInterstitial;
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_isInterstitialCappedForPlacement;
 
+jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_hasOfferwall;
+jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_showOfferwall;
+jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_showOfferwallWithPlacement;
+jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_getOfferwallCredits;
+
 UPsIronSourceProxy* ISProxy;
 
 void UPsIronSource_Android::InitIronSource(const FString& UserId)
@@ -254,6 +259,67 @@ bool UPsIronSource_Android::IsInterstitialCappedForPlacement(const FString& Plac
 	{
 		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 		return false;
+	}
+}
+
+bool UPsIronSource_Android::HasOfferwall() const
+{
+	LOGD("%s", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+	if (JNIEnv* Env = FAndroidApplication::GetJavaEnv(true))
+	{
+		UPsIronSource_Android::AndroidThunkJava_IronSource_hasOfferwall = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_IronSource_hasOfferwall", "()Z", false);
+		return FJavaWrapper::CallBooleanMethod(Env, FJavaWrapper::GameActivityThis, UPsIronSource_Android::AndroidThunkJava_IronSource_hasOfferwall);
+	}
+	else
+	{
+		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+		return false;
+	}
+}
+
+void UPsIronSource_Android::ShowOfferwall() const
+{
+	LOGD("%s", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+	if (JNIEnv* Env = FAndroidApplication::GetJavaEnv(true))
+	{
+		UPsIronSource_Android::AndroidThunkJava_IronSource_showOfferwall = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_IronSource_showOfferwall", "()V", false);
+		FJavaWrapper::CallVoidMethod(Env, FJavaWrapper::GameActivityThis, UPsIronSource_Android::AndroidThunkJava_IronSource_showOfferwall);
+	}
+	else
+	{
+		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+	}
+}
+
+void UPsIronSource_Android::ShowOfferwallWithPlacement(const FString& PlacementName) const
+{
+	LOGD("%s", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+	if (JNIEnv* Env = FAndroidApplication::GetJavaEnv(true))
+	{
+		jstring JPlacementName = Env->NewStringUTF(TCHAR_TO_UTF8(*PlacementName));
+
+		UPsIronSource_Android::AndroidThunkJava_IronSource_showOfferwallWithPlacement = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_IronSource_showOfferwallWithPlacement", "(Ljava/lang/String;)V", false);
+		FJavaWrapper::CallVoidMethod(Env, FJavaWrapper::GameActivityThis, UPsIronSource_Android::AndroidThunkJava_IronSource_showOfferwallWithPlacement, JPlacementName);
+
+		Env->DeleteLocalRef(JPlacementName);
+	}
+	else
+	{
+		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+	}
+}
+
+void UPsIronSource_Android::GetOfferwallCredits() const
+{
+	LOGD("%s", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+	if (JNIEnv* Env = FAndroidApplication::GetJavaEnv(true))
+	{
+		UPsIronSource_Android::AndroidThunkJava_IronSource_getOfferwallCredits = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_IronSource_getOfferwallCredits", "()V", false);
+		FJavaWrapper::CallVoidMethod(Env, FJavaWrapper::GameActivityThis, UPsIronSource_Android::AndroidThunkJava_IronSource_getOfferwallCredits);
+	}
+	else
+	{
+		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 	}
 }
 
@@ -624,6 +690,148 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdShowSucceede
 			{
 				ISProxy->DequeueEvent();
 				ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::InterstitialShowSucceeded);
+			}
+			else
+			{
+				LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+			}
+		});
+	}
+}
+
+// Invoked when there is a change in the offerwall availability status
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onOfferwallAvailabilityChangedThunkCpp(JNIEnv* jenv, jobject thiz, jboolean available)
+{
+	// this event does not need to be counted
+	AsyncTask(ENamedThreads::GameThread, [available]() {
+		if (ISProxy != nullptr)
+		{
+			if (available)
+			{
+				ISProxy->OfferwallStateDelegate.Broadcast(EIronSourceOfferwallEventType::Available, 0, 0, false);
+			}
+			else
+			{
+				ISProxy->OfferwallStateDelegate.Broadcast(EIronSourceOfferwallEventType::NotAvailable, 0, 0, false);
+			}
+		}
+		else
+		{
+			LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+		}
+	});
+}
+
+// Invoked when offerwall successfully loads for the user, after calling the 'showOfferwall' method
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onOfferwallOpenedThunkCpp(JNIEnv* jenv, jobject thiz)
+{
+	if (ISProxy != nullptr)
+	{
+		ISProxy->EnqueueEvent();
+
+		AsyncTask(ENamedThreads::GameThread, []() {
+			if (ISProxy != nullptr)
+			{
+				ISProxy->DequeueEvent();
+				ISProxy->OfferwallStateDelegate.Broadcast(EIronSourceOfferwallEventType::Opened, 0, 0, false);
+			}
+			else
+			{
+				LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+			}
+		});
+	}
+}
+
+// Invoked when offerwall fails to load for the user, after calling the 'showOfferwall' method
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onOfferwallShowFailedThunkCpp(JNIEnv* jenv, jobject thiz, jint errorCode, jstring errorMessage)
+{
+	if (ISProxy != nullptr)
+	{
+		ISProxy->EnqueueEvent();
+
+		AsyncTask(ENamedThreads::GameThread, []() {
+			if (ISProxy != nullptr)
+			{
+				ISProxy->DequeueEvent();
+				ISProxy->OfferwallStateDelegate.Broadcast(EIronSourceOfferwallEventType::ShowFailed, 0, 0, false);
+			}
+			else
+			{
+				LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+			}
+		});
+	}
+}
+
+/**
+ * Invoked each time the user completes an Offer.
+ * Award the user with the credit amount corresponding to the value of the *‘credits’ parameter.
+ * @param credits - The number of credits the user has earned.
+ * @param totalCredits - The total number of credits ever earned by the user.
+ * @param totalCreditsFlag - In some cases, we won’t be able to provide the exact
+ * amount of credits since the last event (specifically if the user clears
+ * the app’s data). In this case the ‘credits’ will be equal to the ‘totalCredits’, and this flag will be ‘true’.
+ * @return bool - true if you received the callback and rewarded the user, otherwise false.
+ */
+JNI_METHOD jboolean Java_com_epicgames_ue4_GameActivity_onOfferwallCreditedThunkCpp(JNIEnv* jenv, jobject thiz, jint credits, jint totalCredits, jboolean totalCreditsFlag)
+{
+	jboolean bIsUserRewarded = JNI_TRUE;
+
+	if (ISProxy != nullptr)
+	{
+		ISProxy->EnqueueEvent();
+
+		AsyncTask(ENamedThreads::GameThread, [credits, totalCredits, totalCreditsFlag]() {
+			if (ISProxy != nullptr)
+			{
+				ISProxy->DequeueEvent();
+				ISProxy->OfferwallStateDelegate.Broadcast(EIronSourceOfferwallEventType::Credited,
+					static_cast<int32>(credits), static_cast<int32>(totalCredits), totalCreditsFlag == JNI_TRUE);
+			}
+			else
+			{
+				LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+			}
+		});
+	}
+
+	return bIsUserRewarded;
+}
+
+// Invoked when the method 'getOfferwallCredits' fails to retrieve the user's credit balance info
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onOfferwallGetCreditsFailedThunkCpp(JNIEnv* jenv, jobject thiz, jint errorCode, jstring errorMessage)
+{
+	if (ISProxy != nullptr)
+	{
+		ISProxy->EnqueueEvent();
+
+		AsyncTask(ENamedThreads::GameThread, []() {
+			if (ISProxy != nullptr)
+			{
+				ISProxy->DequeueEvent();
+				ISProxy->OfferwallStateDelegate.Broadcast(EIronSourceOfferwallEventType::GetCreditsFailed, 0, 0, false);
+			}
+			else
+			{
+				LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+			}
+		});
+	}
+}
+
+// Invoked when the user is about to return to the application after closing
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onOfferwallClosedThunkCpp(JNIEnv* jenv, jobject thiz)
+{
+	if (ISProxy != nullptr)
+	{
+		ISProxy->EnqueueEvent();
+
+		AsyncTask(ENamedThreads::GameThread, []() {
+			if (ISProxy != nullptr)
+			{
+				ISProxy->DequeueEvent();
+				ISProxy->OfferwallStateDelegate.Broadcast(EIronSourceOfferwallEventType::Closed, 0, 0, false);
 			}
 			else
 			{

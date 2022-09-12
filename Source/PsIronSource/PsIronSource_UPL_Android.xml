@@ -456,6 +456,13 @@
 					private native void onInterstitialAdClickedThunkCpp();
 					private native void onInterstitialAdShowSucceededThunkCpp();
 
+					private native void onOfferwallAvailabilityChangedThunkCpp(boolean available);
+					private native void onOfferwallOpenedThunkCpp();					
+					private native void onOfferwallShowFailedThunkCpp(int errorCode, String errorMessage);
+					private native boolean onOfferwallCreditedThunkCpp(int credits, int totalCredits, boolean totalCreditsFlag);
+					private native void onOfferwallGetCreditsFailedThunkCpp(int errorCode, String errorMessage);
+					private native void onOfferwallClosedThunkCpp();
+
 					/// ******************* REWARDED VIDEO ******************
 					///    ***********************************************
 					///
@@ -621,16 +628,103 @@
 						}
 					};
 
+					/// ********************* OFFERWALL *********************
+					///    ***********************************************
+					///
+					OfferwallListener mOfferwallListener = new OfferwallListener()
+					{
+						/**
+						* Invoked when there is a change in the Offerwall availability status.
+						* @param - available - value will change to YES when Offerwall are available.
+						* You can then show the offerwall by calling showOfferwall(). Value will *change to NO when Offerwall isn't available.
+						*/
+						@Override
+						public void onOfferwallAvailable(boolean isAvailable) 
+						{
+							Log.debug(String.format("onOfferwallAvailable: %b", isAvailable));
+							onOfferwallAvailabilityChangedThunkCpp(isAvailable);
+						}
+					
+						/**
+						* Invoked when the Offerwall successfully loads for the user, after calling the 'showOfferwall' method
+						*/
+						@Override
+						public void onOfferwallOpened() 
+						{
+							Log.debug("onOfferwallOpened");
+							onOfferwallOpenedThunkCpp();
+						}
+					
+						/**
+						* Invoked when the method 'showOfferwall' is called and the Offerwall fails to load.
+						* @param error - A IronSourceError Object which represents the reason of 'showOfferwall' failure.
+						*/
+						@Override
+						public void onOfferwallShowFailed(IronSourceError error) 
+						{
+							Log.debug(String.format("onOfferwallShowFailed error. Errcode: %d, Reason: %s.",
+								error.getErrorCode(), error.getErrorMessage()));
+							onOfferwallShowFailedThunkCpp(error.getErrorCode(), error.getErrorMessage());
+						}
+					
+						/**
+						* Invoked each time the user completes an Offer.
+						* Award the user with the credit amount corresponding to the value of the *‘credits’ parameter.
+						* @param credits - The number of credits the user has earned.
+						* @param totalCredits - The total number of credits ever earned by the user.
+						* @param totalCreditsFlag - In some cases, we won’t be able to provide the exact
+						* amount of credits since the last event (specifically if the user clears
+						* the app’s data). In this case the ‘credits’ will be equal to the ‘totalCredits’, and this flag will be ‘true’.
+						* @return boolean - true if you received the callback and rewarded the user, otherwise false.
+						*/
+						@Override
+						public boolean onOfferwallAdCredited(int credits, int totalCredits, boolean totalCreditsFlag) 
+						{
+							Log.debug("onOfferwallAdCredited");
+							return onOfferwallCreditedThunkCpp (credits, totalCredits, totalCreditsFlag);
+						}
+					
+						/**
+						* Invoked when the method 'getOfferwallCredits' fails to retrieve
+						* the user's credit balance info.
+						* @param error - A IronSourceError object which represents the reason of 'getOfferwallCredits' failure.
+						* If using client-side callbacks to reward users, it is mandatory to return true on this event
+						*/
+						@Override
+						public void onGetOfferwallCreditsFailed(IronSourceError error) 
+						{
+							Log.debug(String.format("onGetOfferwallCreditsFailed error. Errcode: %d, Reason: %s.",
+								error.getErrorCode(), error.getErrorMessage()));
+							onOfferwallGetCreditsFailedThunkCpp(error.getErrorCode(), error.getErrorMessage());
+						}
+					
+						/**
+						* Invoked when the user is about to return to the application after closing
+						* the Offerwall.
+						*/
+						@Override
+						public void onOfferwallClosed() 
+						{
+							Log.debug("onOfferwallClosed");
+							onOfferwallClosedThunkCpp();
+						}
+					};
+
 					/// ******************* CALLABLE FROM CPP *******************
 					///    ***********************************************
 					///
 					public void AndroidThunkJava_IronSource_init(String APIKey, String UserId)
 					{
 						Log.debug("AndroidThunkJava_IronSource_init");
+						
+						// NOTE: call setClientSideCallbacks(true) before IronSource.init ()
+						SupersonicConfig.getConfigObj().setClientSideCallbacks(true);					
+					
 						IronSource.setUserId(UserId);
 						IronSource.setRewardedVideoListener(mRewardedVideoListener);
 						IronSource.addImpressionDataListener(mImpressionDataListener);
 						IronSource.setInterstitialListener(mInterstitialsVideoListener);
+						IronSource.setOfferwallListener(mOfferwallListener);
 						
 						IronSource.init(this, APIKey);
 						IntegrationHelper.validateIntegration(this);
@@ -718,6 +812,30 @@
 						return IronSource.isInterstitialPlacementCapped(PlacementName);
 					}
 
+					public boolean AndroidThunkJava_IronSource_hasOfferwall()
+					{
+						Log.debug("AndroidThunkJava_IronSource_hasOfferwall");
+						return IronSource.isOfferwallAvailable();
+					}
+
+					public void AndroidThunkJava_IronSource_showOfferwall()
+					{
+						Log.debug("AndroidThunkJava_IronSource_showOfferwall");
+						IronSource.showOfferwall();
+					}
+
+					public void AndroidThunkJava_IronSource_showOfferwallWithPlacement(String PlacementName)
+					{
+						Log.debug("AndroidThunkJava_IronSource_showOfferwallWithPlacement");
+						IronSource.showOfferwall(PlacementName);
+					}
+
+					public void AndroidThunkJava_IronSource_getOfferwallCredits()
+					{
+						Log.debug("AndroidThunkJava_IronSource_getOfferwallCredits");
+						IronSource.getOfferwallCredits();
+					}
+					
 				</insert>
 			</true>
 		</if>
