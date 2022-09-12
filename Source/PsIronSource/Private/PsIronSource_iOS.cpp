@@ -247,7 +247,7 @@ UPsIronSource_iOS::UPsIronSource_iOS(const FObjectInitializer& ObjectInitializer
 // @param error - will contain the failure code and description.
 - (void)interstitialDidFailToLoadWithError:(NSError*)error
 {
-	NSLog(@"%s", __PRETTY_FUNCTION__);
+	NSLog(@"%s %@", __PRETTY_FUNCTION__, error.description);
 
 	AsyncTask(ENamedThreads::GameThread, [self]() {
 		if (self.PluginDelegate != nullptr)
@@ -268,6 +268,95 @@ UPsIronSource_iOS::UPsIronSource_iOS(const FObjectInitializer& ObjectInitializer
 		if (self.PluginDelegate != nullptr)
 		{
 			self.PluginDelegate->Broadcast(EIronSourceEventType::InterstitialShowSucceeded);
+		}
+	});
+}
+
+@end
+
+@implementation PSISOfferwallDelegate
+
+- (void)offerwallHasChangedAvailability:(BOOL)available
+{
+	NSLog(@"%s", __PRETTY_FUNCTION__);
+
+	AsyncTask(ENamedThreads::GameThread, [self, available]() {
+		if (self.PluginDelegate != nullptr)
+		{
+			if (available)
+			{
+				self.PluginDelegate->Broadcast(EIronSourceOfferwallEventType::Available, 0, 0, false);
+			}
+			else
+			{
+				self.PluginDelegate->Broadcast(EIronSourceOfferwallEventType::NotAvailable, 0, 0, false);
+			}
+		}
+	});
+}
+
+- (void)offerwallDidShow
+{
+	NSLog(@"%s", __PRETTY_FUNCTION__);
+
+	AsyncTask(ENamedThreads::GameThread, [self]() {
+		if (self.PluginDelegate != nullptr)
+		{
+			self.PluginDelegate->Broadcast(EIronSourceOfferwallEventType::Opened, 0, 0, false);
+		}
+	});
+}
+
+- (void)offerwallDidFailToShowWithError:(NSError*)error
+{
+	NSLog(@"%s %@", __PRETTY_FUNCTION__, error.description);
+
+	AsyncTask(ENamedThreads::GameThread, [self]() {
+		if (self.PluginDelegate != nullptr)
+		{
+			self.PluginDelegate->Broadcast(EIronSourceOfferwallEventType::ShowFailed, 0, 0, false);
+		}
+	});
+}
+
+- (void)offerwallDidClose
+{
+	NSLog(@"%s", __PRETTY_FUNCTION__);
+
+	AsyncTask(ENamedThreads::GameThread, [self]() {
+		if (self.PluginDelegate != nullptr)
+		{
+			self.PluginDelegate->Broadcast(EIronSourceOfferwallEventType::Closed, 0, 0, false);
+		}
+	});
+}
+
+- (BOOL)didReceiveOfferwallCredits:(NSDictionary*)creditInfo
+{
+	NSLog(@"%s", __PRETTY_FUNCTION__);
+
+	const int32 Credits = [[creditInfo objectForKey:@"credits"] intValue];
+	const int32 TotalCredits = [[creditInfo objectForKey:@"totalCredits"] intValue];
+	const bool TotalCreditsFlag = [[creditInfo objectForKey:@"totalCreditsFlag"] boolValue];
+
+	AsyncTask(ENamedThreads::GameThread, [self, Credits, TotalCredits, TotalCreditsFlag]() {
+		if (self.PluginDelegate != nullptr)
+		{
+			self.PluginDelegate->Broadcast(EIronSourceOfferwallEventType::Credited, Credits, TotalCredits, TotalCreditsFlag);
+		}
+	});
+
+	return YES;
+}
+
+- (void)didFailToReceiveOfferwallCreditsWithError:(NSError*)error
+{
+	NSLog(@"%s %@", __PRETTY_FUNCTION__, error.description);
+
+	AsyncTask(ENamedThreads::GameThread, [self]() {
+		if (self.PluginDelegate != nullptr)
+		{
+			self.PluginDelegate->Broadcast(EIronSourceOfferwallEventType::GetCreditsFailed, 0, 0, false);
 		}
 	});
 }
@@ -299,10 +388,15 @@ void UPsIronSource_iOS::InitIronSource(const FString& UserId)
 	  InterstitialDelegate = [[PSISInterstitialDelegate alloc] init];
 	  InterstitialDelegate.PluginDelegate = &VideoStateDelegate;
 
+	  OfferwallDelegate = [[PSISOfferwallDelegate alloc] init];
+	  OfferwallDelegate.PluginDelegate = &OfferwallStateDelegate;
+	  [ISSupersonicAdsConfiguration configurations].useClientSideCallbacks = [NSNumber numberWithInt:1];
+
 	  [IronSource setLogDelegate:LogDelegate];
 	  [IronSource setRewardedVideoDelegate:Delegate];
 	  [IronSource addImpressionDataDelegate:ImpressionDelegate];
 	  [IronSource setInterstitialDelegate:InterstitialDelegate];
+	  [IronSource setOfferwallDelegate:OfferwallDelegate];
 	  [IronSource setUserId:UserIdNativeString];
 	  [IronSource initWithAppKey:AppKeyNativeString];
 	  [ISIntegrationHelper validateIntegration];
@@ -413,6 +507,36 @@ bool UPsIronSource_iOS::IsInterstitialCappedForPlacement(const FString& Placemen
 	UE_LOG(LogPsIronSource, Log, TEXT("%s"), *PS_FUNC_LINE);
 	NSString* PlacementNameNativeString = PlacementName.GetNSString();
 	return [IronSource isInterstitialCappedForPlacement:PlacementNameNativeString];
+}
+
+bool UPsIronSource_iOS::HasOfferwall() const
+{
+	UE_LOG(LogPsIronSource, Log, TEXT("%s"), *PS_FUNC_LINE);
+	return [IronSource hasOfferwall];
+}
+
+void UPsIronSource_iOS::ShowOfferwall() const
+{
+	UE_LOG(LogPsIronSource, Log, TEXT("%s"), *PS_FUNC_LINE);
+	dispatch_async(dispatch_get_main_queue(), ^{
+	  [IronSource showOfferwallWithViewController:UIApplication.sharedApplication.delegate.window.rootViewController];
+	});
+}
+
+void UPsIronSource_iOS::ShowOfferwallWithPlacement(const FString& PlacementName) const
+{
+	UE_LOG(LogPsIronSource, Log, TEXT("%s"), *PS_FUNC_LINE);
+	NSString* PlacementNameNativeString = PlacementName.GetNSString();
+	dispatch_async(dispatch_get_main_queue(), ^{
+	  [IronSource showOfferwallWithViewController:UIApplication.sharedApplication.delegate.window.rootViewController placement:PlacementNameNativeString];
+	});
+}
+
+void UPsIronSource_iOS::GetOfferwallCredits() const
+{
+	dispatch_async(dispatch_get_main_queue(), ^{
+	  [IronSource offerwallCredits];
+	});
 }
 
 #endif // WITH_IRONSOURCE && PLATFORM_IOS

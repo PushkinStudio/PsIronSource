@@ -29,6 +29,11 @@ class UPsIronSource_Android : public UPsIronSourceProxy
 	virtual bool IsInterstitialReady() const override;
 	virtual void ShowInterstitial(const FString& PlacementName) const override;
 	virtual bool IsInterstitialCappedForPlacement(const FString& PlacementName) const override;
+
+	virtual bool HasOfferwall() const override;
+	virtual void ShowOfferwall() const override;
+	virtual void ShowOfferwallWithPlacement(const FString& PlacementName) const override;
+	virtual void GetOfferwallCredits() const override;
 	// End UPsIronSourceProxy interface
 
 public:
@@ -45,5 +50,10 @@ public:
 	static jmethodID AndroidThunkJava_IronSource_isInterstitialReady;
 	static jmethodID AndroidThunkJava_IronSource_showInterstitial;
 	static jmethodID AndroidThunkJava_IronSource_isInterstitialCappedForPlacement;
+
+	static jmethodID AndroidThunkJava_IronSource_hasOfferwall;
+	static jmethodID AndroidThunkJava_IronSource_showOfferwall;
+	static jmethodID AndroidThunkJava_IronSource_showOfferwallWithPlacement;
+	static jmethodID AndroidThunkJava_IronSource_getOfferwallCredits;
 #endif // WITH_IRONSOURCE && PLATFORM_ANDROID
 };

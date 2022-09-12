@@ -25,12 +25,25 @@ enum class EIronSourceEventType : uint8
 	InterstitialClosed,        // when the ad is closed and the user is about to return to the application
 	InterstitialShowFailed,    // when Interstitial ad failed to show
 	InterstitialShowSucceeded, // right before the Interstitial screen is about to open.
-                               // NOTE - This event is available only for some of the networks.
-                               // You should NOT treat this event as an interstitial impression, but rather use InterstitialAdOpenedEvent
+							   // NOTE - This event is available only for some of the networks.
+							   // You should NOT treat this event as an interstitial impression, but rather use InterstitialAdOpenedEvent
 	InterstitialClicked        // when the end user clicked on the interstitial ad, for supported networks only
 };
 
+UENUM(BlueprintType)
+enum class EIronSourceOfferwallEventType : uint8
+{
+	Available,        // when offerwall has changed availability to Available
+	NotAvailable,     // when offerwall has changed availability to Not Available
+	Opened,           // when offerwall successfully loads for the user, after calling the 'showOfferwall' method
+	ShowFailed,       // when offerwall fails to load for the user, after calling the 'showOfferwall' method
+	Credited,         // invoked each time the user completes an Offer
+	GetCreditsFailed, // when the method 'getOfferwallCredits' fails to retrieve the user's credit balance info
+	Closed            // when the user is about to return to the application after closing
+};
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPSIronSourceVideoDelegate, EIronSourceEventType, Event);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FPSIronSourceOfferwallDelegate, EIronSourceOfferwallEventType, Event, int32, Credits, int32, TotalCredits, bool, TotalCreditsFlag);
 
 USTRUCT()
 struct FPsIronSourceImpressionData
@@ -163,10 +176,30 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "IronSource")
 	virtual bool IsInterstitialCappedForPlacement(const FString& PlacementName) const;
 
+	/** Determine if a locally cached rewarded video exists on the mediation level */
+	UFUNCTION(BlueprintCallable, Category = "IronSource")
+	virtual bool HasOfferwall() const;
+
+	/** Show offerwall */
+	UFUNCTION(BlueprintCallable, Category = "IronSource")
+	virtual void ShowOfferwall() const;
+
+	/** Show offerwall with certain placement */
+	UFUNCTION(BlueprintCallable, Category = "IronSource")
+	virtual void ShowOfferwallWithPlacement(const FString& PlacementName) const;
+
+	/** Get offerwall credits */
+	UFUNCTION(BlueprintCallable, Category = "IronSource")
+	virtual void GetOfferwallCredits() const;
+
 public:
 	/** Delegate broadcasting video-related events */
 	UPROPERTY(BlueprintAssignable)
 	FPSIronSourceVideoDelegate VideoStateDelegate;
+
+	/** Delegate broadcasting offerwall-related events */
+	UPROPERTY(BlueprintAssignable)
+	FPSIronSourceOfferwallDelegate OfferwallStateDelegate;
 
 protected:
 	/** Whether SDK is initialized */

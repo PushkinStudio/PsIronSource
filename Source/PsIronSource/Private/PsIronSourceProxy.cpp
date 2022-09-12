@@ -113,3 +113,24 @@ bool UPsIronSourceProxy::IsInterstitialCappedForPlacement(const FString& Placeme
 	UE_LOG(LogPsIronSource, Warning, TEXT("%s: Null proxy used"), *PS_FUNC_LINE);
 	return false;
 }
+
+bool UPsIronSourceProxy::HasOfferwall() const
+{
+	UE_LOG(LogPsIronSource, Warning, TEXT("%s: Null proxy used"), *PS_FUNC_LINE);
+	return false;
+}
+
+void UPsIronSourceProxy::ShowOfferwall() const
+{
+	UE_LOG(LogPsIronSource, Warning, TEXT("%s: Null proxy used"), *PS_FUNC_LINE);
+}
+
+void UPsIronSourceProxy::ShowOfferwallWithPlacement(const FString& PlacementName) const
+{
+	UE_LOG(LogPsIronSource, Warning, TEXT("%s: Null proxy used"), *PS_FUNC_LINE);
+}
+
+void UPsIronSourceProxy::GetOfferwallCredits() const
+{
+	UE_LOG(LogPsIronSource, Warning, TEXT("%s: Null proxy used"), *PS_FUNC_LINE);
+}
