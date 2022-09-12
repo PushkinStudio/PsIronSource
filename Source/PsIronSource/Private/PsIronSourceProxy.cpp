@@ -14,6 +14,11 @@ UPsIronSourceProxy::UPsIronSourceProxy(const FObjectInitializer& ObjectInitializ
 /////////////////////////////////////////////////////////////////////////
 // Setup
 
+void UPsIronSourceProxy::SetOfferwallUseClientSideCallbacks(bool bValue)
+{
+	UE_LOG(LogPsIronSource, Warning, TEXT("%s: Null proxy used"), *PS_FUNC_LINE);
+}
+
 void UPsIronSourceProxy::InitIronSource(const FString& UserId)
 {
 	UE_LOG(LogPsIronSource, Warning, TEXT("%s: Null proxy used"), *PS_FUNC_LINE);

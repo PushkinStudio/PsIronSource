@@ -363,6 +363,19 @@ UPsIronSource_iOS::UPsIronSource_iOS(const FObjectInitializer& ObjectInitializer
 
 @end
 
+void UPsIronSource_iOS::SetOfferwallUseClientSideCallbacks(bool bValue)
+{
+	UE_LOG(LogPsIronSource, Log, TEXT("%s: SetOfferwallUseClientSideCallbacks IronSource with iOS SDK"), *PS_FUNC_LINE);
+
+	if (bIronSourceInitialized)
+	{
+		UE_LOG(LogPsIronSource, Warning, TEXT("%s: Trying SetOfferwallUseClientSideCallbacks when IronSource already initialized!"), *PS_FUNC_LINE);
+		return;
+	}
+
+	[ISSupersonicAdsConfiguration configurations].useClientSideCallbacks = [NSNumber numberWithBool:bValue];
+}
+
 void UPsIronSource_iOS::InitIronSource(const FString& UserId)
 {
 	UE_LOG(LogPsIronSource, Log, TEXT("%s: Initialize IronSource with iOS SDK"), *PS_FUNC_LINE);
@@ -390,7 +403,6 @@ void UPsIronSource_iOS::InitIronSource(const FString& UserId)
 
 	  OfferwallDelegate = [[PSISOfferwallDelegate alloc] init];
 	  OfferwallDelegate.PluginDelegate = &OfferwallStateDelegate;
-	  [ISSupersonicAdsConfiguration configurations].useClientSideCallbacks = [NSNumber numberWithInt:1];
 
 	  [IronSource setLogDelegate:LogDelegate];
 	  [IronSource setRewardedVideoDelegate:Delegate];
