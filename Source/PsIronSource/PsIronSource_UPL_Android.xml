@@ -12,7 +12,7 @@
 			<true>
 				<addPermission android:name="android.permission.INTERNET"/>
 				<addPermission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-				<addPermission android:name="com.google.android.gms.permission.AD_ID"/>				
+				<addPermission android:name="com.google.android.gms.permission.AD_ID"/>
 
 				<setElement result="ControllerActivity" value="activity" />
 				<addAttribute tag="$ControllerActivity" name="android:name" value="com.ironsource.sdk.controller.ControllerActivity" />
@@ -336,56 +336,62 @@
 					}
 
 					dependencies {
-					implementation 'com.ironsource.sdk:mediationsdk:7.2.1.1'
+					implementation 'com.ironsource.sdk:mediationsdk:7.2.4.1'
 					implementation fileTree(dir: 'libs', include: ['*.jar'])
 					implementation 'com.google.android.gms:play-services-appset:16.0.0'
 					implementation 'com.google.android.gms:play-services-ads-identifier:17.0.0'
 					implementation 'com.google.android.gms:play-services-basement:17.1.1'
 
 					// Add AdColony Network
-					implementation 'com.ironsource.adapters:adcolonyadapter:4.3.11'
+					implementation 'com.ironsource.adapters:adcolonyadapter:4.3.12'
 					implementation 'com.adcolony:sdk:4.7.1'
 					// Add AdMob and Ad Manager Network
-					implementation 'com.google.android.gms:play-services-ads:20.6.0'
-					implementation 'com.ironsource.adapters:admobadapter:4.3.27'
+					implementation 'com.google.android.gms:play-services-ads:21.1.0'
+					implementation 'com.ironsource.adapters:admobadapter:4.3.30'
 					// Add Applovin Network
-					implementation 'com.ironsource.adapters:applovinadapter:4.3.31'
-					implementation 'com.applovin:applovin-sdk:11.3.3'
+					implementation 'com.ironsource.adapters:applovinadapter:4.3.33'
+					implementation 'com.applovin:applovin-sdk:11.4.4'
+					constraints {
+					implementation('com.google.android.exoplayer:exoplayer:2.17.1') {
+					because 'version 2.15.1 conflicts with myTarget'
+					}
+					}
 					// Add Chartboost Network
-					implementation 'com.ironsource.adapters:chartboostadapter:4.3.8'
-					implementation 'com.chartboost:chartboost-sdk:8.3.1'
+					implementation 'com.ironsource.adapters:chartboostadapter:4.3.9'
+					implementation 'com.chartboost:chartboost-sdk:9.0.0'
 					implementation "com.google.android.gms:play-services-base:18.0.1"
 					// Add Facebook Network
-					implementation 'com.ironsource.adapters:facebookadapter:4.3.34'
-					implementation 'com.facebook.android:audience-network-sdk:6.8.0'
-					implementation 'com.ironsource.adapters:inmobiadapter:4.3.14' 
-					implementation 'com.inmobi.monetization:inmobi-ads:10.0.5' 
+					implementation 'com.ironsource.adapters:facebookadapter:4.3.37'
+					implementation 'com.facebook.android:audience-network-sdk:6.11.0'
+					// Add InMobi
+					implementation 'com.ironsource.adapters:inmobiadapter:4.3.15' 
+					implementation 'com.inmobi.monetization:inmobi-ads:10.0.8' 
 					implementation 'com.google.android.gms:play-services-location:17.1.0'//optional dependency for better targeting
 					// Add myTarget Network
-					implementation 'com.ironsource.adapters:mytargetadapter:4.1.13'
-					implementation 'com.my.target:mytarget-sdk:5.15.0'
-					implementation 'com.google.android.exoplayer:exoplayer-core:2.13.3'
-					implementation 'com.google.android.exoplayer:exoplayer-hls:2.13.3'
+					implementation 'com.ironsource.adapters:mytargetadapter:4.1.14'
+					implementation 'com.my.target:mytarget-sdk:5.15.3'
+					implementation 'com.google.android.exoplayer:exoplayer-core:2.17.1'
+					implementation 'com.google.android.exoplayer:exoplayer-hls:2.17.1'
 					implementation 'com.my.tracker:mytracker-sdk:3.0.0'
 					// Add Pangle Network
-					implementation 'com.ironsource.adapters:pangleadapter:4.3.12'
-					implementation 'com.pangle.global:ads-sdk:4.3.0.4'
+					implementation 'com.ironsource.adapters:pangleadapter:4.3.14'
+					implementation 'com.pangle.global:ads-sdk:4.5.0.4'
 					// Add Tapjoy Network
-					implementation 'com.ironsource.adapters:tapjoyadapter:4.1.20'
-					implementation 'com.tapjoy:tapjoy-android-sdk:12.9.1'
+					implementation 'com.ironsource.adapters:tapjoyadapter:4.1.21'
+					implementation 'com.tapjoy:tapjoy-android-sdk:12.10.0'
 					// Add UnityAds Network
-					implementation 'com.ironsource.adapters:unityadsadapter:4.3.21'
-					implementation 'com.unity3d.ads:unity-ads:4.1.0'
+					implementation 'com.ironsource.adapters:unityadsadapter:4.3.22'
+					implementation 'com.unity3d.ads:unity-ads:4.3.0'
 
 					// Add Yandex network
-					implementation 'com.yandex.android:mobileads:5.1.1'
+					implementation 'com.yandex.android:mobileads:5.2.1'
 					constraints {
 					implementation('com.yandex.android:mobmetricalib:5.0.0') {
 					because 'version 4.2.0 has issues with privacy policies'
 					}
 					}
 
-					implementation 'com.yandex.ads.adapter:ironsource-mobileads:5.1.0.0'
+					implementation 'com.yandex.ads.adapter:ironsource-mobileads:5.2.0.0'
 					}
 
 					android {
