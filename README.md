@@ -2,7 +2,12 @@
 IronSource SDK Unreal Engine plugin.
 This plugin provides a wrapper for IronSource rewarded video ad unit.
 
+## Installation
+
+Cocoapods is required. Clone the repository in `Plugins` directory and run `make`.
+
 ## Initial setup
+
 First of all familiarize yourself with official IronSource SDK docs and integration guides for your platform, for this plugin is basically a wrapper for the SDK with little additional features.
 
 Enable plugin in Project settings and fill in keys and ids in Engine ini file:
