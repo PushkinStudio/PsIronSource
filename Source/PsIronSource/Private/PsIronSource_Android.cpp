@@ -39,7 +39,7 @@ jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_getOfferwallCredits
 
 UPsIronSourceProxy* ISProxy;
 
-void UPsIronSource_Android::SetOfferwallUseClientSideCallbacks (bool bValue)
+void UPsIronSource_Android::SetOfferwallUseClientSideCallbacks(bool bValue)
 {
 	LOGD("%s: SetOfferwallUseClientSideCallbacks IronSource with Android SDK", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 
