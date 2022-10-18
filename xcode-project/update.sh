@@ -81,6 +81,8 @@ mkdir downloads/unpacked
 DownloadFramework https://dl.google.com/googleadmobadssdk/googlemobileadssdkios-9.9.0.zip
 DownloadFramework https://s3.amazonaws.com/ssa.public/ironsource-mobile/ios-adapters/pangle/Pangle_iOS_SDK_4.5.2.5.zip
 
+pod install
+
 PackFramework Pods/AdColony AdColony
 PackFramework Pods/Ads-Global/SDK BUAdSDK
 PackFramework Pods/Ads-Global/SDK BUCNAuxiliary
