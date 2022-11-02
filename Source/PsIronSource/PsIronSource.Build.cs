@@ -56,6 +56,13 @@ namespace UnrealBuildTool.Rules
 
                     PublicAdditionalFrameworks.Add(
                         new Framework(
+                            "FBAudienceNetwork",
+                            "../../ThirdParty/iOS/FBAudienceNetwork.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
                             "UnityAds",
                             "../../ThirdParty/iOS/UnityAds.embeddedframework.zip"
                         )
@@ -79,7 +86,7 @@ namespace UnrealBuildTool.Rules
                     PublicAdditionalFrameworks.Add(
                         new Framework(
                             "GoogleAppMeasurement",
-                            "../../ThirdParty/iOS/GoogleAppMeasurement_is.embeddedframework.zip"
+                            "../../ThirdParty/iOS/GoogleAppMeasurement.embeddedframework.zip"
                         )
                     );
 
@@ -95,7 +102,7 @@ namespace UnrealBuildTool.Rules
                     PublicAdditionalFrameworks.Add(
                         new Framework(
                             "GoogleUtilities",
-                            "../../ThirdParty/iOS/GoogleUtilities_is.embeddedframework.zip"
+                            "../../ThirdParty/iOS/GoogleUtilities.embeddedframework.zip"
                         )
                     );
 
@@ -103,7 +110,7 @@ namespace UnrealBuildTool.Rules
                     PublicAdditionalFrameworks.Add(
                         new Framework(
                             "nanopb",
-                            "../../ThirdParty/iOS/nanopb_is.embeddedframework.zip"
+                            "../../ThirdParty/iOS/nanopb.embeddedframework.zip"
                         )
                     );
 
@@ -111,7 +118,7 @@ namespace UnrealBuildTool.Rules
                     PublicAdditionalFrameworks.Add(
                         new Framework(
                             "PromisesObjC",
-                            "../../ThirdParty/iOS/PromisesObjC_is.embeddedframework.zip"
+                            "../../ThirdParty/iOS/PromisesObjC.embeddedframework.zip"
                         )
                     );
 

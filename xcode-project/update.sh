@@ -94,10 +94,10 @@ PackFramework downloads/unpacked/SDK BURelyFoundation_Global
 PackFramework Pods/AppLovinSDK/applovin-ios-sdk-11.4.3 AppLovinSDK AppLovinSDKResources.bundle
 PackFramework Pods/ChartboostSDK ChartboostSDK
 PackFramework Pods/Google-Mobile-Ads-SDK/Frameworks/GoogleMobileAdsFramework-Current GoogleMobileAds
-PackFramework Pods/GoogleAppMeasurement/Frameworks GoogleAppMeasurement "" GoogleAppMeasurement_is
-PackFramework downloads/unpacked/GoogleMobileAdsSdkiOS-9.9.0 GoogleUtilities "" GoogleUtilities_is
-PackFramework downloads/unpacked/GoogleMobileAdsSdkiOS-9.9.0 nanopb "" nanopb_is
-PackFramework downloads/unpacked/GoogleMobileAdsSdkiOS-9.9.0 PromisesObjC "" PromisesObjC_is
+PackFramework Pods/GoogleAppMeasurement/Frameworks GoogleAppMeasurement
+PackFramework downloads/unpacked/GoogleMobileAdsSdkiOS-9.9.0 GoogleUtilities
+PackFramework downloads/unpacked/GoogleMobileAdsSdkiOS-9.9.0 nanopb
+PackFramework downloads/unpacked/GoogleMobileAdsSdkiOS-9.9.0 PromisesObjC
 PackFramework Pods/GoogleUserMessagingPlatform/Frameworks/Release UserMessagingPlatform
 PackFramework Pods/IronSourceAdColonyAdapter/ISAdColonyAdapter ISAdColonyAdapter
 PackFramework Pods/IronSourceAdMobAdapter/ISAdMobAdapter ISAdMobAdapter
@@ -117,3 +117,4 @@ PackFramework Pods/VungleSDK-iOS VungleSDK
 PackFramework Pods/YandexMobileAds/static YandexMobileAds YandexMobileAds.xcframework/YandexMobileAdsBundle.bundle
 PackFramework Pods/YandexMobileMetrica/static YandexMobileMetrica
 PackFramework Pods/IronSourceYandexMobileAdsAdapters IronSourceYandexMobileAdsAdapters
+PackFramework Pods/FBAudienceNetwork/Static FBAudienceNetwork

@@ -1,5 +1,5 @@
 # Uncomment the next line to define a global platform for your project
-# platform :ios, '9.0'
+platform :ios, '10.0'
 
 target 'ironsource' do
   # Comment the next line if you don't want to use dynamic frameworks
@@ -20,4 +20,5 @@ target 'ironsource' do
   pod 'YandexMobileAds', '5.2.1'
   pod 'IronSourceYandexMobileAdsAdapters', '7.2.4.0'
   pod 'YandexMobileMetrica', '4.2.0'
+  pod 'FBAudienceNetwork', '6.11.2'
 end
