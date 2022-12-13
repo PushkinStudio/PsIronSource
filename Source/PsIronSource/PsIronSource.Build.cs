@@ -201,20 +201,6 @@ namespace UnrealBuildTool.Rules
 
                     PublicAdditionalFrameworks.Add(
                         new Framework(
-                            "ISMyTargetAdapter",
-                            "../../ThirdParty/iOS/ISMyTargetAdapter.embeddedframework.zip"
-                        )
-                    );
-
-                    PublicAdditionalFrameworks.Add(
-                        new Framework(
-                            "MyTargetSDK",
-                            "../../ThirdParty/iOS/MyTargetSDK.embeddedframework.zip"
-                        )
-                    );
-
-                    PublicAdditionalFrameworks.Add(
-                        new Framework(
                             "ISPangleAdapter",
                             "../../ThirdParty/iOS/ISPangleAdapter.embeddedframework.zip"
                         )
@@ -267,28 +253,6 @@ namespace UnrealBuildTool.Rules
                             "PAGAdSDK",
                             "../../ThirdParty/iOS/PAGAdSDK.embeddedframework.zip",
                             "PAGAdSDK.bundle"
-                        )
-                    );
-
-                    PublicAdditionalFrameworks.Add(
-                        new Framework(
-                            "YandexMobileAds",
-                            "../../ThirdParty/iOS/YandexMobileAds.embeddedframework.zip",
-                            "YandexMobileAdsBundle.bundle"
-                        )
-                    );
-
-                    PublicAdditionalFrameworks.Add(
-                        new Framework(
-                            "YandexMobileMetrica",
-                            "../../ThirdParty/iOS/YandexMobileMetrica.embeddedframework.zip"
-                        )
-                    );
-
-                    PublicAdditionalFrameworks.Add(
-                        new Framework(
-                            "IronSourceYandexMobileAdsAdapters",
-                            "../../ThirdParty/iOS/IronSourceYandexMobileAdsAdapters.embeddedframework.zip"
                         )
                     );
 

@@ -36,6 +36,7 @@
 
 				<setElement result="AudienceNetworkActivity" value="activity" />
 				<addAttribute tag="$AudienceNetworkActivity" name="android:name" value="com.facebook.ads.AudienceNetworkActivity" />
+				<addAttribute tag="$AudienceNetworkActivity" name="android:exported" value="false" />
 				<addAttribute tag="$AudienceNetworkActivity" name="android:configChanges" value="keyboardHidden|orientation|screenSize" />
 				<addAttribute tag="$AudienceNetworkActivity" name="android:hardwareAccelerated" value="true" />
 				<addElement tag="application" name="AudienceNetworkActivity" />
@@ -77,6 +78,7 @@
 
 				<setElement result="AppLovinFullscreenActivity" value="activity" />
 				<addAttribute tag="$AppLovinFullscreenActivity" name="android:name" value="com.applovin.adview.AppLovinFullscreenActivity" />
+				<addAttribute tag="$AppLovinFullscreenActivity" name="android:exported" value="false" />
 				<addAttribute tag="$AppLovinFullscreenActivity" name="android:configChanges" value="keyboard|keyboardHidden|locale|orientation|screenLayout|screenSize|smallestScreenSize|uiMode" />
 				<addAttribute tag="$AppLovinFullscreenActivity" name="android:hardwareAccelerated" value="true" />
 				<addAttribute tag="$AppLovinFullscreenActivity" name="android:screenOrientation" value="behind" />
@@ -90,6 +92,7 @@
 
 				<setElement result="GmsAdActivity" value="activity" />
 				<addAttribute tag="$GmsAdActivity" name="android:name" value="com.google.android.gms.ads.AdActivity" />
+				<addAttribute tag="$GmsAdActivity" name="android:exported" value="false" />
 				<addAttribute tag="$GmsAdActivity" name="android:configChanges" value="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />
 				<addAttribute tag="$GmsAdActivity" name="android:theme" value="@android:style/Theme.Translucent" />
 				<addElement tag="application" name="GmsAdActivity" />
@@ -144,11 +147,6 @@
 
 				<addLibrary android:name="org.apache.http.legacy" android:required="false"/>
 
-				<setElement result="MyTargetActivity" value="activity" />
-				<addAttribute tag="$MyTargetActivity" name="android:name" value="com.my.target.common.MyTargetActivity" />
-				<addAttribute tag="$MyTargetActivity" name="android:configChanges" value="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />
-				<addElement tag="application" name="MyTargetActivity" />
-
 				<!--
 				<setElement result="TTProvider" value="provider" />
 				<addAttribute tag="$TTProvider" name="android:name" value="com.bytedance.sdk.openadsdk.multipro.TTMultiProvider" />
@@ -190,7 +188,6 @@
 					-dontwarn com.chartboost.sdk.**
 					-dontwarn com.adcolony.sdk.**
 					-dontwarn com.google.android.exoplayer2.**
-					-dontwarn com.my.target.**
 					-dontwarn okhttp3.internal.platform.*
 
 
@@ -295,17 +292,8 @@
 					# Chartboost
 					-keep class com.chartboost.** { *; }
 
-
-					# MyTarget
-					-keep class com.my.target.** { *; }
-
 					# Pangle
 					-keep class com.bytedance.sdk.openadsdk.*{ public *; }
-
-					# Yandex
-					-keep class com.ironsource.mobileads.** {
-					    *;
-					}
 					]]>
 				</insert>
 			</true>
@@ -351,11 +339,6 @@
 					// Add Applovin Network
 					implementation 'com.ironsource.adapters:applovinadapter:4.3.33'
 					implementation 'com.applovin:applovin-sdk:11.4.4'
-					constraints {
-					implementation('com.google.android.exoplayer:exoplayer:2.17.1') {
-					because 'version 2.15.1 conflicts with myTarget'
-					}
-					}
 					// Add Chartboost Network
 					implementation 'com.ironsource.adapters:chartboostadapter:4.3.9'
 					implementation 'com.chartboost:chartboost-sdk:9.0.0'
@@ -367,12 +350,6 @@
 					implementation 'com.ironsource.adapters:inmobiadapter:4.3.15' 
 					implementation 'com.inmobi.monetization:inmobi-ads:10.0.8' 
 					implementation 'com.google.android.gms:play-services-location:17.1.0'//optional dependency for better targeting
-					// Add myTarget Network
-					implementation 'com.ironsource.adapters:mytargetadapter:4.1.14'
-					implementation 'com.my.target:mytarget-sdk:5.15.3'
-					implementation 'com.google.android.exoplayer:exoplayer-core:2.17.1'
-					implementation 'com.google.android.exoplayer:exoplayer-hls:2.17.1'
-					implementation 'com.my.tracker:mytracker-sdk:3.0.0'
 					// Add Pangle Network
 					implementation 'com.ironsource.adapters:pangleadapter:4.3.14'
 					implementation 'com.pangle.global:ads-sdk:4.5.0.4'
@@ -382,16 +359,6 @@
 					// Add UnityAds Network
 					implementation 'com.ironsource.adapters:unityadsadapter:4.3.22'
 					implementation 'com.unity3d.ads:unity-ads:4.3.0'
-
-					// Add Yandex network
-					implementation 'com.yandex.android:mobileads:5.2.1'
-					constraints {
-					implementation('com.yandex.android:mobmetricalib:5.0.0') {
-					because 'version 4.2.0 has issues with privacy policies'
-					}
-					}
-
-					implementation 'com.yandex.ads.adapter:ironsource-mobileads:5.2.0.0'
 					}
 
 					android {
@@ -431,7 +398,6 @@
 					import com.ironsource.mediationsdk.impressionData.ImpressionDataListener;
 					import com.ironsource.mediationsdk.impressionData.ImpressionData;
 					import com.ironsource.mediationsdk.utils.IronSourceUtils;
-					import com.yandex.mobile.ads.common.*;
 				</insert>
 			</true>
 		</if>
@@ -851,19 +817,6 @@
 			</true>
 		</if>
 	</gameActivityClassAdditions>
-
-	<gameActivityOnCreateAdditions>
-		<insert>
-			<![CDATA[
-			MobileAds.initialize(this, new InitializationListener() {
-				@Override
-				public void onInitializationCompleted() {
-					Log.debug("YandexMobileAds SDK initialized");
-				}
-			});
-			]]>
-		</insert>
-	</gameActivityOnCreateAdditions>
 	
 	<gameActivityOnPauseAdditions>
 		<if condition="bIronSourceEnable">
