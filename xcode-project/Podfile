@@ -12,12 +12,8 @@ target 'ironsource' do
   pod 'IronSourceAppLovinAdapter','4.3.34.1'
   pod 'IronSourceChartboostAdapter','4.3.11.0'
   pod 'IronSourceFacebookAdapter','4.3.37.0'
-  pod 'IronSourceMyTargetAdapter','4.1.14.0'
   pod 'IronSourcePangleAdapter','4.3.16.1'
   pod 'IronSourceTapjoyAdapter','4.1.21.1'
   pod 'IronSourceUnityAdsAdapter','4.3.23.1'
   pod 'IronSourceVungleAdapter','4.3.22.1'
-  pod 'YandexMobileAds', '5.2.1'
-  pod 'IronSourceYandexMobileAdsAdapters', '7.2.4.0'
-  pod 'YandexMobileMetrica', '4.2.0'
 end

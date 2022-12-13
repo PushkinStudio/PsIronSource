@@ -35,12 +35,6 @@ PackFramework()
 		rm -f $FRAMEWORK/$2.framework/Headers/ISBaseAdAdapter.h-e
 	fi
 
-	if [ "$2" == "YandexMobileMetrica" ]
-	then
-		rm -f $FRAMEWORK/$2.framework/PrivateHeaders
-		rm -rf $FRAMEWORK/$2.framework/Versions/A/PrivateHeaders
-	fi
-
 	# rename framework
 	if [ "$4" != "" ]
 	then
@@ -104,16 +98,11 @@ PackFramework Pods/IronSourceAdMobAdapter/ISAdMobAdapter ISAdMobAdapter
 PackFramework Pods/IronSourceAppLovinAdapter/ISAppLovinAdapter ISAppLovinAdapter
 PackFramework Pods/IronSourceChartboostAdapter/ISChartboostAdapter ISChartboostAdapter
 PackFramework Pods/IronSourceFacebookAdapter/ISFacebookAdapter ISFacebookAdapter
-PackFramework Pods/IronSourceMyTargetAdapter/ISMyTargetAdapter ISMyTargetAdapter
 PackFramework Pods/IronSourcePangleAdapter/ISPangleAdapter ISPangleAdapter
 PackFramework Pods/IronSourceSDK/IronSource IronSource
 PackFramework Pods/IronSourceTapjoyAdapter/ISTapjoyAdapter ISTapjoyAdapter
 PackFramework Pods/IronSourceUnityAdsAdapter/ISUnityAdsAdapter ISUnityAdsAdapter
 PackFramework Pods/IronSourceVungleAdapter/ISVungleAdapter ISVungleAdapter
-PackFramework Pods/myTargetSDK MyTargetSDK
 PackFramework Pods/TapjoySDK/TapjoySDK_iOS_v12.10.0/Libraries Tapjoy
 PackFramework Pods/UnityAds UnityAds
 PackFramework Pods/VungleSDK-iOS VungleSDK
-PackFramework Pods/YandexMobileAds/static YandexMobileAds YandexMobileAds.xcframework/YandexMobileAdsBundle.bundle
-PackFramework Pods/YandexMobileMetrica/static YandexMobileMetrica
-PackFramework Pods/IronSourceYandexMobileAdsAdapters IronSourceYandexMobileAdsAdapters

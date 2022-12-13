@@ -52,11 +52,3 @@ To start rewarded video, call `ShowRewardedVideo`.
 To query interstitial availability, use `IsInterstitialReady`, `IsInterstitialCappedForPlacement` or `VideoStateDelegate` events. 
 
 To start interstitial, call `ShowInterstitial`. You should load interstitial manually with function `LoadInterstitial` before first call `ShowInterstitial` and every time after interstitial was shown, e.g., you can use events `InterstitialClosed`, `InterstitialShowFailed` and `InterstitialLoadFailed`.
-
-## Offerwall
-
-To query offerwall availability, use `HasOfferwall` or `OfferwallStateDelegate` events. 
-
-To start offerwall, call `ShowOfferwall` or `ShowOfferwallWithPlacement`. You can get player's offerwall earn credits with function `GetOfferwallCredits`, it will trigger `EIronSourceOfferwallEventType::Credited` event.
-
-To enable auto fire `EIronSourceOfferwallEventType::Credited` event, call function `SetOfferwallUseClientSideCallbacks (true)` before `InitIronSource`.
