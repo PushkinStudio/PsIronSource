@@ -215,34 +215,6 @@ namespace UnrealBuildTool.Rules
 
                     PublicAdditionalFrameworks.Add(
                         new Framework(
-                            "BUFoundation",
-                            "../../ThirdParty/iOS/BUFoundation.embeddedframework.zip"
-                        )
-                    );
-
-                    PublicAdditionalFrameworks.Add(
-                        new Framework(
-                            "BUCNAuxiliary",
-                            "../../ThirdParty/iOS/BUCNAuxiliary.embeddedframework.zip"
-                        )
-                    );
-
-                    PublicAdditionalFrameworks.Add(
-                        new Framework(
-                            "BUVAAuxiliary",
-                            "../../ThirdParty/iOS/BUVAAuxiliary.embeddedframework.zip"
-                        )
-                    );
-
-                    PublicAdditionalFrameworks.Add(
-                        new Framework(
-                            "BURelyFoundation_Global",
-                            "../../ThirdParty/iOS/BURelyFoundation_Global.embeddedframework.zip"
-                        )
-                    );
-
-                    PublicAdditionalFrameworks.Add(
-                        new Framework(
                             "BURelyAdSDK",
                             "../../ThirdParty/iOS/BURelyAdSDK.embeddedframework.zip"
                         )
@@ -253,6 +225,114 @@ namespace UnrealBuildTool.Rules
                             "PAGAdSDK",
                             "../../ThirdParty/iOS/PAGAdSDK.embeddedframework.zip",
                             "PAGAdSDK.bundle"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "ISMintegralAdapter",
+                            "../../ThirdParty/iOS/ISMintegralAdapter.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "MTGSDK",
+                            "../../ThirdParty/iOS/MTGSDK.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "MTGSDKBanner",
+                            "../../ThirdParty/iOS/MTGSDKBanner.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "MTGSDKReward",
+                            "../../ThirdParty/iOS/MTGSDKReward.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "MTGSDKBidding",
+                            "../../ThirdParty/iOS/MTGSDKBidding.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "MTGSDKNewInterstitial",
+                            "../../ThirdParty/iOS/MTGSDKNewInterstitial.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "MTGSDKInterstitialVideo",
+                            "../../ThirdParty/iOS/MTGSDKInterstitialVideo.embeddedframework.zip"
+                        )
+                    );
+
+
+                    // Static libs linking
+                    string StaticLibsPath = Path.Combine(ModuleDirectory, "../../", "ThirdParty/iOS/StaticLibs");
+                    string StaticLibHeaders = "Headers";
+
+                    PublicIncludePaths.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalAFN", StaticLibHeaders));
+                    PublicAdditionalLibraries.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalAFN",
+                            "libBURelyFoundationGlobalAFN.a"
+                        )
+                    );
+
+                    PublicIncludePaths.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalFoundation", StaticLibHeaders));
+                    PublicAdditionalLibraries.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalFoundation", 
+                            "libBURelyFoundationGlobalFoundation.a"
+                        )
+                    );
+
+                    PublicIncludePaths.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalGecko", StaticLibHeaders));
+                    PublicAdditionalLibraries.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalGecko", 
+                            "libBURelyFoundationGlobalGecko.a"
+                        )
+                    );
+
+                    PublicIncludePaths.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalHeader", StaticLibHeaders));
+                    PublicAdditionalLibraries.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalHeader", 
+                            "libBURelyFoundationGlobalHeader.a"
+                        )
+                    );
+
+                    PublicIncludePaths.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalNETWork", StaticLibHeaders));
+                    PublicAdditionalLibraries.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalNETWork", 
+                            "libBURelyFoundationGlobalNETWork.a"
+                        )
+                    );
+
+                    PublicIncludePaths.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalSDWebImage", StaticLibHeaders));
+                    PublicAdditionalLibraries.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalSDWebImage", 
+                            "libBURelyFoundationGlobalSDWebImage.a"
+                        )
+                    );
+
+                    PublicIncludePaths.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalYYModel", StaticLibHeaders));
+                    PublicAdditionalLibraries.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalYYModel", 
+                            "libBURelyFoundationGlobalYYModel.a"
+                        )
+                    );
+
+                    PublicIncludePaths.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalZFPlayer", StaticLibHeaders));
+                    PublicAdditionalLibraries.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalZFPlayer", 
+                            "libBURelyFoundationGlobalZFPlayer.a"
+                        )
+                    );
+
+                    PublicIncludePaths.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalZip", StaticLibHeaders));
+                    PublicAdditionalLibraries.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalZip", 
+                            "libBURelyFoundationGlobalZip.a"
                         )
                     );
 
