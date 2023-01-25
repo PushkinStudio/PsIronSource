@@ -6,14 +6,15 @@ target 'ironsource' do
   use_frameworks!
 
   # Pods for ironsource
-  pod 'IronSourceSDK','7.2.4.0'
-  pod 'IronSourceAdColonyAdapter','4.3.14.3'
-  pod 'IronSourceAdMobAdapter','4.3.35.0'
-  pod 'IronSourceAppLovinAdapter','4.3.34.1'
-  pod 'IronSourceChartboostAdapter','4.3.11.0'
-  pod 'IronSourceFacebookAdapter','4.3.37.0'
-  pod 'IronSourcePangleAdapter','4.3.16.1'
-  pod 'IronSourceTapjoyAdapter','4.1.21.1'
-  pod 'IronSourceUnityAdsAdapter','4.3.23.1'
-  pod 'IronSourceVungleAdapter','4.3.22.1'
+  pod 'IronSourceSDK','7.2.6.0'
+  pod 'IronSourceAdColonyAdapter','4.3.15.3'
+  pod 'IronSourceAdMobAdapter','4.3.39.0'
+  pod 'IronSourceAppLovinAdapter','4.3.37.0'
+  pod 'IronSourceChartboostAdapter','4.3.12.3'
+  pod 'IronSourceFacebookAdapter','4.3.38.3'
+  pod 'IronSourcePangleAdapter','4.3.17.1'
+  pod 'IronSourceTapjoyAdapter','4.1.23.0'
+  pod 'IronSourceUnityAdsAdapter','4.3.25.1'
+  pod 'IronSourceVungleAdapter','4.3.23.1'
+  pod 'IronSourceMintegralAdapter', '4.3.11.1'
 end

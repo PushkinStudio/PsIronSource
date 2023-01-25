@@ -69,27 +69,6 @@
 				<addAttribute tag="$AdUnitSoftwareActivity" name="android:theme" value="@android:style/Theme.NoTitleBar.Fullscreen" />
 				<addElement tag="application" name="AdUnitSoftwareActivity" />
 
-				<setElement result="AppLovinInterstitialActivity" value="activity" />
-				<addAttribute tag="$AppLovinInterstitialActivity" name="android:name" value="com.applovin.adview.AppLovinInterstitialActivity" />
-				<addAttribute tag="$AppLovinInterstitialActivity" name="android:configChanges" value="orientation|screenSize|smallestScreenSize|screenLayout|uiMode" />
-				<addAttribute tag="$AppLovinInterstitialActivity" name="android:hardwareAccelerated" value="true" />
-				<addAttribute tag="$AppLovinInterstitialActivity" name="android:screenOrientation" value="behind" />
-				<addElement tag="application" name="AppLovinInterstitialActivity" />
-
-				<setElement result="AppLovinFullscreenActivity" value="activity" />
-				<addAttribute tag="$AppLovinFullscreenActivity" name="android:name" value="com.applovin.adview.AppLovinFullscreenActivity" />
-				<addAttribute tag="$AppLovinFullscreenActivity" name="android:exported" value="false" />
-				<addAttribute tag="$AppLovinFullscreenActivity" name="android:configChanges" value="keyboard|keyboardHidden|locale|orientation|screenLayout|screenSize|smallestScreenSize|uiMode" />
-				<addAttribute tag="$AppLovinFullscreenActivity" name="android:hardwareAccelerated" value="true" />
-				<addAttribute tag="$AppLovinFullscreenActivity" name="android:screenOrientation" value="behind" />
-				<addAttribute tag="$AppLovinFullscreenActivity" name="android:launchMode" value="singleTop" />
-				<addElement tag="application" name="AppLovinFullscreenActivity" />
-
-				<setElement result="AppLovinWebViewActivity" value="activity" />
-				<addAttribute tag="$AppLovinWebViewActivity" name="android:name" value="com.applovin.sdk.AppLovinWebViewActivity" />
-				<addAttribute tag="$AppLovinWebViewActivity" name="android:configChanges" value="keyboardHidden|orientation|screenSize|uiMode" />
-				<addElement tag="application" name="AppLovinWebViewActivity" />
-
 				<setElement result="GmsAdActivity" value="activity" />
 				<addAttribute tag="$GmsAdActivity" name="android:name" value="com.google.android.gms.ads.AdActivity" />
 				<addAttribute tag="$GmsAdActivity" name="android:exported" value="false" />
@@ -294,6 +273,25 @@
 
 					# Pangle
 					-keep class com.bytedance.sdk.openadsdk.*{ public *; }
+
+					# Mintegral
+					-keep class com.mbridge.** {*; }
+					-keep interface com.mbridge.** {*; }
+					-keep class android.support.v4.** { *; }
+					-dontwarn com.mbridge.**
+					-keep class **.R$* { public static final int mbridge*; }
+					-keep public class com.mbridge.* extends androidx.** { *; }
+					-keep public class androidx.viewpager.widget.PagerAdapter{ *; }
+					-keep public class androidx.viewpager.widget.ViewPager.OnPageChangeListener{ *; }
+					-keep interface androidx.annotation.IntDef{ *; }
+					-keep interface androidx.annotation.Nullable{ *; }
+					-keep interface androidx.annotation.CheckResult{ *; }
+					-keep interface androidx.annotation.NonNull{ *; }
+					-keep public class androidx.fragment.app.Fragment{ *; }
+					-keep public class androidx.core.content.FileProvider{ *; }                                                 
+					-keep public class androidx.core.app.NotificationCompat{ *; }                                                
+					-keep public class androidx.appcompat.widget.AppCompatImageView { *; }
+					-keep public class androidx.recyclerview.*{ *; }
 					]]>
 				</insert>
 			</true>
@@ -324,41 +322,47 @@
 					}
 
 					dependencies {
-					implementation 'com.ironsource.sdk:mediationsdk:7.2.4.1'
+					implementation 'com.ironsource.sdk:mediationsdk:7.2.7'
 					implementation fileTree(dir: 'libs', include: ['*.jar'])
 					implementation 'com.google.android.gms:play-services-appset:16.0.0'
-					implementation 'com.google.android.gms:play-services-ads-identifier:17.0.0'
-					implementation 'com.google.android.gms:play-services-basement:17.1.1'
+					implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
+					implementation 'com.google.android.gms:play-services-basement:18.1.0'
 
 					// Add AdColony Network
-					implementation 'com.ironsource.adapters:adcolonyadapter:4.3.12'
-					implementation 'com.adcolony:sdk:4.7.1'
+					implementation 'com.ironsource.adapters:adcolonyadapter:4.3.13'
+					implementation 'com.adcolony:sdk:4.8.0'
 					// Add AdMob and Ad Manager Network
-					implementation 'com.google.android.gms:play-services-ads:21.1.0'
-					implementation 'com.ironsource.adapters:admobadapter:4.3.30'
+					implementation 'com.google.android.gms:play-services-ads:21.4.0'
+					implementation 'com.ironsource.adapters:admobadapter:4.3.34'
 					// Add Applovin Network
-					implementation 'com.ironsource.adapters:applovinadapter:4.3.33'
-					implementation 'com.applovin:applovin-sdk:11.4.4'
+					implementation 'com.ironsource.adapters:applovinadapter:4.3.36'
+					implementation 'com.applovin:applovin-sdk:11.6.1'
 					// Add Chartboost Network
-					implementation 'com.ironsource.adapters:chartboostadapter:4.3.9'
-					implementation 'com.chartboost:chartboost-sdk:9.0.0'
+					implementation 'com.ironsource.adapters:chartboostadapter:4.3.10'
+					implementation 'com.chartboost:chartboost-sdk:9.1.1'
 					implementation "com.google.android.gms:play-services-base:18.0.1"
 					// Add Facebook Network
-					implementation 'com.ironsource.adapters:facebookadapter:4.3.37'
-					implementation 'com.facebook.android:audience-network-sdk:6.11.0'
+					implementation 'com.ironsource.adapters:facebookadapter:4.3.38'
+					implementation 'com.facebook.android:audience-network-sdk:6.12.0'
 					// Add InMobi
 					implementation 'com.ironsource.adapters:inmobiadapter:4.3.15' 
 					implementation 'com.inmobi.monetization:inmobi-ads:10.0.8' 
 					implementation 'com.google.android.gms:play-services-location:17.1.0'//optional dependency for better targeting
 					// Add Pangle Network
-					implementation 'com.ironsource.adapters:pangleadapter:4.3.14'
-					implementation 'com.pangle.global:ads-sdk:4.5.0.4'
+					implementation 'com.ironsource.adapters:pangleadapter:4.3.15'
+					implementation 'com.pangle.global:ads-sdk:4.7.0.6'
 					// Add Tapjoy Network
-					implementation 'com.ironsource.adapters:tapjoyadapter:4.1.21'
-					implementation 'com.tapjoy:tapjoy-android-sdk:12.10.0'
+					implementation 'com.ironsource.adapters:tapjoyadapter:4.1.23'
+					implementation 'com.tapjoy:tapjoy-android-sdk:12.11.1'
 					// Add UnityAds Network
-					implementation 'com.ironsource.adapters:unityadsadapter:4.3.22'
-					implementation 'com.unity3d.ads:unity-ads:4.3.0'
+					implementation 'com.ironsource.adapters:unityadsadapter:4.3.24'
+					implementation 'com.unity3d.ads:unity-ads:4.4.1'
+					// Add Mintegral Network
+					implementation 'com.ironsource.adapters:mintegraladapter:4.3.11'
+					implementation 'com.mbridge.msdk.oversea:mbbid:16.2.61'
+					implementation 'com.mbridge.msdk.oversea:reward:16.2.61'
+					implementation 'com.mbridge.msdk.oversea:mbbanner:16.2.61'
+					implementation 'com.mbridge.msdk.oversea:newinterstitial:16.2.61'
 					}
 
 					android {
