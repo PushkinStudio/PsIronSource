@@ -29,6 +29,11 @@ void UPsIronSourceProxy::ForceUpdateIronSourceUser(const FString& UserId)
 	UE_LOG(LogPsIronSource, Warning, TEXT("%s: Null proxy used"), *PS_FUNC_LINE);
 }
 
+void UPsIronSourceProxy::SetSegmentInfo(const FString& SegmentName, const FString& SegmentRevenueKey, float SegmentRevenue)
+{
+	UE_LOG(LogPsIronSource, Warning, TEXT("%s: Null proxy used"), *PS_FUNC_LINE);
+}
+
 bool UPsIronSourceProxy::IsInitialized() const
 {
 	return bIronSourceInitialized;
@@ -84,6 +89,16 @@ void UPsIronSourceProxy::DequeueEvent()
 {
 	QueuedEventsCount -= 1;
 	UE_LOG(LogPsIronSource, Log, TEXT("%s: QueuedEventsCount %d"), *PS_FUNC_LINE, QueuedEventsCount.load());
+}
+
+void UPsIronSourceProxy::SetAdInfo(const FPsIronSourceAdInfo& InAdInfo)
+{
+	AdInfo = InAdInfo;
+}
+
+FPsIronSourceAdInfo UPsIronSourceProxy::GetAdInfo() const
+{
+	return AdInfo;
 }
 
 void UPsIronSourceProxy::SetImpressionData(const FPsIronSourceImpressionData& InImpressionData)

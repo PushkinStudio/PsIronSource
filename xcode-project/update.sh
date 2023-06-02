@@ -82,10 +82,10 @@ PackFramework Pods/AppLovinSDK/applovin-ios-sdk-11.6.1 AppLovinSDK AppLovinSDKRe
 PackFramework Pods/BUAdSDK/BUAdSDK BUAdSDK
 PackFramework Pods/ChartboostSDK ChartboostSDK
 PackFramework Pods/Google-Mobile-Ads-SDK/Frameworks/GoogleMobileAdsFramework GoogleMobileAds
-PackFramework Pods/GoogleAppMeasurement/Frameworks GoogleAppMeasurement "" GoogleAppMeasurement_is
-PackFramework downloads/unpacked/GoogleMobileAdsSdkiOS-9.13.0 GoogleUtilities "" GoogleUtilities_is
-PackFramework downloads/unpacked/GoogleMobileAdsSdkiOS-9.13.0 nanopb "" nanopb_is
-PackFramework downloads/unpacked/GoogleMobileAdsSdkiOS-9.13.0 PromisesObjC "" PromisesObjC_is
+PackFramework Pods/GoogleAppMeasurement/Frameworks GoogleAppMeasurement
+PackFramework downloads/unpacked/GoogleMobileAdsSdkiOS-9.13.0 GoogleUtilities
+PackFramework downloads/unpacked/GoogleMobileAdsSdkiOS-9.13.0 nanopb
+PackFramework downloads/unpacked/GoogleMobileAdsSdkiOS-9.13.0 PromisesObjC
 PackFramework Pods/GoogleUserMessagingPlatform/Frameworks/Release UserMessagingPlatform
 PackFramework Pods/IronSourceAdColonyAdapter/ISAdColonyAdapter ISAdColonyAdapter
 PackFramework Pods/IronSourceAdMobAdapter/ISAdMobAdapter ISAdMobAdapter ISAdMobResources.bundle

@@ -19,6 +19,7 @@ class UPsIronSource_Android : public UPsIronSourceProxy
 	virtual void SetOfferwallUseClientSideCallbacks(bool bValue) override;
 	virtual void InitIronSource(const FString& UserId) override;
 	virtual void ForceUpdateIronSourceUser(const FString& UserId) override;
+	virtual void SetSegmentInfo(const FString& SegmentName, const FString& SegmentRevenueKey, float SegmentRevenue) override;
 	virtual bool HasRewardedVideo() const override;
 	virtual FString GetPlacementRewardName(const FString& PlacementName) const override;
 	virtual FString GetPlacementRewardAmount(const FString& PlacementName) const override;
@@ -41,6 +42,7 @@ public:
 	static jmethodID AndroidThunkJava_IronSource_setOfferwallUseClientSideCallbacks;
 	static jmethodID AndroidThunkJava_IronSource_init;
 	static jmethodID AndroidThunkJava_IronSource_ForceUpdateUser;
+	static jmethodID AndroidThunkJava_IronSource_SetSegmentInfo;
 	static jmethodID AndroidThunkJava_IronSource_hasRewardedVideo;
 	static jmethodID AndroidThunkJava_IronSource_getPlacementRewardName;
 	static jmethodID AndroidThunkJava_IronSource_getPlacementRewardAmount;

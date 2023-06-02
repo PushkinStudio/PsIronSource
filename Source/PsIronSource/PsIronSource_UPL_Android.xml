@@ -319,6 +319,9 @@
 					maven {
 					url "https://artifact.bytedance.com/repository/pangle"
 					}
+					maven {
+        			url  "https://dl-maven-android.mintegral.com/repository/mbridge_android_sdk_oversea"
+ 					}
 					}
 
 					dependencies {
@@ -392,13 +395,15 @@
 					import com.ironsource.adapters.supersonicads.SupersonicConfig;
 					import com.ironsource.mediationsdk.IronSource;
 					import com.ironsource.mediationsdk.IronSourceBannerLayout;
+					import com.ironsource.mediationsdk.IronSourceSegment;
 					import com.ironsource.mediationsdk.integration.IntegrationHelper;
 					import com.ironsource.mediationsdk.logger.IronSourceError;
 					import com.ironsource.mediationsdk.model.Placement;
 					import com.ironsource.mediationsdk.sdk.BannerListener;
-					import com.ironsource.mediationsdk.sdk.InterstitialListener;
+					import com.ironsource.mediationsdk.sdk.LevelPlayInterstitialListener;
 					import com.ironsource.mediationsdk.sdk.OfferwallListener;
-					import com.ironsource.mediationsdk.sdk.RewardedVideoListener;
+					import com.ironsource.mediationsdk.sdk.LevelPlayRewardedVideoListener;
+					import com.ironsource.mediationsdk.adunit.adapter.utility.AdInfo;
 					import com.ironsource.mediationsdk.impressionData.ImpressionDataListener;
 					import com.ironsource.mediationsdk.impressionData.ImpressionData;
 					import com.ironsource.mediationsdk.utils.IronSourceUtils;
@@ -414,23 +419,23 @@
 					/// ******************* CALL TO CPP ********************
 					///    *********************************************
 					///
-					private native void onRewardedVideoAdOpenedThunkCpp();
-					private native void onRewardedVideoAdClosedThunkCpp();
-					private native void onRewardedVideoAvailabilityChangedThunkCpp(boolean available);
-					private native void onRewardedVideoAdStartedThunkCpp();
-					private native void onRewardedVideoAdEndedThunkCpp();
-					private native void onRewardedVideoAdRewardedThunkCpp();
-					private native void onRewardedVideoAdShowFailedThunkCpp(int errorCode, String errorMessage);
-					private native void onRewardedVideoAdClickedThunkCpp();
+					private native void onLevelPlayAdAvailableThunkCpp(AdInfo adInfo);
+					private native void onLevelPlayAdUnavailableThunkCpp();
+					private native void onLevelPlayAdOpenedThunkCpp(AdInfo adInfo);
+					private native void onLevelPlayAdClosedThunkCpp(AdInfo adInfo);
+					private native void onLevelPlayAdRewardedThunkCpp(Placement placement, AdInfo adInfo);
+					private native void onLevelPlayAdShowFailedThunkCpp(int errorCode, String errorMessage, AdInfo adInfo);
+					private native void onLevelPlayAdClickedThunkCpp(Placement placement, AdInfo adInfo);
+					
 					private native void onImpressionSuccessThunkCpp(ImpressionData Data);
 
-					private native void onInterstitialAdReadyThunkCpp();
+					private native void onInterstitialAdReadyThunkCpp(AdInfo adInfo);
 					private native void onInterstitialAdLoadFailedThunkCpp(int errorCode, String errorMessage);
-					private native void onInterstitialAdOpenedThunkCpp();
-					private native void onInterstitialAdClosedThunkCpp();
-					private native void onInterstitialAdShowFailedThunkCpp(int errorCode, String errorMessage);
-					private native void onInterstitialAdClickedThunkCpp();
-					private native void onInterstitialAdShowSucceededThunkCpp();
+					private native void onInterstitialAdOpenedThunkCpp(AdInfo adInfo);
+					private native void onInterstitialAdClosedThunkCpp(AdInfo adInfo);
+					private native void onInterstitialAdShowFailedThunkCpp(int errorCode, String errorMessage, AdInfo adInfo);
+					private native void onInterstitialAdClickedThunkCpp(AdInfo adInfo);
+					private native void onInterstitialAdShowSucceededThunkCpp(AdInfo adInfo);
 
 					private native void onOfferwallAvailabilityChangedThunkCpp(boolean available);
 					private native void onOfferwallOpenedThunkCpp();					
@@ -442,70 +447,60 @@
 					/// ******************* REWARDED VIDEO ******************
 					///    ***********************************************
 					///
-					RewardedVideoListener mRewardedVideoListener = new RewardedVideoListener()
-					{
-						// Invoked when the RewardedVideo ad view has opened.
-						// Your Activity will lose focus. Please avoid performing heavy 
-						// tasks till the video ad will be closed.
+					
+					LevelPlayRewardedVideoListener mLevelPlayRewardedVideoListener = new LevelPlayRewardedVideoListener() {
+						// Indicates that there's an available ad.
+						// The adInfo object includes information about the ad that was loaded successfully
 						@Override
-						public void onRewardedVideoAdOpened()
+						public void onAdAvailable(AdInfo adInfo)
 						{
-							onRewardedVideoAdOpenedThunkCpp();
+							onLevelPlayAdAvailableThunkCpp(adInfo);
 						}
-	
-						// Invoked when the RewardedVideo ad view is about to be closed.
-						// Your activity will now regain its focus.
+
+						// Indicates that no ads are available to be displayed
 						@Override
-						public void onRewardedVideoAdClosed()
+						public void onAdUnavailable()
 						{
-							onRewardedVideoAdClosedThunkCpp();
+							onLevelPlayAdUnavailableThunkCpp();
 						}
-	
-						// Invoked when there is a change in the ad availability status.
-						// @param - available - value will change to true when rewarded videos are available. 
-						// You can then show the video by calling showRewardedVideo().
-						// Value will change to false when no videos are available.
+
+						// The Rewarded Video ad view has opened. Your activity will loose focus
 						@Override
-						public void onRewardedVideoAvailabilityChanged(boolean available)
+						public void onAdOpened(AdInfo adInfo)
 						{
-							onRewardedVideoAvailabilityChangedThunkCpp(available);
+							onLevelPlayAdOpenedThunkCpp(adInfo);
 						}
-	
-						// Invoked when the video ad starts playing.
+
+						// The Rewarded Video ad view is about to be closed. Your activity will regain its focus
 						@Override
-						public void onRewardedVideoAdStarted()
+						public void onAdClosed(AdInfo adInfo)
 						{
-							onRewardedVideoAdStartedThunkCpp();
+							onLevelPlayAdClosedThunkCpp(adInfo);
 						}
-	
-						// Invoked when the video ad finishes playing.
+
+						// The user completed to watch the video, and should be rewarded.
+						// The placement parameter will include the reward data.
+						// When using server-to-server callbacks, you may ignore this event and wait for the ironSource server callback
 						@Override
-						public void onRewardedVideoAdEnded()
+						public void onAdRewarded(Placement placement, AdInfo adInfo)
 						{
-							onRewardedVideoAdEndedThunkCpp();
+							onLevelPlayAdRewardedThunkCpp(placement, adInfo);
 						}
-	
-						// Invoked when the user completed the video and should be rewarded. 
-						// If using server-to-server callbacks you may ignore this events and wait for 
-						// the callback from the Supersonic server.
-						// @param - placement - the Placement the user completed a video from.
+
+						// The rewarded video ad was failed to show
 						@Override
-						public void onRewardedVideoAdRewarded(Placement placement)
+						public void onAdShowFailed(IronSourceError error, AdInfo adInfo)
 						{
-							onRewardedVideoAdRewardedThunkCpp();
+							onLevelPlayAdShowFailedThunkCpp(error.getErrorCode(), error.getErrorMessage(), adInfo);
 						}
-	
-						// Invoked when RewardedVideo call to show a rewarded video has failed
+
+						// Invoked when the video ad was clicked.
+						// This callback is not supported by all networks, and we recommend using it
+						// only if it's supported by all networks you included in your build
 						@Override
-						public void onRewardedVideoAdShowFailed(IronSourceError ironSourceError)
+						public void onAdClicked(Placement placement, AdInfo adInfo)
 						{
-							onRewardedVideoAdShowFailedThunkCpp(ironSourceError.getErrorCode(), ironSourceError.getErrorMessage());
-						}
-	
-						@Override
-						public void onRewardedVideoAdClicked(Placement placement)
-						{
-							onRewardedVideoAdClickedThunkCpp();
+							onLevelPlayAdClickedThunkCpp(placement, adInfo);
 						}
 					};
 
@@ -524,83 +519,71 @@
 					/// ******************* INTERSTITIALS *******************
 					///    ***********************************************
 					///
-					InterstitialListener mInterstitialsVideoListener = new InterstitialListener()
+					LevelPlayInterstitialListener mLevelPlayInterstitialVideoListener = new LevelPlayInterstitialListener()
 					{
-						/**
-						* Invoked when Interstitial Ad is ready to be shown after load function was called.
-						*/
+						// Invoked when the interstitial ad was loaded successfully.
+						// AdInfo parameter includes information about the loaded ad
 						@Override
-						public void onInterstitialAdReady()
+						public void onAdReady(AdInfo adInfo)
 						{
-							Log.debug("onInterstitialAdReady");
-							onInterstitialAdReadyThunkCpp();
+							Log.debug("onAdReady");
+							onInterstitialAdReadyThunkCpp(adInfo);
 						}
-	
-						/**
-						* Invoked when there is no Interstitial Ad available after calling load function.
-						*/
+
+						// Indicates that the ad failed to be loaded
 						@Override
-						public void onInterstitialAdLoadFailed(IronSourceError error)
+						public void onAdLoadFailed(IronSourceError error)
 						{
-							Log.debug(String.format("onInterstitialAdLoadFailed error. Errcode: %d, Reason: %s.",
+							Log.debug(String.format("onAdLoadFailed error. Errcode: %d, Reason: %s.",
 								error.getErrorCode(), error.getErrorMessage()));
 							
 							onInterstitialAdLoadFailedThunkCpp(error.getErrorCode(), error.getErrorMessage());
 						}
-	
-						/**
-						* Invoked when the Interstitial Ad Unit is opened
-						*/
-						@Override
-						public void onInterstitialAdOpened()
-						{
-							Log.debug("onInterstitialAdOpened");
 
-							onInterstitialAdOpenedThunkCpp();
-						}
-	
-						/*
-						* Invoked when the ad is closed and the user is about to return to the application
-						*/
+						// Invoked when the Interstitial Ad Unit has opened, and user left the application screen.
+						// This is the impression indication.
 						@Override
-						public void onInterstitialAdClosed()
+						public void onAdOpened(AdInfo adInfo)
 						{
-							Log.debug("onInterstitialAdClosed");
-							onInterstitialAdClosedThunkCpp();
+							Log.debug("onAdOpened");
+
+							onInterstitialAdOpenedThunkCpp(adInfo);
 						}
-	
-						/**
-						* Invoked when Interstitial ad failed to show
-						* @param error - An object which represents the reason of showInterstitial failure.
-						*/
+
+						// Invoked when the interstitial ad closed and the user went back to the application screen.
 						@Override
-						public void onInterstitialAdShowFailed(IronSourceError error)
+						public void onAdClosed(AdInfo adInfo)
 						{
-							Log.debug(String.format("onInterstitialAdShowFailed error. Errcode: %d, Reason: %s.",
+							Log.debug("onAdClosed");
+							onInterstitialAdClosedThunkCpp(adInfo);
+						}
+
+						// Invoked when the ad failed to show
+						@Override
+						public void onAdShowFailed(IronSourceError error, AdInfo adInfo)
+						{
+							Log.debug(String.format("onAdShowFailed error. Errcode: %d, Reason: %s.",
 								error.getErrorCode(), error.getErrorMessage()));
 					
-							onInterstitialAdShowFailedThunkCpp (error.getErrorCode(), error.getErrorMessage());
+							onInterstitialAdShowFailedThunkCpp (error.getErrorCode(), error.getErrorMessage(), adInfo);
 						}
-	
-						/*
-						* Invoked when the end user clicked on the interstitial ad, for supported networks only
-						*/
+
+						// Invoked when end user clicked on the interstitial ad
 						@Override
-						public void onInterstitialAdClicked()
+						public void onAdClicked(AdInfo adInfo)
 						{
-							Log.debug("onInterstitialAdClicked");
-							onInterstitialAdClickedThunkCpp();
+							Log.debug("onAdClicked");
+							onInterstitialAdClickedThunkCpp(adInfo);
 						}
-						
-						/** Invoked right before the Interstitial screen is about to open.
-						*  NOTE - This event is available only for some of the networks.
-						*  You should NOT treat this event as an interstitial impression, but rather use InterstitialAdOpenedEvent
-						*/
-						@Override
-						public void onInterstitialAdShowSucceeded()
+
+						// Invoked before the interstitial ad was opened, and before the InterstitialOnAdOpenedEvent is reported.
+						// This callback is not supported by all networks, and we recommend using it only if
+						// it's supported by all networks you included in your build.
+					 	@Override
+						public void onAdShowSucceeded(AdInfo adInfo)
 						{
-							Log.debug("onInterstitialAdShowSucceeded");
-							onInterstitialAdShowSucceededThunkCpp();
+							Log.debug("onAdShowSucceeded");
+							onInterstitialAdShowSucceededThunkCpp(adInfo);
 						}
 					};
 
@@ -702,9 +685,9 @@
 						Log.debug("AndroidThunkJava_IronSource_init");
 
 						IronSource.setUserId(UserId);
-						IronSource.setRewardedVideoListener(mRewardedVideoListener);
+						IronSource.setLevelPlayRewardedVideoListener(mLevelPlayRewardedVideoListener);
 						IronSource.addImpressionDataListener(mImpressionDataListener);
-						IronSource.setInterstitialListener(mInterstitialsVideoListener);
+						IronSource.setLevelPlayInterstitialListener(mLevelPlayInterstitialVideoListener);
 						IronSource.setOfferwallListener(mOfferwallListener);
 						
 						IronSource.init(this, APIKey);
@@ -715,6 +698,17 @@
 					{
 						Log.debug("AndroidThunkJava_IronSource_ForceUpdateUser");
 						IronSource.setDynamicUserId(UserId);
+						IntegrationHelper.validateIntegration(this);
+					}
+
+					public void AndroidThunkJava_IronSource_SetSegmentInfo(String SegmentName, String SegmentRevenueKey, String SegmentRevenue)
+					{
+						Log.debug("AndroidThunkJava_IronSource_SetSegmentInfo");
+						IronSourceSegment ironSegment = new IronSourceSegment();
+						ironSegment.setSegmentName(SegmentName);
+						ironSegment.setCustom(SegmentRevenueKey, SegmentRevenue);
+					
+						IronSource.setSegment(ironSegment);
 						IntegrationHelper.validateIntegration(this);
 					}
 
