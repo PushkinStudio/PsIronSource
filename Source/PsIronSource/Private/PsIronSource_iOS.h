@@ -10,18 +10,17 @@
 #import "IronSource/IronSource.h"
 #import "IronSource/ISConfigurations.h"
 
-@interface PSISDelegate : NSObject <ISRewardedVideoDelegate>
+@interface PSISDelegate : NSObject <LevelPlayRewardedVideoDelegate>
 
-- (void)rewardedVideoHasChangedAvailability:(BOOL)available;
-- (void)didReceiveRewardForPlacement:(ISPlacementInfo *)placementInfo;
-- (void)rewardedVideoDidFailToShowWithError:(NSError *)error;
-- (void)rewardedVideoDidOpen;
-- (void)rewardedVideoDidClose;
-- (void)rewardedVideoDidStart;
-- (void)rewardedVideoDidEnd;
-- (void)didClickRewardedVideo:(ISPlacementInfo *)placementInfo;
+- (void)hasAvailableAdWithAdInfo:(ISAdInfo *)adInfo;
+- (void)hasNoAvailableAd;
+- (void)didReceiveRewardForPlacement:(ISPlacementInfo *)placementInfo withAdInfo:(ISAdInfo *)adInfo;
+- (void)didFailToShowWithError:(NSError *)error andAdInfo:(ISAdInfo *)adInfo;
+- (void)didOpenWithAdInfo:(ISAdInfo *)adInfo;
+- (void)didCloseWithAdInfo:(ISAdInfo *)adInfo;
+- (void)didClick:(ISPlacementInfo *)placementInfo withAdInfo:(ISAdInfo *)adInfo;
 
-@property (nonatomic) FPSIronSourceVideoDelegate *PluginDelegate;
+@property (nonatomic) UPsIronSourceProxy *Proxy;
 
 @end
 
@@ -39,15 +38,15 @@
 
 @end
 
-@interface PSISInterstitialDelegate : NSObject <ISInterstitialDelegate>
+@interface PSISInterstitialDelegate : NSObject <LevelPlayInterstitialDelegate>
 
-- (void)interstitialDidLoad;
-- (void)interstitialDidFailToShowWithError:(NSError *)error;
-- (void)didClickInterstitial;
-- (void)interstitialDidClose;
-- (void)interstitialDidOpen;
-- (void)interstitialDidFailToLoadWithError:(NSError *)error;
-- (void)interstitialDidShow;
+- (void)didLoadWithAdInfo:(ISAdInfo *)adInfo;
+- (void)didFailToShowWithError:(NSError *)error andAdInfo:(ISAdInfo *)adInfo;
+- (void)didClickWithAdInfo:(ISAdInfo *)adInfo;
+- (void)didCloseWithAdInfo:(ISAdInfo *)adInfo;
+- (void)didOpenWithAdInfo:(ISAdInfo *)adInfo;
+- (void)didFailToLoadWithError:(NSError *)error;
+- (void)didShowWithAdInfo:(ISAdInfo *)adInfo;
 
 @property (nonatomic) FPSIronSourceVideoDelegate *PluginDelegate;
 
@@ -119,6 +118,7 @@ class UPsIronSource_iOS : public UPsIronSourceProxy
 	virtual void SetOfferwallUseClientSideCallbacks(bool bValue) override;
 	virtual void InitIronSource(const FString& UserId) override;
 	virtual void ForceUpdateIronSourceUser(const FString& UserId) override;
+	virtual void SetSegmentInfo(const FString& SegmentName, const FString& SegmentRevenueKey, float SegmentRevenue) override;
 	virtual bool HasRewardedVideo() const override;
 	virtual FString GetPlacementRewardName(const FString& PlacementName) const override;
 	virtual FString GetPlacementRewardAmount(const FString& PlacementName) const override;

@@ -13,8 +13,6 @@ enum class EIronSourceEventType : uint8
 	VideoShowFailed,           // there is a problem playing the video
 	VideoOpened,               // when we take control, but before the video has started playing
 	VideoClosed,               // when we return control back to your hands
-	VideoStarted,              // video has started playing
-	VideoEnded,                // video has stopped playing
 	VideoTapped,               // video has been tapped
 	VideoAvailable,            // video has changed availability to Available
 	VideoNotAvailable,         // video has changed availability to Not Available
@@ -46,7 +44,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPSIronSourceVideoDelegate, EIronSou
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FPSIronSourceOfferwallDelegate, EIronSourceOfferwallEventType, Event, int32, Credits, int32, TotalCredits, bool, TotalCreditsFlag);
 
 USTRUCT()
-struct FPsIronSourceImpressionData
+struct FPsIronSourceAdInfoCommon
 {
 	GENERATED_BODY()
 
@@ -69,9 +67,6 @@ struct FPsIronSourceImpressionData
 	FString Country;
 
 	UPROPERTY()
-	FString Placement;
-
-	UPROPERTY()
 	float Revenue;
 
 	UPROPERTY()
@@ -89,13 +84,40 @@ struct FPsIronSourceImpressionData
 	UPROPERTY()
 	FString EncryptedCpm;
 
+	FPsIronSourceAdInfoCommon()
+		: Revenue(0.f)
+		, LifetimeRevenue(0.f)
+	{
+	}
+};
+
+USTRUCT()
+struct FPsIronSourceImpressionData : public FPsIronSourceAdInfoCommon
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	FString Placement;
+
 	UPROPERTY()
 	float ConversionValue;
 
 	FPsIronSourceImpressionData()
-		: Revenue(0.f)
-		, LifetimeRevenue(0.f)
-		, ConversionValue(0.f)
+		: ConversionValue(0.f)
+	{
+	}
+};
+
+USTRUCT()
+struct FPsIronSourceAdInfo : public FPsIronSourceAdInfoCommon
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	bool bInitialized;
+
+	FPsIronSourceAdInfo()
+		: bInitialized(false)
 	{
 	}
 };
@@ -119,6 +141,9 @@ public:
 	/** Update userid after change account */
 	UFUNCTION(BlueprintCallable, Category = "IronSource")
 	virtual void ForceUpdateIronSourceUser(const FString& UserId);
+
+	/** Update segment info */
+	virtual void SetSegmentInfo(const FString& SegmentName, const FString& SegmentRevenueKey, float SegmentRevenue);
 
 	/** Whether SDK is initialized */
 	UFUNCTION(BlueprintCallable, Category = "IronSource")
@@ -156,6 +181,12 @@ public:
 
 	/** Decrement event counter */
 	void DequeueEvent();
+
+	/** Set ad info */
+	void SetAdInfo(const FPsIronSourceAdInfo& InAdInfo);
+
+	/** Get last ad info */
+	FPsIronSourceAdInfo GetAdInfo() const;
 
 	/** Set impression data */
 	void SetImpressionData(const FPsIronSourceImpressionData& InImpressionData);
@@ -210,6 +241,9 @@ protected:
 
 	/** Number of queued events */
 	std::atomic<int32> QueuedEventsCount;
+
+	/** Ad info instance */
+	FPsIronSourceAdInfo AdInfo;
 
 	/** Impression data instance */
 	FPsIronSourceImpressionData ImpressionData;

@@ -8,10 +8,20 @@ namespace UnrealBuildTool.Rules
     public class PsIronSource : ModuleRules
     {
         public PsIronSource(ReadOnlyTargetRules Target) : base(Target)
-        {
+        {                    
             bool bIronSourceEnable = false;
+            bool bIronSourceDontLinkPromisesObjC = false;
+            bool bIronSourceDontLinkGoogleAppMeasurement = false;
+            bool bIronSourceDontLinkGoogleUtilities = false;
+            bool bIronSourceDontLinkNanopb = false;
+
             ConfigHierarchy EngineConfig = ConfigCache.ReadHierarchy(ConfigHierarchyType.Engine, DirectoryReference.FromFile(Target.ProjectFile), Target.Platform);
             EngineConfig.TryGetValue("/Script/PsIronSource.PsIronSourceSettings", "bIronSourceEnable", out bIronSourceEnable);
+            EngineConfig.TryGetValue("/Script/PsIronSource.PsIronSourceSettings", "bIronSourceDontLinkPromisesObjC", out bIronSourceDontLinkPromisesObjC);
+            EngineConfig.TryGetValue("/Script/PsIronSource.PsIronSourceSettings", "bIronSourceDontLinkGoogleAppMeasurement", out bIronSourceDontLinkGoogleAppMeasurement);
+            EngineConfig.TryGetValue("/Script/PsIronSource.PsIronSourceSettings", "bIronSourceDontLinkGoogleUtilities", out bIronSourceDontLinkGoogleUtilities);
+            EngineConfig.TryGetValue("/Script/PsIronSource.PsIronSourceSettings", "bIronSourceDontLinkNanopb", out bIronSourceDontLinkNanopb);
+
             PublicDefinitions.Add("WITH_IRONSOURCE=" + (bIronSourceEnable ? "1" : "0"));
 
             PrivateIncludePaths.AddRange(
@@ -75,13 +85,16 @@ namespace UnrealBuildTool.Rules
                         )
                     );
 
-                    // Dependence for ISAdMobAdapter
-                    PublicAdditionalFrameworks.Add(
-                        new Framework(
-                            "GoogleAppMeasurement",
-                            "../../ThirdParty/iOS/GoogleAppMeasurement_is.embeddedframework.zip"
-                        )
-                    );
+                    if (bIronSourceDontLinkGoogleAppMeasurement == false)
+                    {
+                        // Dependence for ISAdMobAdapter
+                        PublicAdditionalFrameworks.Add(
+                            new Framework(
+                                "GoogleAppMeasurement",
+                                "../../ThirdParty/iOS/GoogleAppMeasurement.embeddedframework.zip"
+                            )
+                        );
+                    }
 
                     // Dependence for ISAdMobAdapter
                     PublicAdditionalFrameworks.Add(
@@ -91,29 +104,38 @@ namespace UnrealBuildTool.Rules
                         )
                     );
 
-                    // Dependence for ISAdMobAdapter
-                    PublicAdditionalFrameworks.Add(
-                        new Framework(
-                            "GoogleUtilities",
-                            "../../ThirdParty/iOS/GoogleUtilities_is.embeddedframework.zip"
-                        )
-                    );
+                    if (bIronSourceDontLinkGoogleUtilities == false)
+                    {
+                        // Dependence for ISAdMobAdapter
+                        PublicAdditionalFrameworks.Add(
+                            new Framework(
+                                "GoogleUtilities",
+                                "../../ThirdParty/iOS/GoogleUtilities.embeddedframework.zip"
+                            )
+                        );
+                    }
 
-                    // Dependence for ISAdMobAdapter
-                    PublicAdditionalFrameworks.Add(
-                        new Framework(
-                            "nanopb",
-                            "../../ThirdParty/iOS/nanopb_is.embeddedframework.zip"
-                        )
-                    );
+                    if (bIronSourceDontLinkNanopb == false)
+                    {
+                        // Dependence for ISAdMobAdapter
+                        PublicAdditionalFrameworks.Add(
+                            new Framework(
+                                "nanopb",
+                                "../../ThirdParty/iOS/nanopb.embeddedframework.zip"
+                            )
+                        );
+                    }
 
-                    // Dependence for ISAdMobAdapter
-                    PublicAdditionalFrameworks.Add(
-                        new Framework(
-                            "PromisesObjC",
-                            "../../ThirdParty/iOS/PromisesObjC_is.embeddedframework.zip"
-                        )
-                    );
+                    if (bIronSourceDontLinkPromisesObjC == false)
+                    {
+                        // Dependence for ISAdMobAdapter
+                        PublicAdditionalFrameworks.Add(
+                            new Framework(
+                                "PromisesObjC",
+                                "../../ThirdParty/iOS/PromisesObjC.embeddedframework.zip"
+                            )
+                        );
+                    }
 
                     // Dependence for ISAdMobAdapter
                     PublicAdditionalFrameworks.Add(

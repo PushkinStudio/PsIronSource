@@ -20,6 +20,7 @@ UPsIronSource_Android::UPsIronSource_Android(const FObjectInitializer& ObjectIni
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_setOfferwallUseClientSideCallbacks;
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_init;
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_ForceUpdateUser;
+jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_SetSegmentInfo;
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_hasRewardedVideo;
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_getPlacementRewardName;
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_getPlacementRewardAmount;
@@ -108,6 +109,53 @@ void UPsIronSource_Android::ForceUpdateIronSourceUser(const FString& UserId)
 		jstring JUserId = Env->NewStringUTF(TCHAR_TO_UTF8(*UserId));
 		FJavaWrapper::CallVoidMethod(Env, FJavaWrapper::GameActivityThis, UPsIronSource_Android::AndroidThunkJava_IronSource_ForceUpdateUser, JUserId);
 		Env->DeleteLocalRef(JUserId);
+	}
+	else
+	{
+		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+	}
+}
+
+void UPsIronSource_Android::SetSegmentInfo(const FString& SegmentName, const FString& SegmentRevenueKey, float SegmentRevenue)
+{
+	LOGD("%s: Update IronSource SegmentName", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+
+	if (!bIronSourceInitialized)
+	{
+		LOGD("%s: Trying to update ironsource segment name when it's not yet initialized!", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+		return;
+	}
+
+	if (SegmentName.IsEmpty())
+	{
+		UE_LOG(LogPsIronSource, Error, TEXT("%s: Trying to update IronSource segment name but it's empty!"), *PS_FUNC_LINE);
+		return;
+	}
+
+	if (SegmentRevenueKey.IsEmpty())
+	{
+		UE_LOG(LogPsIronSource, Error, TEXT("%s: Trying to update IronSource segment revenue but field key is empty!"), *PS_FUNC_LINE);
+		return;
+	}
+
+	if (FMath::IsNegativeFloat(SegmentRevenue))
+	{
+		UE_LOG(LogPsIronSource, Error, TEXT("%s: Trying to update IronSource segment revenue but it's negative '%f'!"), *PS_FUNC_LINE, SegmentRevenue);
+		return;
+	}
+
+	const FString SegmentRevenueString = FString::SanitizeFloat(SegmentRevenue);
+	if (JNIEnv* Env = FAndroidApplication::GetJavaEnv(true))
+	{
+		UPsIronSource_Android::AndroidThunkJava_IronSource_SetSegmentInfo = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_IronSource_SetSegmentInfo", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V", false);
+
+		jstring JSegmentName = Env->NewStringUTF(TCHAR_TO_UTF8(*SegmentName));
+		jstring JSegmentRevenueKey = Env->NewStringUTF(TCHAR_TO_UTF8(*SegmentRevenueKey));
+		jstring JSegmentRevenue = Env->NewStringUTF(TCHAR_TO_UTF8(*SegmentRevenueString));
+		FJavaWrapper::CallVoidMethod(Env, FJavaWrapper::GameActivityThis, UPsIronSource_Android::AndroidThunkJava_IronSource_SetSegmentInfo, JSegmentName, JSegmentRevenueKey, JSegmentRevenue);
+		Env->DeleteLocalRef(JSegmentName);
+		Env->DeleteLocalRef(JSegmentRevenueKey);
+		Env->DeleteLocalRef(JSegmentRevenue);
 	}
 	else
 	{
@@ -346,7 +394,8 @@ void UPsIronSource_Android::GetOfferwallCredits() const
 	}
 }
 
-JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdOpenedThunkCpp(JNIEnv* jenv, jobject thiz)
+// The Rewarded Video ad view has opened. Your activity will loose focus
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onLevelPlayAdOpenedThunkCpp(JNIEnv* jenv, jobject thiz, jobject jadInfo)
 {
 	if (ISProxy != nullptr)
 	{
@@ -366,7 +415,8 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdOpenedThunk
 	}
 }
 
-JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdClosedThunkCpp(JNIEnv* jenv, jobject thiz)
+// The Rewarded Video ad view is about to be closed. Your activity will regain its focus
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onLevelPlayAdClosedThunkCpp(JNIEnv* jenv, jobject thiz, jobject jadInfo)
 {
 	if (ISProxy != nullptr)
 	{
@@ -386,21 +436,64 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdClosedThunk
 	}
 }
 
-// Invoked when there is a change in the ad availability status
-JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAvailabilityChangedThunkCpp(JNIEnv* jenv, jobject thiz, jboolean available)
+// Indicates that there's an available ad.
+// The adInfo object includes information about the ad that was loaded successfully
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onLevelPlayAdAvailableThunkCpp(JNIEnv* jenv, jobject thiz, jobject jadInfo)
 {
-	// this event does not need to be counted
-	AsyncTask(ENamedThreads::GameThread, [available]() {
+	jclass DoubleClass = jenv->FindClass("java/lang/Double");
+	jmethodID DoubleValueMethodId = jenv->GetMethodID(DoubleClass, "doubleValue", "()D");
+
+	jclass AdInfoClass = jenv->FindClass("com/ironsource/mediationsdk/adunit/adapter/utility/AdInfo");
+	jmethodID getAuctionIdMethodId = jenv->GetMethodID(AdInfoClass, "getAuctionId", "()Ljava/lang/String;");
+	jmethodID getAdUnitMethodId = jenv->GetMethodID(AdInfoClass, "getAdUnit", "()Ljava/lang/String;");
+	jmethodID getAdNetworkMethodId = jenv->GetMethodID(AdInfoClass, "getAdNetwork", "()Ljava/lang/String;");
+	jmethodID getInstanceNameMethodId = jenv->GetMethodID(AdInfoClass, "getInstanceName", "()Ljava/lang/String;");
+	jmethodID getInstanceIdMethodId = jenv->GetMethodID(AdInfoClass, "getInstanceId", "()Ljava/lang/String;");
+	jmethodID getCountryMethodId = jenv->GetMethodID(AdInfoClass, "getCountry", "()Ljava/lang/String;");
+	jmethodID getRevenueMethodId = jenv->GetMethodID(AdInfoClass, "getRevenue", "()Ljava/lang/Double;");
+	jmethodID getPrecisionMethodId = jenv->GetMethodID(AdInfoClass, "getPrecision", "()Ljava/lang/String;");
+	jmethodID getAbMethodId = jenv->GetMethodID(AdInfoClass, "getAb", "()Ljava/lang/String;");
+	jmethodID getSegmentNameMethodId = jenv->GetMethodID(AdInfoClass, "getSegmentName", "()Ljava/lang/String;");
+	jmethodID getLifetimeRevenueMethodId = jenv->GetMethodID(AdInfoClass, "getLifetimeRevenue", "()Ljava/lang/Double;");
+	jmethodID getEncryptedCPMMethodId = jenv->GetMethodID(AdInfoClass, "getEncryptedCPM", "()Ljava/lang/String;");
+
+	FPsIronSourceAdInfo Data;
+	Data.AuctionId = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jadInfo, getAuctionIdMethodId));
+	Data.AdUnit = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jadInfo, getAdUnitMethodId));
+	Data.AdNetwork = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jadInfo, getAdNetworkMethodId));
+	Data.InstanceName = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jadInfo, getInstanceNameMethodId));
+	Data.InstanceId = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jadInfo, getInstanceIdMethodId));
+	Data.Country = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jadInfo, getCountryMethodId));
+
+	jobject RevenueDoubleObject = jenv->CallObjectMethod(jadInfo, getRevenueMethodId);
+	if (RevenueDoubleObject != NULL)
+	{
+		Data.Revenue = jenv->CallDoubleMethod(RevenueDoubleObject, DoubleValueMethodId);
+		jenv->DeleteLocalRef(RevenueDoubleObject);
+	}
+
+	Data.Precision = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jadInfo, getPrecisionMethodId));
+	Data.Ab = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jadInfo, getAbMethodId));
+	Data.SegmentName = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jadInfo, getSegmentNameMethodId));
+
+	jobject LifetimeRevenueDoubleObject = jenv->CallObjectMethod(jadInfo, getLifetimeRevenueMethodId);
+	if (LifetimeRevenueDoubleObject != NULL)
+	{
+		Data.LifetimeRevenue = jenv->CallDoubleMethod(LifetimeRevenueDoubleObject, DoubleValueMethodId);
+		jenv->DeleteLocalRef(LifetimeRevenueDoubleObject);
+	}
+
+	Data.EncryptedCpm = FJavaHelper::FStringFromLocalRef(jenv, (jstring)jenv->CallObjectMethod(jadInfo, getEncryptedCPMMethodId));
+	Data.bInitialized = true;
+
+	jenv->DeleteLocalRef(DoubleClass);
+	jenv->DeleteLocalRef(AdInfoClass);
+
+	AsyncTask(ENamedThreads::GameThread, [Data]() {
 		if (ISProxy != nullptr)
 		{
-			if (available)
-			{
-				ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoAvailable);
-			}
-			else
-			{
-				ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoNotAvailable);
-			}
+			ISProxy->SetAdInfo(Data);
+			ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoAvailable);
 		}
 		else
 		{
@@ -409,50 +502,25 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAvailabilityC
 	});
 }
 
-// Invoked when the RewardedVideo ad view has opened
-JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdStartedThunkCpp(JNIEnv* jenv, jobject thiz)
+// Indicates that no ads are available to be displayed
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onLevelPlayAdUnavailableThunkCpp(JNIEnv* jenv, jobject thiz)
 {
-	if (ISProxy != nullptr)
-	{
-		ISProxy->EnqueueEvent();
-
-		AsyncTask(ENamedThreads::GameThread, []() {
-			if (ISProxy != nullptr)
-			{
-				ISProxy->DequeueEvent();
-				ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoStarted);
-			}
-			else
-			{
-				LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
-			}
-		});
-	}
+	AsyncTask(ENamedThreads::GameThread, []() {
+		if (ISProxy != nullptr)
+		{
+			ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoNotAvailable);
+		}
+		else
+		{
+			LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+		}
+	});
 }
 
-// Invoked when the RewardedVideo ad view is about to be closed
-JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdEndedThunkCpp(JNIEnv* jenv, jobject thiz)
-{
-	if (ISProxy != nullptr)
-	{
-		ISProxy->EnqueueEvent();
-
-		AsyncTask(ENamedThreads::GameThread, []() {
-			if (ISProxy != nullptr)
-			{
-				ISProxy->DequeueEvent();
-				ISProxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoEnded);
-			}
-			else
-			{
-				LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
-			}
-		});
-	}
-}
-
-// Invoked when the user completed the video and should be rewarded
-JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdRewardedThunkCpp(JNIEnv* jenv, jobject thiz)
+// The user completed to watch the video, and should be rewarded.
+// The placement parameter will include the reward data.
+// When using server-to-server callbacks, you may ignore this event and wait for the ironSource server callback
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onLevelPlayAdRewardedThunkCpp(JNIEnv* jenv, jobject thiz, jobject jplacement, jobject jadInfo)
 {
 	if (ISProxy != nullptr)
 	{
@@ -472,8 +540,8 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdRewardedThu
 	}
 }
 
-// Invoked when RewardedVideo call to show a rewarded video has failed
-JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdShowFailedThunkCpp(JNIEnv* jenv, jobject thiz, jint errorCode, jstring errorMessage)
+// The rewarded video ad was failed to show
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onLevelPlayAdShowFailedThunkCpp(JNIEnv* jenv, jobject thiz, jint errorCode, jstring errorMessage, jobject jadInfo)
 {
 	if (ISProxy != nullptr)
 	{
@@ -493,7 +561,7 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdShowFailedT
 	}
 }
 
-JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onRewardedVideoAdClickedThunkCpp(JNIEnv* jenv, jobject thiz)
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onLevelPlayAdClickedThunkCpp(JNIEnv* jenv, jobject thiz, jobject jplacement, jobject jadInfo)
 {
 	if (ISProxy != nullptr)
 	{
@@ -582,7 +650,7 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onImpressionSuccessThunkCpp(
 	}
 }
 
-JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdReadyThunkCpp(JNIEnv* jenv, jobject thiz)
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdReadyThunkCpp(JNIEnv* jenv, jobject thiz, jobject jadInfo)
 {
 	if (ISProxy != nullptr)
 	{
@@ -622,7 +690,7 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdLoadFailedTh
 	}
 }
 
-JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdOpenedThunkCpp(JNIEnv* jenv, jobject thiz)
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdOpenedThunkCpp(JNIEnv* jenv, jobject thiz, jobject jadInfo)
 {
 	if (ISProxy != nullptr)
 	{
@@ -642,7 +710,7 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdOpenedThunkC
 	}
 }
 
-JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdClosedThunkCpp(JNIEnv* jenv, jobject thiz)
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdClosedThunkCpp(JNIEnv* jenv, jobject thiz, jobject jadInfo)
 {
 	if (ISProxy != nullptr)
 	{
@@ -662,7 +730,7 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdClosedThunkC
 	}
 }
 
-JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdShowFailedThunkCpp(JNIEnv* jenv, jobject thiz, jint errorCode, jstring errorMessage)
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdShowFailedThunkCpp(JNIEnv* jenv, jobject thiz, jint errorCode, jstring errorMessage, jobject jadInfo)
 {
 	if (ISProxy != nullptr)
 	{
@@ -682,7 +750,7 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdShowFailedTh
 	}
 }
 
-JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdClickedThunkCpp(JNIEnv* jenv, jobject thiz)
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdClickedThunkCpp(JNIEnv* jenv, jobject thiz, jobject jadInfo)
 {
 	if (ISProxy != nullptr)
 	{
@@ -702,7 +770,7 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdClickedThunk
 	}
 }
 
-JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdShowSucceededThunkCpp(JNIEnv* jenv, jobject thiz)
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdShowSucceededThunkCpp(JNIEnv* jenv, jobject thiz, jobject jadInfo)
 {
 	if (ISProxy != nullptr)
 	{

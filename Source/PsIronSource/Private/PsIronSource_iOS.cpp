@@ -13,121 +13,125 @@ UPsIronSource_iOS::UPsIronSource_iOS(const FObjectInitializer& ObjectInitializer
 #include "PsIronSourceSettings.h"
 
 @implementation PSISDelegate
-// This method lets you know whether or not there is a video
-// ready to be presented. It is only after this method is invoked
-// with 'hasAvailableAds' set to 'YES' that you can should 'showRV'.
-- (void)rewardedVideoHasChangedAvailability:(BOOL)available
-{
-	NSLog(@"%s %d", __PRETTY_FUNCTION__, available);
 
-	AsyncTask(ENamedThreads::GameThread, [self, available]() {
-		if (self.PluginDelegate != nullptr)
+// Called after a rewarded video has changed its availability to true.
+// @param adInfo The info of the ad.
+// Replaces the delegate rewardedVideoHasChangedAvailability:(true)available
+- (void)hasAvailableAdWithAdInfo:(ISAdInfo*)adInfo
+{
+	NSLog(@"%s", __PRETTY_FUNCTION__);
+
+	FPsIronSourceAdInfo AdInfo;
+	if (adInfo != nil)
+	{
+		AdInfo.AuctionId = FString(adInfo.auction_id);
+		AdInfo.AdUnit = FString(adInfo.ad_unit);
+		AdInfo.AdNetwork = FString(adInfo.ad_network);
+		AdInfo.InstanceName = FString(adInfo.instance_name);
+		AdInfo.InstanceId = FString(adInfo.instance_id);
+		AdInfo.Country = FString(adInfo.country);
+		AdInfo.Revenue = [adInfo.revenue floatValue];
+		AdInfo.Precision = FString(adInfo.precision);
+		AdInfo.Ab = FString(adInfo.ab);
+		AdInfo.SegmentName = FString(adInfo.segment_name);
+		AdInfo.LifetimeRevenue = [adInfo.lifetime_revenue floatValue];
+		AdInfo.EncryptedCpm = FString(adInfo.encrypted_cpm);
+		AdInfo.bInitialized = true;
+	}
+
+	AsyncTask(ENamedThreads::GameThread, [self, AdInfo]() {
+		if (self.Proxy != nullptr)
 		{
-			if (available)
-			{
-				self.PluginDelegate->Broadcast(EIronSourceEventType::VideoAvailable);
-			}
-			else
-			{
-				self.PluginDelegate->Broadcast(EIronSourceEventType::VideoNotAvailable);
-			}
+			self.Proxy->SetAdInfo(AdInfo);
+			self.Proxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoAvailable);
 		}
 	});
 }
 
-// This method gets invoked after the user has been rewarded.
-- (void)didReceiveRewardForPlacement:(ISPlacementInfo*)placementInfo
+// Called after a rewarded video has changed its availability to false.
+// Replaces the delegate rewardedVideoHasChangedAvailability:(false)available
+- (void)hasNoAvailableAd
 {
 	NSLog(@"%s", __PRETTY_FUNCTION__);
 
 	AsyncTask(ENamedThreads::GameThread, [self]() {
-		if (self.PluginDelegate != nullptr)
+		if (self.Proxy != nullptr)
 		{
-			self.PluginDelegate->Broadcast(EIronSourceEventType::ReceivedReward);
+			self.Proxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoNotAvailable);
 		}
 	});
 }
 
-// This method gets invoked when there is a problem playing the video.
-// If it does happen, check out 'error' for more information and consult
-// our knowledge center for help.
-- (void)rewardedVideoDidFailToShowWithError:(NSError*)error
+// Called after a rewarded video has been viewed completely and the user is eligible for a reward.
+// @param placementInfo An object that contains the placement's reward name and amount.
+// @param adInfo The info of the ad.
+- (void)didReceiveRewardForPlacement:(ISPlacementInfo*)placementInfo withAdInfo:(ISAdInfo*)adInfo
+{
+	NSLog(@"%s", __PRETTY_FUNCTION__);
+
+	AsyncTask(ENamedThreads::GameThread, [self]() {
+		if (self.Proxy != nullptr)
+		{
+			self.Proxy->VideoStateDelegate.Broadcast(EIronSourceEventType::ReceivedReward);
+		}
+	});
+}
+
+// Called after a rewarded video has attempted to show but failed.
+// @param error The reason for the error
+// @param adInfo The info of the ad.
+- (void)didFailToShowWithError:(NSError*)error andAdInfo:(ISAdInfo*)adInfo
 {
 	NSLog(@"%s %@", __PRETTY_FUNCTION__, error.description);
 
 	AsyncTask(ENamedThreads::GameThread, [self]() {
-		if (self.PluginDelegate != nullptr)
+		if (self.Proxy != nullptr)
 		{
-			self.PluginDelegate->Broadcast(EIronSourceEventType::VideoShowFailed);
+			self.Proxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoShowFailed);
 		}
 	});
 }
 
-// This method gets invoked when we take control, but before
-// the video has started playing.
-- (void)rewardedVideoDidOpen
+// Called after a rewarded video has been opened.
+// @param adInfo The info of the ad.
+- (void)didOpenWithAdInfo:(ISAdInfo*)adInfo
 {
 	NSLog(@"%s", __PRETTY_FUNCTION__);
 
 	AsyncTask(ENamedThreads::GameThread, [self]() {
-		if (self.PluginDelegate != nullptr)
+		if (self.Proxy != nullptr)
 		{
-			self.PluginDelegate->Broadcast(EIronSourceEventType::VideoOpened);
+			self.Proxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoOpened);
 		}
 	});
 }
 
-// This method gets invoked when we return control back to your hands.
-- (void)rewardedVideoDidClose
+// Called after a rewarded video has been dismissed.
+// @param adInfo The info of the ad.
+- (void)didCloseWithAdInfo:(ISAdInfo*)adInfo
 {
 	NSLog(@"%s", __PRETTY_FUNCTION__);
 
 	AsyncTask(ENamedThreads::GameThread, [self]() {
-		if (self.PluginDelegate != nullptr)
+		if (self.Proxy != nullptr)
 		{
-			self.PluginDelegate->Broadcast(EIronSourceEventType::VideoClosed);
+			self.Proxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoClosed);
 		}
 	});
 }
 
-// This method gets invoked when the video has started playing.
-// Note: the events DidStart & DidEnd below are not available for all supported rewarded video ad networks. Check which events are available per ad network you choose
-// to include in your build.
-// We recommend only using events which register to ALL ad networks you //include in your build.
-- (void)rewardedVideoDidStart
+// Called after a rewarded video has been clicked.
+// This callback is not supported by all networks, and we recommend using it
+// only if it's supported by all networks you included in your build
+// @param adInfo The info of the ad.
+- (void)didClick:(ISPlacementInfo*)placementInfo withAdInfo:(ISAdInfo*)adInfo
 {
 	NSLog(@"%s", __PRETTY_FUNCTION__);
 
 	AsyncTask(ENamedThreads::GameThread, [self]() {
-		if (self.PluginDelegate != nullptr)
+		if (self.Proxy != nullptr)
 		{
-			self.PluginDelegate->Broadcast(EIronSourceEventType::VideoStarted);
-		}
-	});
-}
-
-// This method gets invoked when the video has stopped playing.
-- (void)rewardedVideoDidEnd
-{
-	NSLog(@"%s", __PRETTY_FUNCTION__);
-
-	AsyncTask(ENamedThreads::GameThread, [self]() {
-		if (self.PluginDelegate != nullptr)
-		{
-			self.PluginDelegate->Broadcast(EIronSourceEventType::VideoEnded);
-		}
-	});
-}
-
-// Called after a video has been clicked.
-- (void)didClickRewardedVideo:(ISPlacementInfo*)placementInfo
-{
-	NSLog(@"%s", __PRETTY_FUNCTION__);
-
-	AsyncTask(ENamedThreads::GameThread, [self]() {
-		if (self.PluginDelegate != nullptr)
-		{
-			self.PluginDelegate->Broadcast(EIronSourceEventType::VideoTapped);
+			self.Proxy->VideoStateDelegate.Broadcast(EIronSourceEventType::VideoTapped);
 		}
 	});
 }
@@ -182,8 +186,11 @@ UPsIronSource_iOS::UPsIronSource_iOS(const FObjectInitializer& ObjectInitializer
 
 @implementation PSISInterstitialDelegate
 
-// Invoked when Interstitial Ad is ready to be shown after load function was //called.
-- (void)interstitialDidLoad
+/**
+ Called after an interstitial has been loaded
+ @param adInfo The info of the ad.
+ */
+- (void)didLoadWithAdInfo:(ISAdInfo*)adInfo;
 {
 	NSLog(@"%s", __PRETTY_FUNCTION__);
 
@@ -194,9 +201,13 @@ UPsIronSource_iOS::UPsIronSource_iOS(const FObjectInitializer& ObjectInitializer
 		}
 	});
 }
-// Called if showing the Interstitial for the user has failed.
-// You can learn about the reason by examining the ‘error’ value
-- (void)interstitialDidFailToShowWithError:(NSError*)error
+
+/**
+	Called after an interstitial has attempted to show but failed.
+	@param error The reason for the error
+	@param adInfo The info of the ad.
+ */
+- (void)didFailToShowWithError:(NSError*)error andAdInfo:(ISAdInfo*)adInfo;
 {
 	NSLog(@"%s %@", __PRETTY_FUNCTION__, error.description);
 
@@ -207,8 +218,12 @@ UPsIronSource_iOS::UPsIronSource_iOS(const FObjectInitializer& ObjectInitializer
 		}
 	});
 }
-// Called each time the end user has clicked on the Interstitial ad, for supported networks only
-- (void)didClickInterstitial
+
+/**
+	Called after an interstitial has been clicked.
+	@param adInfo The info of the ad.
+ */
+- (void)didClickWithAdInfo:(ISAdInfo*)adInfo;
 {
 	NSLog(@"%s", __PRETTY_FUNCTION__);
 
@@ -219,8 +234,12 @@ UPsIronSource_iOS::UPsIronSource_iOS(const FObjectInitializer& ObjectInitializer
 		}
 	});
 }
-// Called each time the Interstitial window is about to close
-- (void)interstitialDidClose
+
+/**
+	Called after an interstitial has been dismissed.
+	@param adInfo The info of the ad.
+ */
+- (void)didCloseWithAdInfo:(ISAdInfo*)adInfo;
 {
 	NSLog(@"%s", __PRETTY_FUNCTION__);
 
@@ -231,8 +250,13 @@ UPsIronSource_iOS::UPsIronSource_iOS(const FObjectInitializer& ObjectInitializer
 		}
 	});
 }
-// Called each time the Interstitial window is about to open
-- (void)interstitialDidOpen
+
+/**
+	Called after an interstitial has been opened.
+	This is the indication for impression.
+	@param adInfo The info of the ad.
+ */
+- (void)didOpenWithAdInfo:(ISAdInfo*)adInfo;
 {
 	NSLog(@"%s", __PRETTY_FUNCTION__);
 
@@ -243,9 +267,12 @@ UPsIronSource_iOS::UPsIronSource_iOS(const FObjectInitializer& ObjectInitializer
 		}
 	});
 }
-// Invoked when there is no Interstitial Ad available after calling load function.
-// @param error - will contain the failure code and description.
-- (void)interstitialDidFailToLoadWithError:(NSError*)error
+
+/**
+	Called after an interstitial has attempted to load but failed.
+	@param error The reason for the error
+ */
+- (void)didFailToLoadWithError:(NSError*)error;
 {
 	NSLog(@"%s %@", __PRETTY_FUNCTION__, error.description);
 
@@ -257,10 +284,13 @@ UPsIronSource_iOS::UPsIronSource_iOS(const FObjectInitializer& ObjectInitializer
 	});
 }
 
-// Invoked right before the Interstitial screen is about to open.
-// NOTE - This event is available only for some of the networks.
-// You should NOT treat this event as an interstitial impression, but rather use InterstitialAdOpenedEvent
-- (void)interstitialDidShow
+/**
+	Called after an interstitial has been displayed on the screen.
+	This callback is not supported by all networks, and we recommend using it
+	only if it's supported by all networks you included in your build.
+	@param adInfo The info of the ad.
+ */
+- (void)didShowWithAdInfo:(ISAdInfo*)adInfo;
 {
 	NSLog(@"%s", __PRETTY_FUNCTION__);
 
@@ -391,7 +421,7 @@ void UPsIronSource_iOS::InitIronSource(const FString& UserId)
 
 	dispatch_async(dispatch_get_main_queue(), ^{
 	  Delegate = [[PSISDelegate alloc] init];
-	  Delegate.PluginDelegate = &VideoStateDelegate;
+	  Delegate.Proxy = this;
 
 	  LogDelegate = [[PSISLogDelegate alloc] init];
 
@@ -405,9 +435,9 @@ void UPsIronSource_iOS::InitIronSource(const FString& UserId)
 	  OfferwallDelegate.PluginDelegate = &OfferwallStateDelegate;
 
 	  [IronSource setLogDelegate:LogDelegate];
-	  [IronSource setRewardedVideoDelegate:Delegate];
+	  [IronSource setLevelPlayRewardedVideoDelegate:Delegate];
 	  [IronSource addImpressionDataDelegate:ImpressionDelegate];
-	  [IronSource setInterstitialDelegate:InterstitialDelegate];
+	  [IronSource setLevelPlayInterstitialDelegate:InterstitialDelegate];
 	  [IronSource setOfferwallDelegate:OfferwallDelegate];
 	  [IronSource setUserId:UserIdNativeString];
 	  [IronSource initWithAppKey:AppKeyNativeString];
@@ -431,6 +461,48 @@ void UPsIronSource_iOS::ForceUpdateIronSourceUser(const FString& UserId)
 
 	dispatch_async(dispatch_get_main_queue(), ^{
 	  [IronSource setDynamicUserId:UserIdNativeString];
+	});
+}
+
+void UPsIronSource_iOS::SetSegmentInfo(const FString& SegmentName, const FString& SegmentRevenueKey, float SegmentRevenue)
+{
+	UE_LOG(LogPsIronSource, Log, TEXT("%s: set new segment name for Ironscouce"), *PS_FUNC_LINE);
+
+	if (!bIronSourceInitialized)
+	{
+		UE_LOG(LogPsIronSource, Error, TEXT("%s: Trying to update IronSource segment name when it's not yet initialized!"), *PS_FUNC_LINE);
+		return;
+	}
+
+	if (SegmentName.IsEmpty())
+	{
+		UE_LOG(LogPsIronSource, Error, TEXT("%s: Trying to update IronSource segment name but it's empty!"), *PS_FUNC_LINE);
+		return;
+	}
+
+	if (SegmentRevenueKey.IsEmpty())
+	{
+		UE_LOG(LogPsIronSource, Error, TEXT("%s: Trying to update IronSource segment revenue but field key is empty!"), *PS_FUNC_LINE);
+		return;
+	}
+
+	if (FMath::IsNegativeFloat(SegmentRevenue))
+	{
+		UE_LOG(LogPsIronSource, Error, TEXT("%s: Trying to update IronSource segment revenue but it's negative '%f'!"), *PS_FUNC_LINE, SegmentRevenue);
+		return;
+	}
+
+	const FString SegmentRevenueString = FString::SanitizeFloat(SegmentRevenue);
+	NSString* SegmentNameNativeString = SegmentName.GetNSString();
+	NSString* SegmentRevenueKeyNativeString = SegmentRevenueKey.GetNSString();
+	NSString* SegmentRevenueNativeString = SegmentRevenueString.GetNSString();
+
+	dispatch_async(dispatch_get_main_queue(), ^{
+	  ISSegment* Segment = [[ISSegment alloc] init];
+	  [Segment setSegmentName:SegmentNameNativeString];
+	  [Segment setCustomValue:SegmentRevenueNativeString forKey:SegmentRevenueKeyNativeString];
+
+	  [IronSource setSegment:Segment];
 	});
 }
 
