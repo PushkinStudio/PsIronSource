@@ -367,21 +367,6 @@
 					implementation 'com.mbridge.msdk.oversea:mbbanner:16.2.61'
 					implementation 'com.mbridge.msdk.oversea:newinterstitial:16.2.61'
 					}
-
-					android {
-					compileOptions {
-					sourceCompatibility 1.8
-					targetCompatibility 1.8
-					}
-					}
-
-					// Fix target sdk 30 compatibility for Yandex
-					configurations.all {
-					resolutionStrategy {
-					force 'androidx.core:core-ktx:1.6.0'
-					force 'androidx.core:core:1.6.0'
-					}
-					}
 				</insert>
 			</true>
 		</if>
