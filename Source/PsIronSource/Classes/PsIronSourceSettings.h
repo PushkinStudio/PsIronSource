@@ -29,4 +29,12 @@ public:
 	/** AdMob app id (Android) */
 	UPROPERTY(Config, EditAnywhere)
 	FString AdMobAndroidAppId;
+
+	/** APS app id (iOS) */
+	UPROPERTY(Config, EditAnywhere)
+	FString APSIOSAppId;
+
+	/** APS app id (Android) */
+	UPROPERTY(Config, EditAnywhere)
+	FString APSAndroidAppId;
 };

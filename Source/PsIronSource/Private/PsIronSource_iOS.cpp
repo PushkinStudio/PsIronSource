@@ -11,6 +11,7 @@ UPsIronSource_iOS::UPsIronSource_iOS(const FObjectInitializer& ObjectInitializer
 
 #include "PsIronSourceDefines.h"
 #include "PsIronSourceSettings.h"
+#import <DTBiOSSDK/DTBiOSSDK.h>
 
 @implementation PSISDelegate
 
@@ -419,7 +420,24 @@ void UPsIronSource_iOS::InitIronSource(const FString& UserId)
 	NSString* UserIdNativeString = UserId.GetNSString();
 	NSString* AppKeyNativeString = GetDefault<UPsIronSourceSettings>()->IronSourceIOSAppKey.GetNSString();
 
+	// Init APS SDK before IS (see https://developers.is.com/ironsource-mobile/ios/aps-integration-guide/#step-6)
+	NSString* APSIOSAppIdNativeString = nil;
+	if (GetDefault<UPsIronSourceSettings>()->APSIOSAppId.IsEmpty() == false)
+	{
+		APSIOSAppIdNativeString = GetDefault<UPsIronSourceSettings>()->APSIOSAppId.GetNSString();
+	}
+
 	dispatch_async(dispatch_get_main_queue(), ^{
+	  if (APSIOSAppIdNativeString != nil)
+	  {
+		  [[DTBAds sharedInstance] setAppKey:APSIOSAppIdNativeString];
+		  UE_LOG(LogPsIronSource, Log, TEXT("%s: APS is initalized"), *PS_FUNC_LINE);
+	  }
+	  else
+	  {
+		  UE_LOG(LogPsIronSource, Warning, TEXT("%s: APS is NOT initalized"), *PS_FUNC_LINE);
+	  }
+
 	  Delegate = [[PSISDelegate alloc] init];
 	  Delegate.Proxy = this;
 

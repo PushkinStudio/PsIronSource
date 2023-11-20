@@ -2,15 +2,20 @@
 //  ContentView.swift
 //  ironsource
 //
-//  Created by Anton Rassadin on 06.09.2022.
+//  Created by Anton Rassadin on 23.10.2023.
 //
 
 import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        Text("Hello, world!")
-            .padding()
+        VStack {
+            Image(systemName: "globe")
+                .imageScale(.large)
+                .foregroundColor(.accentColor)
+            Text("Hello, world!")
+        }
+        .padding()
     }
 }
 

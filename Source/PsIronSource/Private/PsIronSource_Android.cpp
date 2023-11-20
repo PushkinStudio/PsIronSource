@@ -78,13 +78,15 @@ void UPsIronSource_Android::InitIronSource(const FString& UserId)
 	{
 		ISProxy = this;
 
-		UPsIronSource_Android::AndroidThunkJava_IronSource_init = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_IronSource_init", "(Ljava/lang/String;Ljava/lang/String;)V", false);
+		UPsIronSource_Android::AndroidThunkJava_IronSource_init = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_IronSource_init", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V", false);
 
 		jstring JUserId = Env->NewStringUTF(TCHAR_TO_UTF8(*UserId));
 		jstring JAppKey = Env->NewStringUTF(TCHAR_TO_UTF8(*(GetDefault<UPsIronSourceSettings>()->IronSourceAndroidAppKey)));
-		FJavaWrapper::CallVoidMethod(Env, FJavaWrapper::GameActivityThis, UPsIronSource_Android::AndroidThunkJava_IronSource_init, JAppKey, JUserId);
+		jstring JAPSAppId = Env->NewStringUTF(TCHAR_TO_UTF8(*(GetDefault<UPsIronSourceSettings>()->APSAndroidAppId)));
+		FJavaWrapper::CallVoidMethod(Env, FJavaWrapper::GameActivityThis, UPsIronSource_Android::AndroidThunkJava_IronSource_init, JAppKey, JUserId, JAPSAppId);
 		Env->DeleteLocalRef(JUserId);
 		Env->DeleteLocalRef(JAppKey);
+		Env->DeleteLocalRef(JAPSAppId);
 	}
 	else
 	{

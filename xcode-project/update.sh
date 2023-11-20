@@ -17,7 +17,11 @@ PackFramework()
 	mkdir $FRAMEWORK
 
 	if [ -d "$1/$2.xcframework" ]; then
-	 	cp -R $1/$2.xcframework/ios-arm64_armv7/ $FRAMEWORK
+		if [ -d "$1/$2.xcframework/ios-arm64_armv7" ]; then
+	 		cp -R $1/$2.xcframework/ios-arm64_armv7/ $FRAMEWORK
+	 	elif [ -d "$1/$2.xcframework/ios-arm64" ]; then
+	 		cp -R $1/$2.xcframework/ios-arm64/ $FRAMEWORK
+	 	fi
 	else
 		cp -R $1/$2.framework $FRAMEWORK
 	fi
@@ -28,11 +32,18 @@ PackFramework()
 		cp -R $1/$3 $FRAMEWORK
 	fi
 
-	# fix compilation
+	# fix compilation (IronSource)
 	if [ "$2" == "IronSource" ]
 	then
 		sed -i -e "s|@property (nonatomic) ISAdUnit|@property (nonatomic, retain) ISAdUnit|" $FRAMEWORK/$2.framework/Headers/ISBaseAdAdapter.h
 		rm -f $FRAMEWORK/$2.framework/Headers/ISBaseAdAdapter.h-e
+	fi
+
+	# fix compilation (DTBiOSSDK)
+	if [ "$2" == "DTBiOSSDK" ]
+	then
+		sed -i -e "s|@property NSString|@property (nonatomic, retain) NSString|g" $FRAMEWORK/$2.framework/Headers/APSEvent.h
+		rm -f $FRAMEWORK/$2.framework/Headers/APSEvent.h-e
 	fi
 
 	# rename framework
@@ -72,38 +83,45 @@ mkdir -p downloads
 rm -rf downloads/unpacked
 mkdir downloads/unpacked
 
-DownloadFramework https://dl.google.com/googleadmobadssdk/googlemobileadssdkios-9.13.0.zip
+DownloadFramework https://dl.google.com/googleadmobadssdk/googlemobileadssdkios.zip
 
-pod install
-PackFramework Pods/AdColony AdColony
-PackFramework Pods/Ads-Global/SDK BURelyAdSDK
-PackFramework Pods/Ads-Global/SDK PAGAdSDK PAGAdSDK.bundle
-PackFramework Pods/AppLovinSDK/applovin-ios-sdk-11.6.1 AppLovinSDK AppLovinSDKResources.bundle
-PackFramework Pods/BUAdSDK/BUAdSDK BUAdSDK
-PackFramework Pods/ChartboostSDK ChartboostSDK
+PackFramework Pods/AppLovinSDK/applovin-ios-sdk-11.10.1 AppLovinSDK AppLovinSDKResources.bundle
+PackFramework Pods/ChartboostSDK ChartboostSDK ChartboostSDKResources.bundle
 PackFramework Pods/Google-Mobile-Ads-SDK/Frameworks/GoogleMobileAdsFramework GoogleMobileAds
 PackFramework Pods/GoogleAppMeasurement/Frameworks GoogleAppMeasurement
-PackFramework downloads/unpacked/GoogleMobileAdsSdkiOS-9.13.0 GoogleUtilities
-PackFramework downloads/unpacked/GoogleMobileAdsSdkiOS-9.13.0 nanopb
-PackFramework downloads/unpacked/GoogleMobileAdsSdkiOS-9.13.0 PromisesObjC
+# use compiled version from downloads
+PackFramework downloads/unpacked/GoogleMobileAdsSdkiOS-10.12.0 GoogleUtilities
+# use compiled version from downloads
+PackFramework downloads/unpacked/GoogleMobileAdsSdkiOS-10.12.0 nanopb
+# use compiled version from downloads
+PackFramework downloads/unpacked/GoogleMobileAdsSdkiOS-10.12.0 FBLPromises
+# check google, check promises
 PackFramework Pods/GoogleUserMessagingPlatform/Frameworks/Release UserMessagingPlatform
-PackFramework Pods/IronSourceAdColonyAdapter/ISAdColonyAdapter ISAdColonyAdapter
 PackFramework Pods/IronSourceAdMobAdapter/ISAdMobAdapter ISAdMobAdapter ISAdMobResources.bundle
 PackFramework Pods/IronSourceAppLovinAdapter/ISAppLovinAdapter ISAppLovinAdapter
 PackFramework Pods/IronSourceChartboostAdapter/ISChartboostAdapter ISChartboostAdapter
 PackFramework Pods/IronSourceFacebookAdapter/ISFacebookAdapter ISFacebookAdapter
+# mintegral begin
 PackFramework Pods/IronSourceMintegralAdapter/ISMintegralAdapter ISMintegralAdapter
 PackFramework Pods/MintegralAdSDK/Fmk MTGSDK
 PackFramework Pods/MintegralAdSDK/Fmk MTGSDKBanner
-PackFramework Pods/MintegralAdSDK/Fmk MTGSDKReward
 PackFramework Pods/MintegralAdSDK/Fmk MTGSDKBidding
-PackFramework Pods/MintegralAdSDK/Fmk MTGSDKNewInterstitial
+PackFramework Pods/MintegralAdSDK/Fmk MTGSDKCNAddition
+PackFramework Pods/MintegralAdSDK/Fmk MTGSDKInterstitial
 PackFramework Pods/MintegralAdSDK/Fmk MTGSDKInterstitialVideo
-PackFramework Pods/IronSourcePangleAdapter/ISPangleAdapter ISPangleAdapter
+PackFramework Pods/MintegralAdSDK/Fmk MTGSDKNativeAdvanced
+PackFramework Pods/MintegralAdSDK/Fmk MTGSDKNewInterstitial
+PackFramework Pods/MintegralAdSDK/Fmk MTGSDKReward
+PackFramework Pods/MintegralAdSDK/Fmk MTGSDKSplash
+# mintegral end
 PackFramework Pods/IronSourceSDK/IronSource IronSource
-PackFramework Pods/IronSourceTapjoyAdapter/ISTapjoyAdapter ISTapjoyAdapter
 PackFramework Pods/IronSourceUnityAdsAdapter/ISUnityAdsAdapter ISUnityAdsAdapter
 PackFramework Pods/IronSourceVungleAdapter/ISVungleAdapter ISVungleAdapter
-PackFramework Pods/TapjoySDK/TapjoySDK_iOS_v12.11.1/Libraries Tapjoy
 PackFramework Pods/UnityAds UnityAds
-PackFramework Pods/VungleSDK-iOS VungleSDK
+PackFramework Pods/VungleAds/static VungleAdsSDK
+# Digital Turbine (fyber)
+PackFramework Pods/IronSourceFyberAdapter/ISFyberAdapter ISFyberAdapter
+PackFramework Pods/Fyber_Marketplace_SDK/IASDKCore IASDKCore
+# APS
+PackFramework Pods/IronSourceAPSAdapter/ISAPSAdapter ISAPSAdapter
+PackFramework Pods/AmazonPublisherServicesSDK/APS_iOS_SDK-4.7.2 DTBiOSSDK

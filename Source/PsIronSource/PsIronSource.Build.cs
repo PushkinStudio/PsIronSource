@@ -131,8 +131,8 @@ namespace UnrealBuildTool.Rules
                         // Dependence for ISAdMobAdapter
                         PublicAdditionalFrameworks.Add(
                             new Framework(
-                                "PromisesObjC",
-                                "../../ThirdParty/iOS/PromisesObjC.embeddedframework.zip"
+                                "FBLPromises",
+                                "../../ThirdParty/iOS/FBLPromises.embeddedframework.zip"
                             )
                         );
                     }
@@ -163,8 +163,8 @@ namespace UnrealBuildTool.Rules
 
                     PublicAdditionalFrameworks.Add(
                         new Framework(
-                            "VungleSDK",
-                            "../../ThirdParty/iOS/VungleSDK.embeddedframework.zip"
+                            "VungleAdsSDK",
+                            "../../ThirdParty/iOS/VungleAdsSDK.embeddedframework.zip"
                         )
                     );
 
@@ -172,34 +172,6 @@ namespace UnrealBuildTool.Rules
                         new Framework(
                             "ISVungleAdapter",
                             "../../ThirdParty/iOS/ISVungleAdapter.embeddedframework.zip"
-                        )
-                    );
-
-                    PublicAdditionalFrameworks.Add(
-                        new Framework(
-                            "AdColony",
-                            "../../ThirdParty/iOS/AdColony.embeddedframework.zip"
-                        )
-                    );
-
-                    PublicAdditionalFrameworks.Add(
-                        new Framework(
-                            "ISAdColonyAdapter",
-                            "../../ThirdParty/iOS/ISAdColonyAdapter.embeddedframework.zip"
-                        )
-                    );
-
-                    PublicAdditionalFrameworks.Add(
-                        new Framework(
-                            "Tapjoy",
-                            "../../ThirdParty/iOS/Tapjoy.embeddedframework.zip"
-                        )
-                    );
-
-                    PublicAdditionalFrameworks.Add(
-                        new Framework(
-                            "ISTapjoyAdapter",
-                            "../../ThirdParty/iOS/ISTapjoyAdapter.embeddedframework.zip"
                         )
                     );
 
@@ -223,40 +195,12 @@ namespace UnrealBuildTool.Rules
 
                     PublicAdditionalFrameworks.Add(
                         new Framework(
-                            "ISPangleAdapter",
-                            "../../ThirdParty/iOS/ISPangleAdapter.embeddedframework.zip"
-                        )
-                    );
-
-                    PublicAdditionalFrameworks.Add(
-                        new Framework(
-                            "BUAdSDK",
-                            "../../ThirdParty/iOS/BUAdSDK.embeddedframework.zip"
-                        )
-                    );
-
-                    PublicAdditionalFrameworks.Add(
-                        new Framework(
-                            "BURelyAdSDK",
-                            "../../ThirdParty/iOS/BURelyAdSDK.embeddedframework.zip"
-                        )
-                    );
-
-                    PublicAdditionalFrameworks.Add(
-                        new Framework(
-                            "PAGAdSDK",
-                            "../../ThirdParty/iOS/PAGAdSDK.embeddedframework.zip",
-                            "PAGAdSDK.bundle"
-                        )
-                    );
-
-                    PublicAdditionalFrameworks.Add(
-                        new Framework(
                             "ISMintegralAdapter",
                             "../../ThirdParty/iOS/ISMintegralAdapter.embeddedframework.zip"
                         )
                     );
 
+                    // MIntegral
                     PublicAdditionalFrameworks.Add(
                         new Framework(
                             "MTGSDK",
@@ -264,6 +208,7 @@ namespace UnrealBuildTool.Rules
                         )
                     );
 
+                    // MIntegral
                     PublicAdditionalFrameworks.Add(
                         new Framework(
                             "MTGSDKBanner",
@@ -271,13 +216,7 @@ namespace UnrealBuildTool.Rules
                         )
                     );
 
-                    PublicAdditionalFrameworks.Add(
-                        new Framework(
-                            "MTGSDKReward",
-                            "../../ThirdParty/iOS/MTGSDKReward.embeddedframework.zip"
-                        )
-                    );
-
+                    // MIntegral
                     PublicAdditionalFrameworks.Add(
                         new Framework(
                             "MTGSDKBidding",
@@ -285,13 +224,23 @@ namespace UnrealBuildTool.Rules
                         )
                     );
 
+                    // MIntegral
                     PublicAdditionalFrameworks.Add(
                         new Framework(
-                            "MTGSDKNewInterstitial",
-                            "../../ThirdParty/iOS/MTGSDKNewInterstitial.embeddedframework.zip"
+                            "MTGSDKCNAddition",
+                            "../../ThirdParty/iOS/MTGSDKCNAddition.embeddedframework.zip"
                         )
                     );
 
+                    // MIntegral
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "MTGSDKInterstitial",
+                            "../../ThirdParty/iOS/MTGSDKInterstitial.embeddedframework.zip"
+                        )
+                    );
+
+                    // MIntegral
                     PublicAdditionalFrameworks.Add(
                         new Framework(
                             "MTGSDKInterstitialVideo",
@@ -299,62 +248,65 @@ namespace UnrealBuildTool.Rules
                         )
                     );
 
-
-                    // Static libs linking
-                    string StaticLibsPath = Path.Combine(ModuleDirectory, "../../", "ThirdParty/iOS/StaticLibs");
-                    string StaticLibHeaders = "Headers";
-
-                    PublicIncludePaths.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalAFN", StaticLibHeaders));
-                    PublicAdditionalLibraries.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalAFN",
-                            "libBURelyFoundationGlobalAFN.a"
+                    // MIntegral
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "MTGSDKNativeAdvanced",
+                            "../../ThirdParty/iOS/MTGSDKNativeAdvanced.embeddedframework.zip"
                         )
                     );
 
-                    PublicIncludePaths.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalFoundation", StaticLibHeaders));
-                    PublicAdditionalLibraries.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalFoundation", 
-                            "libBURelyFoundationGlobalFoundation.a"
+                    // MIntegral
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "MTGSDKNewInterstitial",
+                            "../../ThirdParty/iOS/MTGSDKNewInterstitial.embeddedframework.zip"
                         )
                     );
 
-                    PublicIncludePaths.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalGecko", StaticLibHeaders));
-                    PublicAdditionalLibraries.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalGecko", 
-                            "libBURelyFoundationGlobalGecko.a"
+                    // MIntegral
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "MTGSDKReward",
+                            "../../ThirdParty/iOS/MTGSDKReward.embeddedframework.zip"
                         )
                     );
 
-                    PublicIncludePaths.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalHeader", StaticLibHeaders));
-                    PublicAdditionalLibraries.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalHeader", 
-                            "libBURelyFoundationGlobalHeader.a"
+                    // MIntegral
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "MTGSDKSplash",
+                            "../../ThirdParty/iOS/MTGSDKSplash.embeddedframework.zip"
                         )
                     );
 
-                    PublicIncludePaths.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalNETWork", StaticLibHeaders));
-                    PublicAdditionalLibraries.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalNETWork", 
-                            "libBURelyFoundationGlobalNETWork.a"
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "ISFyberAdapter",
+                            "../../ThirdParty/iOS/ISFyberAdapter.embeddedframework.zip"
                         )
                     );
 
-                    PublicIncludePaths.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalSDWebImage", StaticLibHeaders));
-                    PublicAdditionalLibraries.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalSDWebImage", 
-                            "libBURelyFoundationGlobalSDWebImage.a"
+                    // Digital Turbine (fyber)
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "IASDKCore",
+                            "../../ThirdParty/iOS/IASDKCore.embeddedframework.zip"
                         )
                     );
 
-                    PublicIncludePaths.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalYYModel", StaticLibHeaders));
-                    PublicAdditionalLibraries.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalYYModel", 
-                            "libBURelyFoundationGlobalYYModel.a"
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "ISAPSAdapter",
+                            "../../ThirdParty/iOS/ISAPSAdapter.embeddedframework.zip"
                         )
                     );
 
-                    PublicIncludePaths.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalZFPlayer", StaticLibHeaders));
-                    PublicAdditionalLibraries.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalZFPlayer", 
-                            "libBURelyFoundationGlobalZFPlayer.a"
-                        )
-                    );
-
-                    PublicIncludePaths.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalZip", StaticLibHeaders));
-                    PublicAdditionalLibraries.Add(Path.Combine(StaticLibsPath, "BURelyFoundationGlobalZip", 
-                            "libBURelyFoundationGlobalZip.a"
+                    // APS
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "DTBiOSSDK",
+                            "../../ThirdParty/iOS/DTBiOSSDK.embeddedframework.zip"
                         )
                     );
 
