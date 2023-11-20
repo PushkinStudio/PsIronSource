@@ -2,7 +2,7 @@
 //  ironsourceApp.swift
 //  ironsource
 //
-//  Created by Anton Rassadin on 06.09.2022.
+//  Created by Anton Rassadin on 23.10.2023.
 //
 
 import SwiftUI

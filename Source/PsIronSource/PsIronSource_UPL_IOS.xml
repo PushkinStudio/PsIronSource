@@ -5,6 +5,8 @@
 	<init>
 		<setBoolFromProperty result="bIronSourceEnable" ini="Engine" section="/Script/PsIronSource.PsIronSourceSettings" property="bIronSourceEnable" default="false"/>
 		<setStringFromProperty result="GADAppId" ini="Engine" section="/Script/PsIronSource.PsIronSourceSettings" property="AdMobIOSAppId" default=""/>
+		<copyDir src="$S(EngineDir)/Intermediate/UnzippedFrameworks/IASDKCore/IASDKCore.embeddedframework/IASDKCore.framework" dst="$S(BuildDir)/Frameworks/IASDKCore.framework" />
+		<copyDir src="$S(EngineDir)/Intermediate/UnzippedFrameworks/DTBiOSSDK/DTBiOSSDK.embeddedframework/DTBiOSSDK.framework" dst="$S(BuildDir)/Frameworks/DTBiOSSDK.framework" />
 	</init>
 
 	<iosPListUpdates>
