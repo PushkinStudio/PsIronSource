@@ -83,7 +83,7 @@ mkdir -p downloads
 rm -rf downloads/unpacked
 mkdir downloads/unpacked
 
-DownloadFramework https://dl.google.com/googleadmobadssdk/googlemobileadssdkios.zip
+DownloadFramework https://dl.google.com/googleadmobadssdk/googlemobileadssdkios-10.12.0.zip
 
 PackFramework Pods/AppLovinSDK/applovin-ios-sdk-11.10.1 AppLovinSDK AppLovinSDKResources.bundle
 PackFramework Pods/ChartboostSDK ChartboostSDK ChartboostSDKResources.bundle
