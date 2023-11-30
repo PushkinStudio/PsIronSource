@@ -331,12 +331,6 @@
 					implementation 'com.amazon.android:aps-sdk:9.8.+'
 					implementation 'com.ironsource.adapters:apsadapter:4.3.9'
 					}
-
-					configurations.all {
-					resolutionStrategy {
-					force 'androidx.core:core-ktx:1.6.0'
-					}
-					}
 				</insert>
 			</true>
 		</if>
