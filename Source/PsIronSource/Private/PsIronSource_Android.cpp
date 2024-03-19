@@ -1,10 +1,13 @@
-// Copyright 2015-2023 MY.GAMES. All Rights Reserved.
+// Copyright 2015-2024 MY.GAMES. All Rights Reserved.
 
 #include "PsIronSource_Android.h"
 
 UPsIronSource_Android::UPsIronSource_Android(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+#if WITH_IRONSOURCE && PLATFORM_ANDROID
+	bTapjoyInitialized = false;
+#endif // WITH_IRONSOURCE && PLATFORM_ANDROID
 }
 
 #if WITH_IRONSOURCE && PLATFORM_ANDROID
@@ -17,7 +20,6 @@ UPsIronSource_Android::UPsIronSource_Android(const FObjectInitializer& ObjectIni
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
 #define LOG_TAG "[CPP] PSIronSource"
 
-jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_setOfferwallUseClientSideCallbacks;
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_init;
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_ForceUpdateUser;
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_SetSegmentInfo;
@@ -26,7 +28,7 @@ jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_getPlacementRewardN
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_getPlacementRewardAmount;
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_isRewardedVideoCappedForPlacement;
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_showRewardedVideo;
-jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_setGDPRConsent;
+jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_setConsent;
 
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_loadInterstitial;
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_isInterstitialReady;
@@ -35,35 +37,21 @@ jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_isInterstitialCappe
 
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_hasOfferwall;
 jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_showOfferwall;
-jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_showOfferwallWithPlacement;
-jmethodID UPsIronSource_Android::AndroidThunkJava_IronSource_getOfferwallCredits;
+
+jmethodID UPsIronSource_Android::AndroidThunkJava_Tapjoy_init;
+jmethodID UPsIronSource_Android::AndroidThunkJava_Tapjoy_request_content;
+jmethodID UPsIronSource_Android::AndroidThunkJava_Tapjoy_setConsent;
 
 UPsIronSourceProxy* ISProxy;
+UPsIronSource_Android* ISAndroid;
 
-void UPsIronSource_Android::SetOfferwallUseClientSideCallbacks(bool bValue)
+void UPsIronSource_Android::InitIronSource(const FString& UserId, bool bOfferwallEnable)
 {
-	LOGD("%s: SetOfferwallUseClientSideCallbacks IronSource with Android SDK", TCHAR_TO_ANSI(*PS_FUNC_LINE));
-
-	if (bIronSourceInitialized)
+	if (bOfferwallEnable)
 	{
-		LOGD("%s: Trying SetOfferwallUseClientSideCallbacks when IronSource already initialized!", TCHAR_TO_ANSI(*PS_FUNC_LINE));
-		return;
+		InitOfferwall();
 	}
-
-	if (JNIEnv* Env = FAndroidApplication::GetJavaEnv(true))
-	{
-		UPsIronSource_Android::AndroidThunkJava_IronSource_setOfferwallUseClientSideCallbacks = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_IronSource_setOfferwallUseClientSideCallbacks", "(Z)V", false);
-
-		FJavaWrapper::CallVoidMethod(Env, FJavaWrapper::GameActivityThis, UPsIronSource_Android::AndroidThunkJava_IronSource_setOfferwallUseClientSideCallbacks, bValue);
-	}
-	else
-	{
-		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PS_FUNC_LINE));
-	}
-}
-
-void UPsIronSource_Android::InitIronSource(const FString& UserId)
-{
+	
 	LOGD("%s: Initialize IronSource with Android SDK", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 
 	if (bIronSourceInitialized)
@@ -253,14 +241,34 @@ void UPsIronSource_Android::ShowRewardedVideo(const FString& PlacementName) cons
 	}
 }
 
-void UPsIronSource_Android::SetGDPRConsent(bool bConsent) const
+void UPsIronSource_Android::SetConsent(bool bConsent) const
 {
 	LOGD("%s", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 	if (JNIEnv* Env = FAndroidApplication::GetJavaEnv(true))
 	{
-		UPsIronSource_Android::AndroidThunkJava_IronSource_setGDPRConsent = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_IronSource_setGDPRConsent", "(Z)V", false);
+		UPsIronSource_Android::AndroidThunkJava_IronSource_setConsent = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_IronSource_setConsent", "(Z)V", false);
 
-		FJavaWrapper::CallVoidMethod(Env, FJavaWrapper::GameActivityThis, UPsIronSource_Android::AndroidThunkJava_IronSource_setGDPRConsent, bConsent);
+		FJavaWrapper::CallVoidMethod(Env, FJavaWrapper::GameActivityThis, UPsIronSource_Android::AndroidThunkJava_IronSource_setConsent, bConsent);
+	}
+	else
+	{
+		LOGD("%s: invalid JNIEnv", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+	}
+}
+
+void UPsIronSource_Android::SetOfferwallConsent(const FPsOfferwallPrivacyPolicy& OfferwallPP) const
+{
+	LOGD("%s", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+	if (JNIEnv* Env = FAndroidApplication::GetJavaEnv(true))
+	{
+		jstring JCCPASetting = Env->NewStringUTF(TCHAR_TO_UTF8(*OfferwallPP.CCPASetting));
+		bool bSubjectToGDPR = OfferwallPP.bSubjectToGDPR;
+		bool bUserConsent = OfferwallPP.bUserConsent;
+
+		UPsIronSource_Android::AndroidThunkJava_Tapjoy_setConsent = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_Tapjoy_setConsent", "(Ljava/lang/String;ZZ)V", false);
+		FJavaWrapper::CallVoidMethod(Env, FJavaWrapper::GameActivityThis, UPsIronSource_Android::AndroidThunkJava_Tapjoy_setConsent, JCCPASetting, bSubjectToGDPR, bUserConsent);
+
+		Env->DeleteLocalRef(JCCPASetting);
 	}
 	else
 	{
@@ -364,17 +372,36 @@ void UPsIronSource_Android::ShowOfferwall() const
 	}
 }
 
-void UPsIronSource_Android::ShowOfferwallWithPlacement(const FString& PlacementName) const
+void UPsIronSource_Android::InitOfferwall()
 {
 	LOGD("%s", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 	if (JNIEnv* Env = FAndroidApplication::GetJavaEnv(true))
 	{
-		jstring JPlacementName = Env->NewStringUTF(TCHAR_TO_UTF8(*PlacementName));
+		LOGD("%s: Initialize Tapjoy with Android SDK", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+		if (bTapjoyInitialized)
+		{
+			LOGD("%s: Trying to initialize Tapjoy when it's already been initialized!", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+			return;
+		}
 
-		UPsIronSource_Android::AndroidThunkJava_IronSource_showOfferwallWithPlacement = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_IronSource_showOfferwallWithPlacement", "(Ljava/lang/String;)V", false);
-		FJavaWrapper::CallVoidMethod(Env, FJavaWrapper::GameActivityThis, UPsIronSource_Android::AndroidThunkJava_IronSource_showOfferwallWithPlacement, JPlacementName);
+		ISProxy = this;
+		ISAndroid = this;
 
-		Env->DeleteLocalRef(JPlacementName);
+		if (GetDefault<UPsIronSourceSettings>()->TapjoyAPIKeyAndroid.IsEmpty() == false)
+		{
+			bTapjoyInitialized = true;
+
+			jstring JTapjoyAPIKeyAndroid = Env->NewStringUTF(TCHAR_TO_UTF8(*(GetDefault<UPsIronSourceSettings>()->TapjoyAPIKeyAndroid)));
+
+			UPsIronSource_Android::AndroidThunkJava_Tapjoy_init = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_Tapjoy_init", "(Ljava/lang/String;)V", false);
+			FJavaWrapper::CallVoidMethod(Env, FJavaWrapper::GameActivityThis, UPsIronSource_Android::AndroidThunkJava_Tapjoy_init, JTapjoyAPIKeyAndroid);
+
+			Env->DeleteLocalRef(JTapjoyAPIKeyAndroid);
+		}
+		else
+		{
+			UE_LOG(LogPsIronSource, Error, TEXT("%s: no TapjoyAPIKeyAndroid provided"), *PS_FUNC_LINE);
+		}
 	}
 	else
 	{
@@ -382,13 +409,37 @@ void UPsIronSource_Android::ShowOfferwallWithPlacement(const FString& PlacementN
 	}
 }
 
-void UPsIronSource_Android::GetOfferwallCredits() const
+void UPsIronSource_Android::OnTapjoyConnected(bool bSuccess)
 {
-	LOGD("%s", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+	if (bSuccess)
+	{
+		OnOfferwallConnected.Broadcast();
+	}
+
 	if (JNIEnv* Env = FAndroidApplication::GetJavaEnv(true))
 	{
-		UPsIronSource_Android::AndroidThunkJava_IronSource_getOfferwallCredits = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_IronSource_getOfferwallCredits", "()V", false);
-		FJavaWrapper::CallVoidMethod(Env, FJavaWrapper::GameActivityThis, UPsIronSource_Android::AndroidThunkJava_IronSource_getOfferwallCredits);
+		if (bSuccess)
+		{
+			if (GetDefault<UPsIronSourceSettings>()->TapjoyOfferwallPlacement.IsEmpty() == false)
+			{
+				jstring JTapjoyOfferwallPlacement = Env->NewStringUTF(TCHAR_TO_UTF8(*(GetDefault<UPsIronSourceSettings>()->TapjoyOfferwallPlacement)));
+
+				UPsIronSource_Android::AndroidThunkJava_Tapjoy_request_content = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_Tapjoy_request_content", "(Ljava/lang/String;)V", false);
+				FJavaWrapper::CallVoidMethod(Env, FJavaWrapper::GameActivityThis, UPsIronSource_Android::AndroidThunkJava_Tapjoy_request_content, JTapjoyOfferwallPlacement);
+
+				Env->DeleteLocalRef(JTapjoyOfferwallPlacement);
+			}
+			else
+			{
+				LOGD("%s: no TapjoyOfferwallPlacement provided", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+				bTapjoyInitialized = false;
+			}
+		}
+		else
+		{
+			LOGD("%s: Error establishing connection with Tapjoy!", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+			bTapjoyInitialized = false;
+		}
 	}
 	else
 	{
@@ -792,139 +843,95 @@ JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onInterstitialAdShowSucceede
 	}
 }
 
-// Invoked when there is a change in the offerwall availability status
-JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onOfferwallAvailabilityChangedThunkCpp(JNIEnv* jenv, jobject thiz, jboolean available)
+// Invoked when tapjoy connection is established
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onTapjoyConnectedThunkCpp(JNIEnv* jenv, jboolean success)
 {
-	// this event does not need to be counted
-	AsyncTask(ENamedThreads::GameThread, [available]() {
-		if (ISProxy != nullptr)
-		{
-			if (available)
+	if (ISProxy != nullptr)
+	{
+		ISProxy->EnqueueEvent();
+
+		AsyncTask(ENamedThreads::GameThread, [success]() {
+			if (ISProxy != nullptr)
 			{
-				ISProxy->OfferwallStateDelegate.Broadcast(EIronSourceOfferwallEventType::Available, 0, 0, false);
+				ISProxy->DequeueEvent();
+				ISAndroid->OnTapjoyConnected(success);
 			}
 			else
 			{
-				ISProxy->OfferwallStateDelegate.Broadcast(EIronSourceOfferwallEventType::NotAvailable, 0, 0, false);
+				LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 			}
+		});
+	}
+}
+
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onTapjoyOfferwallContentShowThunkCpp(JNIEnv* jenv)
+{
+	if (ISProxy != nullptr)
+	{
+		ISProxy->EnqueueEvent();
+
+		AsyncTask(ENamedThreads::GameThread, []() {
+			if (ISProxy != nullptr)
+			{
+				ISProxy->DequeueEvent();
+				ISProxy->OfferwallStateDelegate.Broadcast(EIronSourceOfferwallEventType::Opened, TEXT(""), 0);
+			}
+			else
+			{
+				LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+			}
+		});
+	}
+}
+
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onTapjoyOfferwallContentDismissThunkCpp(JNIEnv* jenv)
+{
+	if (ISProxy != nullptr)
+	{
+		ISProxy->EnqueueEvent();
+
+		AsyncTask(ENamedThreads::GameThread, []() {
+			if (ISProxy != nullptr)
+			{
+				ISProxy->DequeueEvent();
+				ISProxy->OfferwallStateDelegate.Broadcast(EIronSourceOfferwallEventType::Closed, TEXT(""), 0);
+			}
+			else
+			{
+				LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+			}
+		});
+
+		if (GetDefault<UPsIronSourceSettings>()->TapjoyOfferwallPlacement.IsEmpty() == false)
+		{
+			jstring TapjoyOfferwallPlacement = jenv->NewStringUTF(TCHAR_TO_UTF8(*(GetDefault<UPsIronSourceSettings>()->TapjoyOfferwallPlacement)));
+
+			UPsIronSource_Android::AndroidThunkJava_Tapjoy_request_content = FJavaWrapper::FindMethod(jenv, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_Tapjoy_request_content", "(Ljava/lang/String;)V", false);
+			FJavaWrapper::CallVoidMethod(jenv, FJavaWrapper::GameActivityThis, UPsIronSource_Android::AndroidThunkJava_Tapjoy_request_content, TapjoyOfferwallPlacement);
+
+			jenv->DeleteLocalRef(TapjoyOfferwallPlacement);
 		}
 		else
 		{
-			LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
+			LOGD("%s: no TapjoyOfferwallPlacement provided", TCHAR_TO_ANSI(*PS_FUNC_LINE));
 		}
-	});
-}
-
-// Invoked when offerwall successfully loads for the user, after calling the 'showOfferwall' method
-JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onOfferwallOpenedThunkCpp(JNIEnv* jenv, jobject thiz)
-{
-	if (ISProxy != nullptr)
-	{
-		ISProxy->EnqueueEvent();
-
-		AsyncTask(ENamedThreads::GameThread, []() {
-			if (ISProxy != nullptr)
-			{
-				ISProxy->DequeueEvent();
-				ISProxy->OfferwallStateDelegate.Broadcast(EIronSourceOfferwallEventType::Opened, 0, 0, false);
-			}
-			else
-			{
-				LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
-			}
-		});
 	}
 }
 
-// Invoked when offerwall fails to load for the user, after calling the 'showOfferwall' method
-JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onOfferwallShowFailedThunkCpp(JNIEnv* jenv, jobject thiz, jint errorCode, jstring errorMessage)
+JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onTapjoyOfferwallRewardRequestThunkCpp(JNIEnv* jenv, jstring itemId, jint quantity)
 {
 	if (ISProxy != nullptr)
 	{
 		ISProxy->EnqueueEvent();
 
-		AsyncTask(ENamedThreads::GameThread, []() {
+		const FString ItemId = FJavaHelper::FStringFromParam(jenv, itemId);
+		const int32 Count = static_cast<int32>(quantity);
+
+		AsyncTask(ENamedThreads::GameThread, [ItemId, Count]() {
 			if (ISProxy != nullptr)
 			{
 				ISProxy->DequeueEvent();
-				ISProxy->OfferwallStateDelegate.Broadcast(EIronSourceOfferwallEventType::ShowFailed, 0, 0, false);
-			}
-			else
-			{
-				LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
-			}
-		});
-	}
-}
-
-/**
- * Invoked each time the user completes an Offer.
- * Award the user with the credit amount corresponding to the value of the *‘credits’ parameter.
- * @param credits - The number of credits the user has earned.
- * @param totalCredits - The total number of credits ever earned by the user.
- * @param totalCreditsFlag - In some cases, we won’t be able to provide the exact
- * amount of credits since the last event (specifically if the user clears
- * the app’s data). In this case the ‘credits’ will be equal to the ‘totalCredits’, and this flag will be ‘true’.
- * @return bool - true if you received the callback and rewarded the user, otherwise false.
- */
-JNI_METHOD jboolean Java_com_epicgames_ue4_GameActivity_onOfferwallCreditedThunkCpp(JNIEnv* jenv, jobject thiz, jint credits, jint totalCredits, jboolean totalCreditsFlag)
-{
-	jboolean bIsUserRewarded = JNI_TRUE;
-
-	if (ISProxy != nullptr)
-	{
-		ISProxy->EnqueueEvent();
-
-		AsyncTask(ENamedThreads::GameThread, [credits, totalCredits, totalCreditsFlag]() {
-			if (ISProxy != nullptr)
-			{
-				ISProxy->DequeueEvent();
-				ISProxy->OfferwallStateDelegate.Broadcast(EIronSourceOfferwallEventType::Credited,
-					static_cast<int32>(credits), static_cast<int32>(totalCredits), totalCreditsFlag == JNI_TRUE);
-			}
-			else
-			{
-				LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
-			}
-		});
-	}
-
-	return bIsUserRewarded;
-}
-
-// Invoked when the method 'getOfferwallCredits' fails to retrieve the user's credit balance info
-JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onOfferwallGetCreditsFailedThunkCpp(JNIEnv* jenv, jobject thiz, jint errorCode, jstring errorMessage)
-{
-	if (ISProxy != nullptr)
-	{
-		ISProxy->EnqueueEvent();
-
-		AsyncTask(ENamedThreads::GameThread, []() {
-			if (ISProxy != nullptr)
-			{
-				ISProxy->DequeueEvent();
-				ISProxy->OfferwallStateDelegate.Broadcast(EIronSourceOfferwallEventType::GetCreditsFailed, 0, 0, false);
-			}
-			else
-			{
-				LOGD("%s: invalid ISProxy", TCHAR_TO_ANSI(*PS_FUNC_LINE));
-			}
-		});
-	}
-}
-
-// Invoked when the user is about to return to the application after closing
-JNI_METHOD void Java_com_epicgames_ue4_GameActivity_onOfferwallClosedThunkCpp(JNIEnv* jenv, jobject thiz)
-{
-	if (ISProxy != nullptr)
-	{
-		ISProxy->EnqueueEvent();
-
-		AsyncTask(ENamedThreads::GameThread, []() {
-			if (ISProxy != nullptr)
-			{
-				ISProxy->DequeueEvent();
-				ISProxy->OfferwallStateDelegate.Broadcast(EIronSourceOfferwallEventType::Closed, 0, 0, false);
+				ISProxy->OfferwallStateDelegate.Broadcast(EIronSourceOfferwallEventType::Rewarded, ItemId, Count);
 			}
 			else
 			{
