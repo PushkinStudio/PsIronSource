@@ -1,10 +1,13 @@
-// Copyright 2015-2023 MY.GAMES. All Rights Reserved.
+// Copyright 2015-2024 MY.GAMES. All Rights Reserved.
 
 #include "PsIronSource_iOS.h"
 
 UPsIronSource_iOS::UPsIronSource_iOS(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+#if WITH_IRONSOURCE && PLATFORM_IOS
+	bTapjoyInitialized = false;
+#endif // WITH_IRONSOURCE && PLATFORM_IOS
 }
 
 #if WITH_IRONSOURCE && PLATFORM_IOS
@@ -305,89 +308,103 @@ UPsIronSource_iOS::UPsIronSource_iOS(const FObjectInitializer& ObjectInitializer
 
 @end
 
-@implementation PSISOfferwallDelegate
+@implementation PSTapjoyConnectionDelegate
 
-- (void)offerwallHasChangedAvailability:(BOOL)available
+- (void)tjcConnectSuccess:(NSNotification *)notifyObj
 {
 	NSLog(@"%s", __PRETTY_FUNCTION__);
 
-	AsyncTask(ENamedThreads::GameThread, [self, available]() {
-		if (self.PluginDelegate != nullptr)
+	self.connectionEstablished = true;
+	AsyncTask(ENamedThreads::GameThread, [self]() {
+		if (self.ISObj != nullptr)
 		{
-			if (available)
-			{
-				self.PluginDelegate->Broadcast(EIronSourceOfferwallEventType::Available, 0, 0, false);
-			}
-			else
-			{
-				self.PluginDelegate->Broadcast(EIronSourceOfferwallEventType::NotAvailable, 0, 0, false);
-			}
+			self.ISObj->OnTapjoyConnected(true);
 		}
 	});
 }
 
-- (void)offerwallDidShow
+- (void)tjcConnectFail:(NSNotification *)notifyObj
+{
+	NSLog(@"%s", __PRETTY_FUNCTION__);
+
+	self.connectionEstablished = false;
+	AsyncTask(ENamedThreads::GameThread, [self]() {
+		if (self.ISObj != nullptr)
+		{
+			self.ISObj->OnTapjoyConnected(false);
+		}
+	});
+}
+
+@end
+
+@implementation PSTapjoyPlacementDelegate
+
+- (void)requestDidSucceed:(TJPlacement *)placement
+{
+	NSLog(@"%s", __PRETTY_FUNCTION__);
+}
+
+- (void)requestDidFail:(TJPlacement *)placement error:(nullable NSError *)error
+{
+	NSLog(@"%s", __PRETTY_FUNCTION__);
+}
+
+- (void)contentIsReady:(TJPlacement *)placement
+{
+	NSLog(@"%s", __PRETTY_FUNCTION__);
+}
+
+- (void)contentDidAppear:(TJPlacement *)placement
 {
 	NSLog(@"%s", __PRETTY_FUNCTION__);
 
 	AsyncTask(ENamedThreads::GameThread, [self]() {
 		if (self.PluginDelegate != nullptr)
 		{
-			self.PluginDelegate->Broadcast(EIronSourceOfferwallEventType::Opened, 0, 0, false);
+			self.PluginDelegate->Broadcast(EIronSourceOfferwallEventType::Opened, TEXT(""), 0);
 		}
 	});
 }
 
-- (void)offerwallDidFailToShowWithError:(NSError*)error
-{
-	NSLog(@"%s %@", __PRETTY_FUNCTION__, error.description);
-
-	AsyncTask(ENamedThreads::GameThread, [self]() {
-		if (self.PluginDelegate != nullptr)
-		{
-			self.PluginDelegate->Broadcast(EIronSourceOfferwallEventType::ShowFailed, 0, 0, false);
-		}
-	});
-}
-
-- (void)offerwallDidClose
+- (void)contentDidDisappear:(TJPlacement *)placement
 {
 	NSLog(@"%s", __PRETTY_FUNCTION__);
 
 	AsyncTask(ENamedThreads::GameThread, [self]() {
 		if (self.PluginDelegate != nullptr)
 		{
-			self.PluginDelegate->Broadcast(EIronSourceOfferwallEventType::Closed, 0, 0, false);
+			self.PluginDelegate->Broadcast(EIronSourceOfferwallEventType::Closed, TEXT(""), 0);
 		}
 	});
+	[placement requestContent];
 }
 
-- (BOOL)didReceiveOfferwallCredits:(NSDictionary*)creditInfo
+- (void)didClick:(TJPlacement *)placement
+{
+	NSLog(@"%s", __PRETTY_FUNCTION__);
+}
+
+- (void)placement:(TJPlacement *)placement
+didRequestPurchase:(nullable TJActionRequest *)request
+		productId:(nullable NSString *)productId
+{
+	NSLog(@"%s", __PRETTY_FUNCTION__);
+}
+
+- (void)placement:(TJPlacement *)placement
+ didRequestReward:(nullable TJActionRequest *)request
+		   itemId:(nullable NSString *)itemId
+		 quantity:(int)quantity
 {
 	NSLog(@"%s", __PRETTY_FUNCTION__);
 
-	const int32 Credits = [[creditInfo objectForKey:@"credits"] intValue];
-	const int32 TotalCredits = [[creditInfo objectForKey:@"totalCredits"] intValue];
-	const bool TotalCreditsFlag = [[creditInfo objectForKey:@"totalCreditsFlag"] boolValue];
-
-	AsyncTask(ENamedThreads::GameThread, [self, Credits, TotalCredits, TotalCreditsFlag]() {
+	// ZEN-23134 - check and improve task reward handling
+	AsyncTask(ENamedThreads::GameThread, [self, itemId, quantity]() {
 		if (self.PluginDelegate != nullptr)
 		{
-			self.PluginDelegate->Broadcast(EIronSourceOfferwallEventType::Credited, Credits, TotalCredits, TotalCreditsFlag);
-		}
-	});
-
-	return YES;
-}
-
-- (void)didFailToReceiveOfferwallCreditsWithError:(NSError*)error
-{
-	NSLog(@"%s %@", __PRETTY_FUNCTION__, error.description);
-
-	AsyncTask(ENamedThreads::GameThread, [self]() {
-		if (self.PluginDelegate != nullptr)
-		{
-			self.PluginDelegate->Broadcast(EIronSourceOfferwallEventType::GetCreditsFailed, 0, 0, false);
+			const FString ItemId = FString(itemId);
+			self.PluginDelegate->Broadcast(EIronSourceOfferwallEventType::Rewarded, ItemId, quantity);
 		}
 	});
 }
@@ -407,10 +424,14 @@ void UPsIronSource_iOS::SetOfferwallUseClientSideCallbacks(bool bValue)
 	[ISSupersonicAdsConfiguration configurations].useClientSideCallbacks = [NSNumber numberWithBool:bValue];
 }
 
-void UPsIronSource_iOS::InitIronSource(const FString& UserId)
+void UPsIronSource_iOS::InitIronSource(const FString& UserId, bool bOfferwallEnable)
 {
-	UE_LOG(LogPsIronSource, Log, TEXT("%s: Initialize IronSource with iOS SDK"), *PS_FUNC_LINE);
+	if (bOfferwallEnable)
+	{
+		InitOfferwall();
+	}
 
+	UE_LOG(LogPsIronSource, Log, TEXT("%s: Initialize IronSource with iOS SDK"), *PS_FUNC_LINE);
 	if (bIronSourceInitialized)
 	{
 		UE_LOG(LogPsIronSource, Warning, TEXT("%s: Trying to initialize IronSource when it's already been initialized!"), *PS_FUNC_LINE);
@@ -449,14 +470,10 @@ void UPsIronSource_iOS::InitIronSource(const FString& UserId)
 	  InterstitialDelegate = [[PSISInterstitialDelegate alloc] init];
 	  InterstitialDelegate.PluginDelegate = &VideoStateDelegate;
 
-	  OfferwallDelegate = [[PSISOfferwallDelegate alloc] init];
-	  OfferwallDelegate.PluginDelegate = &OfferwallStateDelegate;
-
 	  [IronSource setLogDelegate:LogDelegate];
 	  [IronSource setLevelPlayRewardedVideoDelegate:Delegate];
 	  [IronSource addImpressionDataDelegate:ImpressionDelegate];
 	  [IronSource setLevelPlayInterstitialDelegate:InterstitialDelegate];
-	  [IronSource setOfferwallDelegate:OfferwallDelegate];
 	  [IronSource setUserId:UserIdNativeString];
 	  [IronSource initWithAppKey:AppKeyNativeString];
 	  [ISIntegrationHelper validateIntegration];
@@ -573,11 +590,27 @@ void UPsIronSource_iOS::ShowRewardedVideo(const FString& PlacementName) const
 	});
 }
 
-void UPsIronSource_iOS::SetGDPRConsent(bool bConsent) const
+void UPsIronSource_iOS::SetConsent(bool bConsent) const
 {
 	UE_LOG(LogPsIronSource, Log, TEXT("%s"), *PS_FUNC_LINE);
 	dispatch_async(dispatch_get_main_queue(), ^{
 	  [IronSource setConsent:bConsent];
+	});
+}
+
+void UPsIronSource_iOS::SetOfferwallConsent(const FPsOfferwallPrivacyPolicy& OfferwallPP) const
+{
+	UE_LOG(LogPsIronSource, Log, TEXT("%s"), *PS_FUNC_LINE);
+
+	bool bSubjectToGDPR = OfferwallPP.bSubjectToGDPR;
+	NSString* CCPASettingString = OfferwallPP.CCPASetting.GetNSString();
+	NSString* UserConsentString = OfferwallPP.bUserConsent ? @"1" : @"0";
+
+	dispatch_async(dispatch_get_main_queue(), ^{
+	  TJPrivacyPolicy *privacyPolicy = [Tapjoy getPrivacyPolicy];
+	  [privacyPolicy setSubjectToGDPR:bSubjectToGDPR];
+	  [privacyPolicy setUserConsent:UserConsentString];
+	  [privacyPolicy setUSPrivacy:CCPASettingString];
 	});
 }
 
@@ -614,31 +647,78 @@ bool UPsIronSource_iOS::IsInterstitialCappedForPlacement(const FString& Placemen
 bool UPsIronSource_iOS::HasOfferwall() const
 {
 	UE_LOG(LogPsIronSource, Log, TEXT("%s"), *PS_FUNC_LINE);
-	return [IronSource hasOfferwall];
+	return TapjoyConnectionDelegate != nil && TapjoyConnectionDelegate.connectionEstablished &&
+		TapjoyPlacement != nil && TapjoyPlacement.isContentReady;
 }
 
 void UPsIronSource_iOS::ShowOfferwall() const
 {
 	UE_LOG(LogPsIronSource, Log, TEXT("%s"), *PS_FUNC_LINE);
-	dispatch_async(dispatch_get_main_queue(), ^{
-	  [IronSource showOfferwallWithViewController:UIApplication.sharedApplication.delegate.window.rootViewController];
-	});
+	if (HasOfferwall())
+	{
+		dispatch_async(dispatch_get_main_queue(), ^{
+		  [TapjoyPlacement showContentWithViewController:nil];
+		});
+	}
 }
 
-void UPsIronSource_iOS::ShowOfferwallWithPlacement(const FString& PlacementName) const
+void UPsIronSource_iOS::InitOfferwall()
 {
-	UE_LOG(LogPsIronSource, Log, TEXT("%s"), *PS_FUNC_LINE);
-	NSString* PlacementNameNativeString = PlacementName.GetNSString();
-	dispatch_async(dispatch_get_main_queue(), ^{
-	  [IronSource showOfferwallWithViewController:UIApplication.sharedApplication.delegate.window.rootViewController placement:PlacementNameNativeString];
-	});
+	UE_LOG(LogPsIronSource, Log, TEXT("%s: Initialize Tapjoy"), *PS_FUNC_LINE);
+	if (bTapjoyInitialized)
+	{
+		UE_LOG(LogPsIronSource, Warning, TEXT("%s: Trying to initialize Tapjoy when it's already been initialized!"), *PS_FUNC_LINE);
+		return;
+	}
+
+	if (GetDefault<UPsIronSourceSettings>()->TapjoyAPIKeyIOS.IsEmpty() == false)
+	{
+		bTapjoyInitialized = true;
+
+		NSString* TapjoyAPIKeyIOSString = GetDefault<UPsIronSourceSettings>()->TapjoyAPIKeyIOS.GetNSString();
+		dispatch_async(dispatch_get_main_queue(), ^{
+		  TapjoyConnectionDelegate = [[PSTapjoyConnectionDelegate alloc] init];
+		  TapjoyConnectionDelegate.ISObj = this;
+
+		  [[NSNotificationCenter defaultCenter] addObserver:TapjoyConnectionDelegate selector:@selector(tjcConnectSuccess:) name:TJC_CONNECT_SUCCESS object:nil];
+		  [[NSNotificationCenter defaultCenter] addObserver:TapjoyConnectionDelegate selector:@selector(tjcConnectFail:) name:TJC_CONNECT_FAILED object:nil];
+
+		  [Tapjoy connect:TapjoyAPIKeyIOSString];
+		});
+	}
+	else
+	{
+		UE_LOG(LogPsIronSource, Error, TEXT("%s: no TapjoyAPIKeyIOS provided"), *PS_FUNC_LINE);
+	}
 }
 
-void UPsIronSource_iOS::GetOfferwallCredits() const
+void UPsIronSource_iOS::OnTapjoyConnected(bool bSuccess)
 {
-	dispatch_async(dispatch_get_main_queue(), ^{
-	  [IronSource offerwallCredits];
-	});
+	if (bSuccess)
+	{
+		OnOfferwallConnected.Broadcast();
+		if (GetDefault<UPsIronSourceSettings>()->TapjoyOfferwallPlacement.IsEmpty() == false)
+		{
+			NSString* TapjoyOfferwallPlacementString = GetDefault<UPsIronSourceSettings>()->TapjoyOfferwallPlacement.GetNSString();
+			dispatch_async(dispatch_get_main_queue(), ^{
+			  TapjoyPlacementDelegate = [[PSTapjoyPlacementDelegate alloc] init];
+			  TapjoyPlacementDelegate.PluginDelegate = &OfferwallStateDelegate;
+
+			  TapjoyPlacement = [TJPlacement placementWithName:TapjoyOfferwallPlacementString delegate:TapjoyPlacementDelegate];
+			  [TapjoyPlacement requestContent];
+			});
+		}
+		else
+		{
+			UE_LOG(LogPsIronSource, Error, TEXT("%s: no TapjoyOfferwallPlacement provided"), *PS_FUNC_LINE);
+			bTapjoyInitialized = false;
+		}
+	}
+	else
+	{
+		UE_LOG(LogPsIronSource, Error, TEXT("%s: Error establishing connection with Tapjoy!"), *PS_FUNC_LINE);
+		bTapjoyInitialized = false;
+	}
 }
 
 #endif // WITH_IRONSOURCE && PLATFORM_IOS

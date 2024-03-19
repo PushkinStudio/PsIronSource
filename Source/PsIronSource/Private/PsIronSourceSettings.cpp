@@ -1,4 +1,4 @@
-// Copyright 2015-2023 MY.GAMES. All Rights Reserved.
+// Copyright 2015-2024 MY.GAMES. All Rights Reserved.
 
 #include "PsIronSourceSettings.h"
 

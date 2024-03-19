@@ -87,14 +87,6 @@
 
 				<addAttribute tag="application" name="android:usesCleartextTraffic" value="true"/>
 
-				<setElement result="CBImpressionActivity" value="activity" />
-				<addAttribute tag="$CBImpressionActivity" name="android:name" value="com.chartboost.sdk.CBImpressionActivity" />
-				<addAttribute tag="$CBImpressionActivity" name="android:configChanges" value="keyboardHidden|orientation|screenSize" />
-				<addAttribute tag="$CBImpressionActivity" name="android:hardwareAccelerated" value="true" />
-				<addAttribute tag="$CBImpressionActivity" name="android:excludeFromRecents" value="true" />
-				<addAttribute tag="$CBImpressionActivity" name="android:theme" value="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
-				<addElement tag="application" name="CBImpressionActivity" />
-
 				<setElement result="AppLovinInterstitialActivity" value="activity" />
 				<addAttribute tag="$AppLovinInterstitialActivity" name="android:name" value="com.applovin.adview.AppLovinInterstitialActivity" />
 				<addAttribute tag="$AppLovinInterstitialActivity" name="android:configChanges" value="orientation|screenSize|smallestScreenSize|screenLayout|uiMode" />
@@ -158,7 +150,6 @@
 
 					# Custom
 					-dontwarn com.applovin.impl.**
-					-dontwarn com.chartboost.sdk.**
 					-dontwarn com.google.android.exoplayer2.**
 					-dontwarn okhttp3.internal.platform.*
 
@@ -206,9 +197,6 @@
 					-dontwarn com.google.ar.core.**
 					-dontwarn com.unity3d.services.**
 					-dontwarn com.ironsource.adapters.unityads.**
-
-					# Chartboost
-					-keep class com.chartboost.** { *; }
 
 					# Pangle
 					-keep class com.bytedance.sdk.** { *; }
@@ -288,6 +276,12 @@
 					maven {
         			url  "https://dl-maven-android.mintegral.com/repository/mbridge_android_sdk_oversea"
  					}
+					maven {
+					url  "https://sdk.tapjoy.com/"
+					}
+					maven {
+					url  "https://artifactory.bidmachine.io/bidmachine"
+					}
 					}
 
 					dependencies {
@@ -303,9 +297,6 @@
 					// Add Applovin Network
 					implementation 'com.ironsource.adapters:applovinadapter:4.3.39'
 					implementation 'com.applovin:applovin-sdk:11.10.1'
-					// Add Chartboost Network
-					implementation 'com.ironsource.adapters:chartboostadapter:4.3.12'
-					implementation 'com.chartboost:chartboost-sdk:9.2.1'
 					// Add Facebook Network
 					implementation 'com.ironsource.adapters:facebookadapter:4.3.45'
 					implementation 'com.facebook.android:audience-network-sdk:6.16.0'
@@ -330,6 +321,12 @@
 					// Add APS Network
 					implementation 'com.amazon.android:aps-sdk:9.8.+'
 					implementation 'com.ironsource.adapters:apsadapter:4.3.9'
+					// Add Tapjoy
+					implementation 'com.ironsource.adapters:tapjoyadapter:4.1.25'
+					implementation 'com.tapjoy:tapjoy-android-sdk:12.11.1'
+					// Add BidMachine
+					implementation 'com.ironsource.adapters:bidmachineadapter:4.3.4'
+					implementation 'io.bidmachine:ads:2.4.1'
 					}
 				</insert>
 			</true>
@@ -350,13 +347,20 @@
 					import com.ironsource.mediationsdk.model.Placement;
 					import com.ironsource.mediationsdk.sdk.BannerListener;
 					import com.ironsource.mediationsdk.sdk.LevelPlayInterstitialListener;
-					import com.ironsource.mediationsdk.sdk.OfferwallListener;
 					import com.ironsource.mediationsdk.sdk.LevelPlayRewardedVideoListener;
 					import com.ironsource.mediationsdk.adunit.adapter.utility.AdInfo;
 					import com.ironsource.mediationsdk.impressionData.ImpressionDataListener;
 					import com.ironsource.mediationsdk.impressionData.ImpressionData;
 					import com.ironsource.mediationsdk.utils.IronSourceUtils;
 					import com.amazon.device.ads.*;
+					import com.tapjoy.Tapjoy;
+					import com.tapjoy.TJConnectListener;
+					import com.tapjoy.TJPlacement;
+					import com.tapjoy.TJPlacementListener;
+					import com.tapjoy.TJActionRequest;
+					import com.tapjoy.TJError;
+					import com.tapjoy.TJPrivacyPolicy;
+					import java.util.Hashtable;
 				</insert>
 			</true>
 		</if>
@@ -377,7 +381,7 @@
 					private native void onLevelPlayAdRewardedThunkCpp(Placement placement, AdInfo adInfo);
 					private native void onLevelPlayAdShowFailedThunkCpp(int errorCode, String errorMessage, AdInfo adInfo);
 					private native void onLevelPlayAdClickedThunkCpp(Placement placement, AdInfo adInfo);
-					
+
 					private native void onImpressionSuccessThunkCpp(ImpressionData Data);
 
 					private native void onInterstitialAdReadyThunkCpp(AdInfo adInfo);
@@ -388,17 +392,15 @@
 					private native void onInterstitialAdClickedThunkCpp(AdInfo adInfo);
 					private native void onInterstitialAdShowSucceededThunkCpp(AdInfo adInfo);
 
-					private native void onOfferwallAvailabilityChangedThunkCpp(boolean available);
-					private native void onOfferwallOpenedThunkCpp();					
-					private native void onOfferwallShowFailedThunkCpp(int errorCode, String errorMessage);
-					private native boolean onOfferwallCreditedThunkCpp(int credits, int totalCredits, boolean totalCreditsFlag);
-					private native void onOfferwallGetCreditsFailedThunkCpp(int errorCode, String errorMessage);
-					private native void onOfferwallClosedThunkCpp();
+					private native void onTapjoyConnectedThunkCpp(boolean success);
+					private native void onTapjoyOfferwallContentShowThunkCpp();
+					private native void onTapjoyOfferwallContentDismissThunkCpp();
+					private native void onTapjoyOfferwallRewardRequestThunkCpp(String itemId, int quantity);
 
 					/// ******************* REWARDED VIDEO ******************
 					///    ***********************************************
 					///
-					
+
 					LevelPlayRewardedVideoListener mLevelPlayRewardedVideoListener = new LevelPlayRewardedVideoListener() {
 						// Indicates that there's an available ad.
 						// The adInfo object includes information about the ad that was loaded successfully
@@ -460,7 +462,7 @@
 					///
 					ImpressionDataListener mImpressionDataListener = new ImpressionDataListener()
 					{
-						@Override 
+						@Override
 						public void onImpressionSuccess(ImpressionData impressionData)
 						{
 							onImpressionSuccessThunkCpp(impressionData);
@@ -487,7 +489,7 @@
 						{
 							Log.debug(String.format("onAdLoadFailed error. Errcode: %d, Reason: %s.",
 								error.getErrorCode(), error.getErrorMessage()));
-							
+
 							onInterstitialAdLoadFailedThunkCpp(error.getErrorCode(), error.getErrorMessage());
 						}
 
@@ -515,7 +517,7 @@
 						{
 							Log.debug(String.format("onAdShowFailed error. Errcode: %d, Reason: %s.",
 								error.getErrorCode(), error.getErrorMessage()));
-					
+
 							onInterstitialAdShowFailedThunkCpp (error.getErrorCode(), error.getErrorMessage(), adInfo);
 						}
 
@@ -541,82 +543,78 @@
 					/// ********************* OFFERWALL *********************
 					///    ***********************************************
 					///
-					OfferwallListener mOfferwallListener = new OfferwallListener()
+
+					TJConnectListener mTJConnectListener = new TJConnectListener()
 					{
-						/**
-						* Invoked when there is a change in the Offerwall availability status.
-						* @param - available - value will change to YES when Offerwall are available.
-						* You can then show the offerwall by calling showOfferwall(). Value will *change to NO when Offerwall isn't available.
-						*/
 						@Override
-						public void onOfferwallAvailable(boolean isAvailable) 
+  						public void onConnectSuccess()
+  						{
+							Log.debug("onConnectSuccess");
+							onTapjoyConnectedThunkCpp(true);
+  						}
+
+  						@Override
+  						public void onConnectFailure()
+  						{
+							Log.debug("onConnectFailure");
+							onTapjoyConnectedThunkCpp(false);
+  						}
+					};
+
+					// obj will be set upon content request
+					TJPlacement mTJPlacement = null;
+
+					TJPlacementListener mTJPlacementListener = new TJPlacementListener()
+					{
+						@Override
+						public void onRequestSuccess(TJPlacement placement)
 						{
-							Log.debug(String.format("onOfferwallAvailable: %b", isAvailable));
-							onOfferwallAvailabilityChangedThunkCpp(isAvailable);
+							Log.debug("onRequestSuccess");
 						}
-					
-						/**
-						* Invoked when the Offerwall successfully loads for the user, after calling the 'showOfferwall' method
-						*/
+
 						@Override
-						public void onOfferwallOpened() 
+						public void onRequestFailure(TJPlacement placement, TJError error)
 						{
-							Log.debug("onOfferwallOpened");
-							onOfferwallOpenedThunkCpp();
+							Log.debug("onRequestFailure");
 						}
-					
-						/**
-						* Invoked when the method 'showOfferwall' is called and the Offerwall fails to load.
-						* @param error - A IronSourceError Object which represents the reason of 'showOfferwall' failure.
-						*/
+
 						@Override
-						public void onOfferwallShowFailed(IronSourceError error) 
+						public void onContentReady(TJPlacement placement)
 						{
-							Log.debug(String.format("onOfferwallShowFailed error. Errcode: %d, Reason: %s.",
-								error.getErrorCode(), error.getErrorMessage()));
-							onOfferwallShowFailedThunkCpp(error.getErrorCode(), error.getErrorMessage());
+							Log.debug("onContentReady");
 						}
-					
-						/**
-						* Invoked each time the user completes an Offer.
-						* Award the user with the credit amount corresponding to the value of the *‘credits’ parameter.
-						* @param credits - The number of credits the user has earned.
-						* @param totalCredits - The total number of credits ever earned by the user.
-						* @param totalCreditsFlag - In some cases, we won’t be able to provide the exact
-						* amount of credits since the last event (specifically if the user clears
-						* the app’s data). In this case the ‘credits’ will be equal to the ‘totalCredits’, and this flag will be ‘true’.
-						* @return boolean - true if you received the callback and rewarded the user, otherwise false.
-						*/
+
 						@Override
-						public boolean onOfferwallAdCredited(int credits, int totalCredits, boolean totalCreditsFlag) 
+						public void onContentShow(TJPlacement placement)
 						{
-							Log.debug("onOfferwallAdCredited");
-							return onOfferwallCreditedThunkCpp (credits, totalCredits, totalCreditsFlag);
+							Log.debug("onContentShow");
+							onTapjoyOfferwallContentShowThunkCpp();
 						}
-					
-						/**
-						* Invoked when the method 'getOfferwallCredits' fails to retrieve
-						* the user's credit balance info.
-						* @param error - A IronSourceError object which represents the reason of 'getOfferwallCredits' failure.
-						* If using client-side callbacks to reward users, it is mandatory to return true on this event
-						*/
+
 						@Override
-						public void onGetOfferwallCreditsFailed(IronSourceError error) 
+						public void onContentDismiss(TJPlacement placement)
 						{
-							Log.debug(String.format("onGetOfferwallCreditsFailed error. Errcode: %d, Reason: %s.",
-								error.getErrorCode(), error.getErrorMessage()));
-							onOfferwallGetCreditsFailedThunkCpp(error.getErrorCode(), error.getErrorMessage());
+							Log.debug("onContentDismiss");
+							onTapjoyOfferwallContentDismissThunkCpp();
 						}
-					
-						/**
-						* Invoked when the user is about to return to the application after closing
-						* the Offerwall.
-						*/
+
 						@Override
-						public void onOfferwallClosed() 
+						public void onPurchaseRequest(TJPlacement placement, TJActionRequest request, String productId)
 						{
-							Log.debug("onOfferwallClosed");
-							onOfferwallClosedThunkCpp();
+							Log.debug("onPurchaseRequest");
+						}
+
+						@Override
+						public void onRewardRequest(TJPlacement placement, TJActionRequest request, String itemId, int quantity)
+						{
+							Log.debug("onRewardRequest");
+							onTapjoyOfferwallRewardRequestThunkCpp(itemId, quantity);
+						}
+
+						@Override
+						public void onClick(TJPlacement placement)
+						{
+							Log.debug("onClick");
 						}
 					};
 
@@ -624,13 +622,7 @@
 					///    ***********************************************
 					///
 					// NOTE: call _setSupersonicConfClientSideCallbacks before _init
-					public void AndroidThunkJava_IronSource_setOfferwallUseClientSideCallbacks(boolean value)
-					{
-						Log.debug(String.format("AndroidThunkJava_IronSource_setOfferwallUseClientSideCallbacks: %b", value));
 
-						SupersonicConfig.getConfigObj().setClientSideCallbacks(value);
-					}
-					
 					public void AndroidThunkJava_IronSource_init(String APIKey, String UserId, String APSAppId)
 					{
 						Log.debug("AndroidThunkJava_IronSource_init");
@@ -650,12 +642,56 @@
 						IronSource.setLevelPlayRewardedVideoListener(mLevelPlayRewardedVideoListener);
 						IronSource.addImpressionDataListener(mImpressionDataListener);
 						IronSource.setLevelPlayInterstitialListener(mLevelPlayInterstitialVideoListener);
-						IronSource.setOfferwallListener(mOfferwallListener);
-						
+
 						IronSource.init(this, APIKey);
 						IntegrationHelper.validateIntegration(this);
 					}
-					
+
+					public void AndroidThunkJava_Tapjoy_init(String TapjoyAPIKey)
+					{
+						Log.debug("AndroidThunkJava_Tapjoy_init");
+
+						if (TapjoyAPIKey.isEmpty())
+						{
+							Log.debug("TapjoyAPIKey is invalid");
+							return;
+						}
+
+						Hashtable<String, Object> connectFlags = new Hashtable<String, Object>();
+						Tapjoy.setActivity(this);
+						Tapjoy.connect(this.getApplicationContext(), TapjoyAPIKey, connectFlags, mTJConnectListener);
+					}
+
+					public void AndroidThunkJava_Tapjoy_request_content(String TapjoyOfferwallPlacement)
+					{
+						Log.debug("AndroidThunkJava_Tapjoy_request_content");
+
+						if (TapjoyOfferwallPlacement.isEmpty())
+						{
+							Log.debug("TapjoyOfferwallPlacement is invalid");
+							return;
+						}
+
+						if (mTJPlacement == null)
+						{
+							Log.debug("mTJPlacement is null");
+							mTJPlacement = Tapjoy.getPlacement(TapjoyOfferwallPlacement, mTJPlacementListener);
+						}
+
+						Log.debug("mTJPlacement requesting content");
+						mTJPlacement.requestContent();
+					}
+
+					public void AndroidThunkJava_Tapjoy_setConsent(String CCPASetting, boolean SubjectToGDPR, boolean GDPRUserConsent)
+					{
+						Log.debug("AndroidThunkJava_Tapjoy_setConsent");
+
+						TJPrivacyPolicy tjPrivacyPolicy = Tapjoy.getPrivacyPolicy();
+						tjPrivacyPolicy.setSubjectToGDPR(SubjectToGDPR);
+						tjPrivacyPolicy.setUserConsent(GDPRUserConsent ? "1" : "0");
+						tjPrivacyPolicy.setUSPrivacy(CCPASetting);
+					}
+
 					public void AndroidThunkJava_IronSource_ForceUpdateUser(String UserId)
 					{
 						Log.debug("AndroidThunkJava_IronSource_ForceUpdateUser");
@@ -669,7 +705,7 @@
 						IronSourceSegment ironSegment = new IronSourceSegment();
 						ironSegment.setSegmentName(SegmentName);
 						ironSegment.setCustom(SegmentRevenueKey, SegmentRevenue);
-					
+
 						IronSource.setSegment(ironSegment);
 						IntegrationHelper.validateIntegration(this);
 					}
@@ -719,9 +755,9 @@
 						IronSource.showRewardedVideo(PlacementName);
 					}
 
-					public void AndroidThunkJava_IronSource_setGDPRConsent(boolean bConsent)
+					public void AndroidThunkJava_IronSource_setConsent(boolean bConsent)
 					{
-						Log.debug("AndroidThunkJava_IronSource_setGDPRConsent");
+						Log.debug("AndroidThunkJava_IronSource_setConsent");
 						IronSource.setConsent(bConsent);
 					}
 
@@ -752,32 +788,23 @@
 					public boolean AndroidThunkJava_IronSource_hasOfferwall()
 					{
 						Log.debug("AndroidThunkJava_IronSource_hasOfferwall");
-						return IronSource.isOfferwallAvailable();
+						return mTJPlacement != null && mTJPlacement.isContentReady();
 					}
 
 					public void AndroidThunkJava_IronSource_showOfferwall()
 					{
 						Log.debug("AndroidThunkJava_IronSource_showOfferwall");
-						IronSource.showOfferwall();
-					}
-
-					public void AndroidThunkJava_IronSource_showOfferwallWithPlacement(String PlacementName)
-					{
-						Log.debug("AndroidThunkJava_IronSource_showOfferwallWithPlacement");
-						IronSource.showOfferwall(PlacementName);
-					}
-
-					public void AndroidThunkJava_IronSource_getOfferwallCredits()
-					{
-						Log.debug("AndroidThunkJava_IronSource_getOfferwallCredits");
-						IronSource.getOfferwallCredits();
+						if (AndroidThunkJava_IronSource_hasOfferwall())
+						{
+							mTJPlacement.showContent();
+						}
 					}
 					]]>
 				</insert>
 			</true>
 		</if>
 	</gameActivityClassAdditions>
-	
+
 	<gameActivityOnPauseAdditions>
 		<if condition="bIronSourceEnable">
 			<true>

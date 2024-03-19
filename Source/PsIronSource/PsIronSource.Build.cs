@@ -1,4 +1,4 @@
-// Copyright 2015-2023 MY.GAMES. All Rights Reserved.
+// Copyright 2015-2024 MY.GAMES. All Rights Reserved.
 
 using System.IO;
 using Tools.DotNETCommon;
@@ -181,20 +181,6 @@ namespace UnrealBuildTool.Rules
 
                     PublicAdditionalFrameworks.Add(
                         new Framework(
-                            "ChartboostSDK",
-                            "../../ThirdParty/iOS/ChartboostSDK.embeddedframework.zip"
-                        )
-                    );
-
-                    PublicAdditionalFrameworks.Add(
-                        new Framework(
-                            "ISChartboostAdapter",
-                            "../../ThirdParty/iOS/ISChartboostAdapter.embeddedframework.zip"
-                        )
-                    );
-
-                    PublicAdditionalFrameworks.Add(
-                        new Framework(
                             "ISMintegralAdapter",
                             "../../ThirdParty/iOS/ISMintegralAdapter.embeddedframework.zip"
                         )
@@ -307,6 +293,148 @@ namespace UnrealBuildTool.Rules
                         new Framework(
                             "DTBiOSSDK",
                             "../../ThirdParty/iOS/DTBiOSSDK.embeddedframework.zip"
+                        )
+                    );
+
+                    // Tapjoy
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "Tapjoy",
+                            "../../ThirdParty/iOS/Tapjoy.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "ISTapjoyAdapter",
+                            "../../ThirdParty/iOS/ISTapjoyAdapter.embeddedframework.zip"
+                        )
+                    );
+
+                    // BidMachine
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "ISBidMachineAdapter",
+                            "../../ThirdParty/iOS/ISBidMachineAdapter.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "BidMachine",
+                            "../../ThirdParty/iOS/BidMachine.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "BidMachineApiCore",
+                            "../../ThirdParty/iOS/BidMachineApiCore.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "BidMachineBidding",
+                            "../../ThirdParty/iOS/BidMachineBidding.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "BidMachineModules",
+                            "../../ThirdParty/iOS/BidMachineModules.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "OMSDK_Appodeal",
+                            "../../ThirdParty/iOS/OMSDK_Appodeal.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "StackIABAssets",
+                            "../../ThirdParty/iOS/StackIABAssets.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "StackMRAIDKit",
+                            "../../ThirdParty/iOS/StackMRAIDKit.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "StackNASTKit",
+                            "../../ThirdParty/iOS/StackNASTKit.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "StackOpenMeasure",
+                            "../../ThirdParty/iOS/StackOpenMeasure.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "StackRichMedia",
+                            "../../ThirdParty/iOS/StackRichMedia.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "StackVASTAssets",
+                            "../../ThirdParty/iOS/StackVASTAssets.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "StackVASTKit",
+                            "../../ThirdParty/iOS/StackVASTKit.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "StackVideoPlayer",
+                            "../../ThirdParty/iOS/StackVideoPlayer.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "StackXML",
+                            "../../ThirdParty/iOS/StackXML.embeddedframework.zip"
+                        )
+                    );
+                    
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "StackFoundation",
+                            "../../ThirdParty/iOS/StackFoundation.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "StackProductPresentation",
+                            "../../ThirdParty/iOS/StackProductPresentation.embeddedframework.zip"
+                        )
+                    );
+
+                    PublicAdditionalFrameworks.Add(
+                        new Framework(
+                            "StackUIKit",
+                            "../../ThirdParty/iOS/StackUIKit.embeddedframework.zip"
                         )
                     );
 

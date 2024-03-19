@@ -86,7 +86,6 @@ mkdir downloads/unpacked
 DownloadFramework https://dl.google.com/googleadmobadssdk/googlemobileadssdkios-10.12.0.zip
 
 PackFramework Pods/AppLovinSDK/applovin-ios-sdk-11.10.1 AppLovinSDK AppLovinSDKResources.bundle
-PackFramework Pods/ChartboostSDK ChartboostSDK ChartboostSDKResources.bundle
 PackFramework Pods/Google-Mobile-Ads-SDK/Frameworks/GoogleMobileAdsFramework GoogleMobileAds
 PackFramework Pods/GoogleAppMeasurement/Frameworks GoogleAppMeasurement
 # use compiled version from downloads
@@ -99,7 +98,6 @@ PackFramework downloads/unpacked/GoogleMobileAdsSdkiOS-10.12.0 FBLPromises
 PackFramework Pods/GoogleUserMessagingPlatform/Frameworks/Release UserMessagingPlatform
 PackFramework Pods/IronSourceAdMobAdapter/ISAdMobAdapter ISAdMobAdapter ISAdMobResources.bundle
 PackFramework Pods/IronSourceAppLovinAdapter/ISAppLovinAdapter ISAppLovinAdapter
-PackFramework Pods/IronSourceChartboostAdapter/ISChartboostAdapter ISChartboostAdapter
 PackFramework Pods/IronSourceFacebookAdapter/ISFacebookAdapter ISFacebookAdapter
 # mintegral begin
 PackFramework Pods/IronSourceMintegralAdapter/ISMintegralAdapter ISMintegralAdapter
@@ -125,3 +123,25 @@ PackFramework Pods/Fyber_Marketplace_SDK/IASDKCore IASDKCore
 # APS
 PackFramework Pods/IronSourceAPSAdapter/ISAPSAdapter ISAPSAdapter
 PackFramework Pods/AmazonPublisherServicesSDK/APS_iOS_SDK-4.7.2 DTBiOSSDK
+# Tapjoy
+PackFramework Pods/IronSourceTapjoyAdapter/ISTapjoyAdapter ISTapjoyAdapter
+PackFramework Pods/TapjoySDK/TapjoySDK_iOS_v13.0.1/Libraries Tapjoy
+# BidMachine
+PackFramework Pods/IronSourceBidMachineAdapter/ISBidMachineAdapter ISBidMachineAdapter
+PackFramework Pods/BidMachine BidMachine
+PackFramework Pods/BidMachine BidMachineApiCore
+PackFramework Pods/BidMachine BidMachineBidding
+PackFramework Pods/BidMachine BidMachineModules
+PackFramework Pods/OMSDK_Appodeal OMSDK_Appodeal
+PackFramework Pods/StackIAB StackIABAssets
+PackFramework Pods/StackIAB StackMRAIDKit
+PackFramework Pods/StackIAB StackNASTKit
+PackFramework Pods/StackIAB StackOpenMeasure
+PackFramework Pods/StackIAB StackRichMedia
+PackFramework Pods/StackIAB StackVASTAssets
+PackFramework Pods/StackIAB StackVASTKit
+PackFramework Pods/StackIAB StackVideoPlayer
+PackFramework Pods/StackIAB StackXML
+PackFramework Pods/StackModules StackFoundation
+PackFramework Pods/StackModules StackProductPresentation
+PackFramework Pods/StackModules StackUIKit

@@ -1,4 +1,4 @@
-// Copyright 2015-2023 MY.GAMES. All Rights Reserved.
+// Copyright 2015-2024 MY.GAMES. All Rights Reserved.
 
 #include "PsIronSourceProxy.h"
 
@@ -19,7 +19,7 @@ void UPsIronSourceProxy::SetOfferwallUseClientSideCallbacks(bool bValue)
 	UE_LOG(LogPsIronSource, Warning, TEXT("%s: Null proxy used"), *PS_FUNC_LINE);
 }
 
-void UPsIronSourceProxy::InitIronSource(const FString& UserId)
+void UPsIronSourceProxy::InitIronSource(const FString& UserId, bool bOfferwallEnable)
 {
 	UE_LOG(LogPsIronSource, Warning, TEXT("%s: Null proxy used"), *PS_FUNC_LINE);
 }
@@ -69,7 +69,12 @@ void UPsIronSourceProxy::ShowRewardedVideo(const FString& PlacementName) const
 	VideoStateDelegate.Broadcast(EIronSourceEventType::VideoShowFailed);
 }
 
-void UPsIronSourceProxy::SetGDPRConsent(bool bConsent) const
+void UPsIronSourceProxy::SetConsent(bool bConsent) const
+{
+	UE_LOG(LogPsIronSource, Warning, TEXT("%s: Null proxy used"), *PS_FUNC_LINE);
+}
+
+void UPsIronSourceProxy::SetOfferwallConsent(const FPsOfferwallPrivacyPolicy& OfferwallPP) const
 {
 	UE_LOG(LogPsIronSource, Warning, TEXT("%s: Null proxy used"), *PS_FUNC_LINE);
 }
@@ -141,16 +146,6 @@ bool UPsIronSourceProxy::HasOfferwall() const
 }
 
 void UPsIronSourceProxy::ShowOfferwall() const
-{
-	UE_LOG(LogPsIronSource, Warning, TEXT("%s: Null proxy used"), *PS_FUNC_LINE);
-}
-
-void UPsIronSourceProxy::ShowOfferwallWithPlacement(const FString& PlacementName) const
-{
-	UE_LOG(LogPsIronSource, Warning, TEXT("%s: Null proxy used"), *PS_FUNC_LINE);
-}
-
-void UPsIronSourceProxy::GetOfferwallCredits() const
 {
 	UE_LOG(LogPsIronSource, Warning, TEXT("%s: Null proxy used"), *PS_FUNC_LINE);
 }

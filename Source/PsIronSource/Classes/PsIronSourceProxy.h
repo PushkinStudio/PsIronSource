@@ -1,4 +1,4 @@
-// Copyright 2015-2023 MY.GAMES. All Rights Reserved.
+// Copyright 2015-2024 MY.GAMES. All Rights Reserved.
 
 #pragma once
 
@@ -31,17 +31,15 @@ enum class EIronSourceEventType : uint8
 UENUM(BlueprintType)
 enum class EIronSourceOfferwallEventType : uint8
 {
-	Available,        // when offerwall has changed availability to Available
-	NotAvailable,     // when offerwall has changed availability to Not Available
-	Opened,           // when offerwall successfully loads for the user, after calling the 'showOfferwall' method
-	ShowFailed,       // when offerwall fails to load for the user, after calling the 'showOfferwall' method
-	Credited,         // invoked each time the user completes an Offer
-	GetCreditsFailed, // when the method 'getOfferwallCredits' fails to retrieve the user's credit balance info
-	Closed            // when the user is about to return to the application after closing
+	Available,
+	Opened,
+	Closed,
+	Rewarded,
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPSIronSourceVideoDelegate, EIronSourceEventType, Event);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FPSIronSourceOfferwallDelegate, EIronSourceOfferwallEventType, Event, int32, Credits, int32, TotalCredits, bool, TotalCreditsFlag);
+DECLARE_MULTICAST_DELEGATE(FPSIronSourceOfferwallConnected);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FPSIronSourceOfferwallDelegate, EIronSourceOfferwallEventType, Event, FString, ItemId, int32, Count);
 
 USTRUCT()
 struct FPsIronSourceAdInfoCommon
@@ -122,6 +120,39 @@ struct FPsIronSourceAdInfo : public FPsIronSourceAdInfoCommon
 	}
 };
 
+USTRUCT(BlueprintType)
+struct FPsOfferwallPrivacyPolicy 
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	bool bOfferwallEnable;
+
+	UPROPERTY()
+	bool bSubjectToGDPR;
+
+	UPROPERTY()
+	bool bUserConsent;
+
+	UPROPERTY()
+	FString CCPASetting;
+
+	FPsOfferwallPrivacyPolicy()
+		: bOfferwallEnable(false)
+		, bSubjectToGDPR(false)
+		, bUserConsent(false)
+	{
+	}
+
+	FPsOfferwallPrivacyPolicy(bool bInOfferwallEnable, bool bInSubjectToGDPR, bool bInGDPRUserConsent, const FString& InCCPASetting)
+		: bOfferwallEnable(bInOfferwallEnable)
+		, bSubjectToGDPR(bInSubjectToGDPR)
+		, bUserConsent(bInGDPRUserConsent)
+		, CCPASetting(InCCPASetting)
+	{
+	}
+};
+
 UCLASS()
 class PSIRONSOURCE_API UPsIronSourceProxy : public UObject
 {
@@ -131,12 +162,16 @@ public:
 	/////////////////////////////////////////////////////////////////////////
 	// Setup
 
-	/** Call SetOfferwallUseClientSideCallbacks before InitIronSource */
+	/** Set offerwall use client-side callbacks
+	 *
+	 * Call before SDK initialization
+	 *
+	 */
 	virtual void SetOfferwallUseClientSideCallbacks(bool bValue);
 
-	/** Initialize */
+	/** Initialize SDK */
 	UFUNCTION(BlueprintCallable, Category = "IronSource")
-	virtual void InitIronSource(const FString& UserId);
+	virtual void InitIronSource(const FString& UserId, bool bOfferwallEnable);
 
 	/** Update userid after change account */
 	UFUNCTION(BlueprintCallable, Category = "IronSource")
@@ -169,9 +204,19 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "IronSource")
 	virtual void ShowRewardedVideo(const FString& PlacementName) const;
 
-	/** Set GDPR consent status */
-	UFUNCTION(BlueprintCallable, Category = "IronSource")
-	virtual void SetGDPRConsent(bool bConsent) const;
+	/** Set consent status
+	 *
+	 * Call before SDK initialization
+	 *
+	 */
+	virtual void SetConsent(bool bConsent) const;
+
+	/** Set Tapjoy offerwall consent
+	 *
+	 * Call only after SDK initialization and receiving OnOfferwallConnected callback
+	 *
+	 */
+	virtual void SetOfferwallConsent(const FPsOfferwallPrivacyPolicy& OfferwallPP) const;
 
 	/** Whether there are events waiting to be sent to game thread */
 	bool HasQueuedEvents() const;
@@ -218,18 +263,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "IronSource")
 	virtual void ShowOfferwall() const;
 
-	/** Show offerwall with certain placement */
-	UFUNCTION(BlueprintCallable, Category = "IronSource")
-	virtual void ShowOfferwallWithPlacement(const FString& PlacementName) const;
-
-	/** Get offerwall credits */
-	UFUNCTION(BlueprintCallable, Category = "IronSource")
-	virtual void GetOfferwallCredits() const;
-
 public:
 	/** Delegate broadcasting video-related events */
 	UPROPERTY(BlueprintAssignable)
 	FPSIronSourceVideoDelegate VideoStateDelegate;
+
+	/** Delegate broadcasting offerwall connection established */
+	FPSIronSourceOfferwallConnected OnOfferwallConnected;
 
 	/** Delegate broadcasting offerwall-related events */
 	UPROPERTY(BlueprintAssignable)

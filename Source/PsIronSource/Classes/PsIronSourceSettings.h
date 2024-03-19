@@ -1,4 +1,4 @@
-// Copyright 2015-2023 MY.GAMES. All Rights Reserved.
+// Copyright 2015-2024 MY.GAMES. All Rights Reserved.
 
 #pragma once
 
@@ -37,4 +37,16 @@ public:
 	/** APS app id (Android) */
 	UPROPERTY(Config, EditAnywhere)
 	FString APSAndroidAppId;
+
+	/** Tapjoy API key (iOS) */
+	UPROPERTY(Config, EditAnywhere)
+	FString TapjoyAPIKeyIOS;
+
+	/** Tapjoy API key (Android) */
+	UPROPERTY(Config, EditAnywhere)
+	FString TapjoyAPIKeyAndroid;
+
+	/** Tapjoy offerwall placement name */
+	UPROPERTY(Config, EditAnywhere)
+	FString TapjoyOfferwallPlacement;
 };
